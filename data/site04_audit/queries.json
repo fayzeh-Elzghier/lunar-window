@@ -1,0 +1,62 @@
+{
+  "sun": {
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27188.13%2C-89.7668%2C0.773043212891%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-01%27&STOP_TIME=%272026-12-08%27&STEP_SIZE=%271h%27&QUANTITIES=%274%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27",
+    "parameters": {
+      "format": "text",
+      "COMMAND": "'10'",
+      "CENTER": "'coord@301'",
+      "COORD_TYPE": "'GEODETIC'",
+      "SITE_COORD": "'188.13,-89.7668,0.773043212891'",
+      "MAKE_EPHEM": "'YES'",
+      "EPHEM_TYPE": "'OBSERVER'",
+      "START_TIME": "'2026-12-01'",
+      "STOP_TIME": "'2026-12-08'",
+      "STEP_SIZE": "'1h'",
+      "QUANTITIES": "'4'",
+      "CSV_FORMAT": "'YES'",
+      "OBJ_DATA": "'NO'"
+    },
+    "retrieved_utc": "2026-11-13T22:52:20.681017+00:00",
+    "sha256": "452a5921ede39a227be8a67c118344094193aa4aa578969a977091553cb766ae"
+  },
+  "earth": {
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27399%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27188.13%2C-89.7668%2C0.773043212891%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-01%27&STOP_TIME=%272026-12-08%27&STEP_SIZE=%271h%27&QUANTITIES=%274%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27",
+    "parameters": {
+      "format": "text",
+      "COMMAND": "'399'",
+      "CENTER": "'coord@301'",
+      "COORD_TYPE": "'GEODETIC'",
+      "SITE_COORD": "'188.13,-89.7668,0.773043212891'",
+      "MAKE_EPHEM": "'YES'",
+      "EPHEM_TYPE": "'OBSERVER'",
+      "START_TIME": "'2026-12-01'",
+      "STOP_TIME": "'2026-12-08'",
+      "STEP_SIZE": "'1h'",
+      "QUANTITIES": "'4'",
+      "CSV_FORMAT": "'YES'",
+      "OBJ_DATA": "'NO'"
+    },
+    "retrieved_utc": "2026-11-13T22:52:24.944728+00:00",
+    "sha256": "e3cfbaa82d9a9d9bb0fa1351ca1071601a4b1aadd2358193d692498fcd43586b"
+  },
+  "sun_signed_longitude_check": {
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27-171.87%2C-89.7668%2C0.773043212891%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-01%27&STOP_TIME=%272026-12-01+01%3A00%27&STEP_SIZE=%271h%27&QUANTITIES=%274%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27",
+    "parameters": {
+      "format": "text",
+      "COMMAND": "'10'",
+      "CENTER": "'coord@301'",
+      "COORD_TYPE": "'GEODETIC'",
+      "SITE_COORD": "'-171.87,-89.7668,0.773043212891'",
+      "MAKE_EPHEM": "'YES'",
+      "EPHEM_TYPE": "'OBSERVER'",
+      "START_TIME": "'2026-12-01'",
+      "STOP_TIME": "'2026-12-01 01:00'",
+      "STEP_SIZE": "'1h'",
+      "QUANTITIES": "'4'",
+      "CSV_FORMAT": "'YES'",
+      "OBJ_DATA": "'NO'"
+    },
+    "retrieved_utc": "2026-11-13T22:52:29.114108+00:00",
+    "sha256": "c0cd347dffa7068443be302aea0448278db54f113a02f621ffec54cd72f1cf01"
+  }
+}
