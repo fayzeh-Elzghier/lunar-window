@@ -1,0 +1,65 @@
+name: Acquire month-long actual JPL ephemerides
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/acquire_extended_horizons.py"
+      - ".github/workflows/nasa-extended.yml"
+permissions:
+  contents: write
+concurrency:
+  group: actual-nasa-monthly-ephemeris
+  cancel-in-progress: false
+jobs:
+  acquire-month:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Acquire real JPL Sun/Earth month ephemerides, no fabricated samples
+        run: python scripts/acquire_extended_horizons.py
+      - name: Verify UTC source validity and preservation
+        run: |
+          python -m compileall -q scripts src tests
+          python -m unittest discover -s tests -v
+      - name: Save reproducible NASA outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: original-nasa-monthly-sun-earth-and-angles
+          path: |
+            data/site01_audit/extended_sun_raw.txt
+            data/site01_audit/extended_earth_raw.txt
+            data/site01_audit/extended_dec2026.csv
+            data/site01_audit/extended_dec2026_meta.json
+            data/site04_audit/extended_sun_raw.txt
+            data/site04_audit/extended_earth_raw.txt
+            data/site04_audit/extended_dec2026.csv
+            data/site04_audit/extended_dec2026_meta.json
+          retention-days: 30
+      - name: Publish source-traceable NASA records without force-push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/site01_audit/extended* data/site04_audit/extended*
+          if git diff --cached --quiet; then
+            echo "No new source records"; exit 0
+          fi
+          git commit -m "data: real month-long JPL Sun/Earth ephemerides and solar range for both sites"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "::error::Scientific source conflicts with concurrent branch edits. Artifact remains accessible."
+              exit 1
+            fi
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((2*attempt))
+          done
+          echo "::error::Could not publish without force pushing; inspect artifact."; exit 1
