@@ -85,12 +85,48 @@ function chooseEvidence(data,site,startMs,endMs){
    stepMs:useFine?300000:3600000,cadence:useFine?"original NASA 5-minute":"original NASA hourly",
    fineUsed:!!useFine};
 }
+function referenceSamplePass(row,req){
+ // A potential pass in a *screening model*, never physical confirmation.
+ // The Sun and Earth must be above the NASA-LOLA *sampled* skyline.
+ return row[6]>0&&(!req.earthRequired||row[8]>0)&&referencePower(row,req)+1e-9>=req.requiredW;
+}
+function sampleRunMargin(rows,req,startMs,endMs,stepMs){
+ // Strictly count time between ACTUAL JPL sample timestamps; never interpolate.
+ // A natural end is considered observed for this *model* only if another
+ // authentic sample explicitly fails the sampled reference constraints.
+ // Data truncation, source gaps, or no witnessed failure -> UNKNOWN.
+ const origin=Date.parse(rows[0][0]);
+ const startIdx=(startMs-origin)/stepMs;
+ const endIdx=(endMs-origin)/stepMs;
+ if(!Number.isInteger(startIdx)||!Number.isInteger(endIdx)||startIdx<0||endIdx>=rows.length)
+   return {minutes:null,status:"NOT_OBSERVABLE_IN_SOURCE"};
+ for(let j=startIdx;j<endIdx;j++)
+   if(Date.parse(rows[j][0])!==origin+j*stepMs||!referenceSamplePass(rows[j],req))
+     return {minutes:null,status:"REQUESTED_SAMPLES_NOT_ALL_PASSING"};
+ for(let j=endIdx;j<rows.length;j++){
+   if(Date.parse(rows[j][0])!==origin+j*stepMs)
+     return {minutes:null,status:"SOURCE_GAP"};
+   if(!referenceSamplePass(rows[j],req)){
+     const lastPass=Date.parse(rows[j-1][0]);
+     return {
+       minutes:Math.max(0,Math.round((lastPass-endMs)/60000)),
+       status:"OBSERVED_SAMPLED_REFERENCE_END__NOT_PHYSICAL_WINDOW",
+       lastPassingUtc:rows[j-1][0],
+       firstFailingUtc:rows[j][0],
+       cadenceMinutes:stepMs/60000,
+       physicalMarginMinutes:null
+     };
+   }
+ }
+ return {minutes:null,status:"RIGHT_CENSORED_BY_NASA_DATA_RANGE",coverageEndUtc:rows.at(-1)[0]};
+}
 function evaluateCase(data,req,site,startMs){
  const endMs=startMs+req.durationMs;
  const evidence=chooseEvidence(data,site,startMs,endMs),rows=evidence.rows;
  const out={site,cadence:evidence.cadence,cadenceSeconds:evidence.stepMs/1000,fineUsed:evidence.fineUsed,startUtc:new Date(startMs).toISOString(),finishUtc:new Date(startMs+req.durationMs).toISOString(),
    startDelayH:(startMs-req.startMs)/3600000,remainingUserDelayH:Math.max(0,(req.delayMs-(startMs-req.startMs))/3600000),status:"insufficient_data",evidence:[],
    reasons:[],sampleCount:0,marginSeconds:null,physicalWindowEndKnown:false,
+   sampledMarginMinutes:null,sampledMarginStatus:"NOT_COMPUTED",sampledModelWindow:null,
    validation:"PROVISIONAL_LOCAL_SCREEN_ONLY"};
  if(!rows){out.reasons.push({code:"NO_NASA_SOURCE",times:[]});return out}
  const min=Date.parse(rows[0][0]),max=Date.parse(rows.at(-1)[0]);
@@ -135,6 +171,16 @@ function evaluateCase(data,req,site,startMs){
   causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.length>0 ||causes.PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST.length>0;
  const isEdge=causes.SUN_NEAR_UNCERTAIN_LOCAL_EDGE.length>0 || causes.EARTH_NEAR_UNCERTAIN_LOCAL_EDGE.length>0;
  out.status=hasConflict?"potential_conflict":isEdge?"edge_review":"research_candidate";
+ // One transparent, useful number from REAL JPL samples, clearly NOT a
+ // physical Sun/Earth communication or electrical power safety guarantee.
+ if(!hasConflict){
+   const screening=sampleRunMargin(rows,req,startMs,endMs,evidence.stepMs);
+   out.sampledMarginMinutes=screening.minutes;
+   out.sampledMarginStatus=screening.status;
+   out.sampledModelWindow=screening;
+ }else{
+   out.sampledMarginStatus="INITIAL_SCREEN_CONSTRAINTS_NOT_MET";
+ }
  out.evidence={cadence:evidence.cadence,fineUsed:evidence.fineUsed,
   sampledUtc:relevant.map(x=>x[0]),limitations:["NASA local height-error RMS review threshold is approximate; far 80m terrain error not quantified; not a confidence bound","NASA source is hourly not continuous","only sampled 5m+80m LOLA skyline to about 300km, farther terrain still unknown","scientific frames and vertical references not independently reconciled","distance-adjusted unshadowed power reference is NOT actual available power","solar eclipse/disc and uncertainty not quantified"],sourceHashes:{
     sun:data.sites[site].meta.sun_sha256,earth:data.sites[site].meta.earth_sha256,lola:data.sites[site].meta.terrain_sha256
@@ -172,11 +218,12 @@ function searchCases(data,req){
   windowMarginSeconds:null,
   certifiedAlternativeCount:0,
   scientificConclusion:"NO_VALIDATED_MISSION_PASS_AVAILABLE",
+  sampledMarginInterpretation:"Observed pointwise NASA sample-run slack until a later sampled model failure; NOT verified physical time margin",
   coverageEndUtc:data.sites[req.site].rows.at(-1)[0],
   evaluationTimeUtc:null // deterministic; no fabricated timestamp or background work
  };
 }
-const Engine={assertData,requestFromObject,referencePower,labelClearance,siteStats,evaluateCase,searchCases};
+const Engine={assertData,requestFromObject,referencePower,referenceSamplePass,sampleRunMargin,labelClearance,siteStats,evaluateCase,searchCases};
 global.LunarEngine=Engine;
 if(typeof document==="undefined")return;
 function $(id){return document.getElementById(id)}
@@ -184,6 +231,10 @@ function escape(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt
 function fixed(n,d=2){return Number(n).toFixed(d)}
 function utcLabel(str){return new Date(str).toLocaleString("en-GB",{timeZone:"UTC",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false})+" UTC"}
 function formatDelta(n){return (n>=0?"+":"")+fixed(n,3)+"°"}
+function durationLabel(minutes){
+ if(minutes===null||minutes===undefined)return "UNKNOWN";
+ return Math.floor(minutes/60)+"h "+String(Math.round(minutes%60)).padStart(2,"0")+"m";
+}
 const state={site:"Site01",index:0,report:null,data:null};
 function svgElem(tag,attrs={}){const node=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const [k,v] of Object.entries(attrs))node.setAttribute(k,String(v));return node}
 function graph(site){
@@ -266,7 +317,7 @@ function render(){
  const headingClass=original.status==="research_candidate"?"candidate":original.status==="insufficient_data"?"unknown":"risk";
  const pieces=original.reasons.map(r=>'<p class="reason"><strong>'+escape(reasonText[r.code]||r.code)+'</strong> · '+r.sampleCount+' sample(s); first '+escape(r.firstUtc||"n/a")+'</p>');
  const zero=original.reasons.length===0?'<p>No adverse point samples in this range under the provisional local and unshadowed reference screen; that does NOT establish uninterrupted illumination or a working link.</p>':pieces.join("");
- $("report").innerHTML='<div class="status-line"><strong class="'+headingClass+'">'+escape(stateLabel)+'</strong><p>'+escape(original.site)+' · '+escape(utcLabel(original.startUtc))+' · '+original.sampleCount+' actual NASA samples ('+escape(original.cadence)+') inspected</p></div><div class="report-grid"><div><small>Minimum distance-adjusted unshadowed panel reference</small><strong>'+((original.minReferencePowerW===undefined)?"Unknown":fixed(original.minReferencePowerW,1)+" W")+'</strong></div><div><small>Min Sun local clearance</small><strong>'+((original.minSunLocalClearanceDeg===undefined)?"Unknown":formatDelta(original.minSunLocalClearanceDeg))+'</strong></div><div><small>Time Margin</small><strong class="unknown">UNKNOWN</strong></div></div>'+zero+'<p class="small-note">Potential conflicts are based on original NASA hourly or five-minute geometry and a <b>provisional</b> sampled near/far LOLA terrain model. This is not a scientific verdict about actual continuous power, RF link, or safe landing.</p>';
+ $("report").innerHTML='<div class="status-line"><strong class="'+headingClass+'">'+escape(stateLabel)+'</strong><p>'+escape(original.site)+' · '+escape(utcLabel(original.startUtc))+' · '+original.sampleCount+' actual NASA samples ('+escape(original.cadence)+') inspected</p></div><div class="report-grid"><div><small>Minimum distance-adjusted unshadowed panel reference</small><strong>'+((original.minReferencePowerW===undefined)?"Unknown":fixed(original.minReferencePowerW,1)+" W")+'</strong></div><div><small>Min Sun local clearance</small><strong>'+((original.minSunLocalClearanceDeg===undefined)?"Unknown":formatDelta(original.minSunLocalClearanceDeg))+'</strong></div><div><small>Physical Time Margin</small><strong class="unknown">UNKNOWN</strong></div></div>'+zero+'<p class="small-note"><strong>Sampled reference slack:</strong> '+escape(durationLabel(original.sampledMarginMinutes))+' (only if a later failing NASA sample marks the end; NOT a physical Time Margin). <strong>Physical Time Margin:</strong> UNKNOWN.</p><p class="small-note">Potential conflicts are based on original NASA hourly or five-minute geometry and a <b>provisional</b> sampled near/far LOLA terrain model. This is not a scientific verdict about actual continuous power, RF link, or safe landing.</p>';
  const count=report.candidateCount;
  $("caseCount").textContent=report.scannedCaseCount+" cases screened at "+report.searchResolutionMinutes+"-minute start steps · "+count+" preliminary candidates · 0 certified alternatives";
  if(!count){
@@ -274,7 +325,7 @@ function render(){
  }else{
   $("alternatives").innerHTML=report.candidates.map((a,i)=>{
    const caution=a.status==="edge_review";
-   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' actual NASA samples ('+escape(a.cadence)+') · user delay budget left '+fixed(a.remainingUserDelayH,1)+' h · min distance-adjusted reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun local clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Time Margin: <b>UNKNOWN</b></p></div>';
+   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' actual NASA samples ('+escape(a.cadence)+') · user delay budget left '+fixed(a.remainingUserDelayH,1)+' h · min distance-adjusted reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun terrain clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Sampled reference slack: <b>'+escape(durationLabel(a.sampledMarginMinutes))+'</b> · Physical Time Margin: <b>UNKNOWN</b></p></div>';
   }).join("");
  }
  $("exportBtn").disabled=false;
@@ -287,7 +338,7 @@ function invalidate(){
 }
 function exportReport(){
  if(!state.report)return;
- const payload={...state.report,source:"NASA/JPL Horizons; NASA LRO/LOLA, real dated source tables",science_warning:"PRELIMINARY SCREEN ONLY — NO VERIFIED LUNAR OPERATING WINDOW OR TIME MARGIN",challenge:"NASA Space Apps 2026 Lunar Landing Site Navigator"};
+ const payload={...state.report,source:"NASA/JPL Horizons; NASA LRO/LOLA, real dated source tables",science_warning:"SCREENED SAMPLE-ONLY SLACK IS NOT A PHYSICAL TIME MARGIN. NO VERIFIED LUNAR OPERATING WINDOW OR PHYSICAL MARGIN.",challenge:"NASA Space Apps 2026 Lunar Landing Site Navigator"};
  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob);
  const anchor=document.createElement("a");anchor.href=url;anchor.download="lunar-window-mission-screen-"+new Date(state.report.request.startMs).toISOString().slice(0,10)+".json";document.body.append(anchor);anchor.click();anchor.remove();URL.revokeObjectURL(url);
