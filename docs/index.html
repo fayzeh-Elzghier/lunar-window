@@ -42,8 +42,10 @@ a{color:#b6ddff}a:hover{text-decoration-thickness:2px}.wrap{width:min(1270px,cal
 <div class="keys"><span><i class="dot sun-dot"></i>Sun elevation</span><span><i class="dot earth-dot"></i>Earth elevation</span><span>Dashed line: 0° local horizontal (NOT terrain)</span></div><svg id="chart" viewBox="0 0 880 292" role="img" aria-label="Sun and Earth hourly elevations from JPL Horizons"></svg><div id="event" class="callout">Site04: real positions, no verified power or Earth-link claim.</div>
 <div class="callout" role="note"><b>Panel-angle calculation using actual NASA Sun directions</b>
 <div style="font-size:25px;font-weight:800" id="refPower">—</div>
+<div class="keys"><span><i class="dot sun-dot"></i>Unshadowed 1 AU reference · NOT available power</span></div>
+<svg id="refChart" viewBox="0 0 880 208" role="img" aria-label="Panel geometric 1 AU reference from actual NASA Horizons Sun angles; terrain and eclipse unknown"></svg>
 <p class="note">Unshadowed <b>1 AU reference</b> only: NASA Goddard reference irradiance 1361 W/m² × panel area × assumed efficiency × incidence factor. Uses the selected NASA Horizons Sun azimuth/elevation and your panel orientation. <b>NOT terrain-aware available power</b>: no actual Sun distance, eclipse correction, terrain horizon, panel self-shadowing or degradation.</p>
-<p class="note">NASA irradiance source: <a href="https://earth.gsfc.nasa.gov/climate/projects/solar-irradiance/science" target="_blank" rel="noopener">Goddard Solar Irradiance Science</a>. This calculation never makes Mission Rescue pass.</p></div></div></section>
+<p class="note">NASA irradiance source: <a href="https://earth.gsfc.nasa.gov/climate/projects/solar-irradiance/science" target="_blank" rel="noopener">Goddard Solar Irradiance Science</a>. <a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/data/site04_audit/panel_1au_reference.csv" target="_blank" rel="noopener">Audited Site04 reference CSV (fixed demo panel)</a>. This calculation never makes Mission Rescue pass.</p></div></div></section>
 <section class="panel"><div class="tiny">03 / Innovation</div><h2>Multiple-case mission analysis</h2><p class="muted">We evaluate original plans, delayed starts, site changes, and overlapping power/Earth conditions. Cases are <b>design pathways</b> until verified continuous NASA-derived intervals exist.</p><div class="cases">
 <div class="case"><b>Original site & start</b><p>Did every required condition hold throughout the operation?</p></div>
 <div class="case"><b>Delayed start · same site</b><p>Can a later start fit without exceeding your delay limit?</p></div>
@@ -112,10 +114,28 @@ function geometricReferenceW(record){
    +Math.sin(tilt*rad)*Math.cos(record.se*rad)*Math.cos((record.sa-panelAz)*rad);
  return 1361*area*eff*Math.max(0,Math.min(1,incidence));
 }
+function drawReferenceChart(){
+ const svg=$("refChart");while(svg.firstChild)svg.removeChild(svg.firstChild);
+ if(!rows.length)return;
+ const values=rows.map(geometricReferenceW);
+ if(values.some(x=>x===null||!Number.isFinite(x)))return;
+ const max=Math.max(1,...values)*1.1,L=55,T=12,W=785,H=166;
+ const X=i=>L+(i/Math.max(1,rows.length-1))*W;
+ const Y=v=>T+H-v/max*H;
+ for(let y=0;y<4;y++){
+    const val=max*y/3;
+    svg.appendChild(el("line",{x1:L,x2:L+W,y1:Y(val),y2:Y(val),stroke:"#344e69","stroke-width":1}));
+    const lab=el("text",{x:5,y:Y(val)+4,fill:"#a9c0d5","font-size":11});
+    lab.textContent=val.toFixed(0)+" W";svg.appendChild(lab);
+ }
+ svg.appendChild(el("polyline",{points:values.map((v,i)=>X(i)+","+Y(v)).join(" "),
+     fill:"none",stroke:"#f8cb72","stroke-width":2.5}));
+ svg.appendChild(el("line",{x1:X(selectedIndex),x2:X(selectedIndex),y1:T,y2:T+H,stroke:"#fff","stroke-dasharray":"4 4","stroke-width":1.2}));
+}
 function updateReference(){
  if(!rows.length)return;
  const watts=geometricReferenceW(rows[selectedIndex]);
- $("refPower").textContent=watts===null?"Invalid panel settings":watts.toFixed(2)+" W · unshadowed 1 AU reference";
+ $("refPower").textContent=watts===null?"Invalid panel settings":watts.toFixed(2)+" W · unshadowed 1 AU reference";drawReferenceChart();
 }
 function el(name,attributes){const n=document.createElementNS("http://www.w3.org/2000/svg",name);for(const [key,value] of Object.entries(attributes||{}))n.setAttribute(key,String(value));return n;}
 function paint(){const s=$("chart");while(s.firstChild)s.removeChild(s.firstChild);const vals=rows.flatMap(x=>[x.se,x.ee]);const lo=Math.floor(Math.min(...vals,0))-1,hi=Math.ceil(Math.max(...vals,0))+1;const L=56,W=788,T=15,H=238;const X=i=>L+i/(rows.length-1)*W;const Y=v=>T+(hi-v)/(hi-lo)*H;
