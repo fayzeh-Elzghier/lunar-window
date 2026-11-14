@@ -79,7 +79,7 @@ function siteStats(data,site){
 function evaluateCase(data,req,site,startMs){
  const rows=data.sites[site]?.rows;
  const out={site,startUtc:new Date(startMs).toISOString(),finishUtc:new Date(startMs+req.durationMs).toISOString(),
-   startDelayH:(startMs-req.startMs)/3600000,status:"insufficient_data",evidence:[],
+   startDelayH:(startMs-req.startMs)/3600000,remainingUserDelayH:Math.max(0,(req.delayMs-(startMs-req.startMs))/3600000),status:"insufficient_data",evidence:[],
    reasons:[],sampleCount:0,marginSeconds:null,physicalWindowEndKnown:false,
    validation:"PROVISIONAL_LOCAL_SCREEN_ONLY"};
  if(!rows){out.reasons.push({code:"NO_NASA_SOURCE",times:[]});return out}
@@ -242,7 +242,7 @@ function render(){
  }else{
   $("alternatives").innerHTML=report.candidates.map((a,i)=>{
    const caution=a.status==="edge_review";
-   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' original hourly samples · min distance-adjusted reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun local clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Time Margin: <b>UNKNOWN</b></p></div>';
+   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' original hourly samples · user delay budget left '+fixed(a.remainingUserDelayH,1)+' h · min distance-adjusted reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun local clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Time Margin: <b>UNKNOWN</b></p></div>';
   }).join("");
  }
  $("exportBtn").disabled=false;
