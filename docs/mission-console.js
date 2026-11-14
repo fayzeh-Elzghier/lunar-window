@@ -1,6 +1,6 @@
 /* Lunar Window — Explainable NASA-derived research screening.
  * No synthetic ephemerides. The only astronomical input is window.LUNAR_DATA
- * (original 169 JPL UTC samples per site and provisional LOLA local clearance).
+ * (original 745 JPL UTC samples per site and provisional LOLA local clearance).
  * No full visibility, certified power, continuous windows or physical margin.
  */
 (function(global){
@@ -11,15 +11,16 @@ const EDGE=0.25; // UI review band, NOT validated uncertainty
 const REFERENCE_IRRADIANCE=1361; // W/m² at 1 AU; NOT actual lunar epoch irradiance
 const DOCS="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/data/";
 function assertData(data){
- if(!data||data.schema!=="lunar-window-evidence-v2"||!data.sites)throw Error("NASA evidence bundle missing or wrong schema");
+ if(!data||data.schema!=="lunar-window-evidence-v3"||!data.sites)throw Error("NASA evidence bundle missing or wrong schema");
  for(const site of SITES){
-  const s=data.sites[site];if(!s||!Array.isArray(s.rows)||s.rows.length!==169||!s.meta?.sun_sha256||!s.meta?.terrain_sha256)throw Error("Incomplete NASA provenance: "+site);
+  const s=data.sites[site];if(!s||!Array.isArray(s.rows)||s.rows.length!==745||!s.meta?.sun_sha256||!s.meta?.terrain_sha256)throw Error("Incomplete NASA provenance: "+site);
   let prev=null;
   for(const row of s.rows){
-   if(row.length!==9||typeof row[0]!=="string"||!row[0].endsWith("Z"))throw Error("Invalid NASA epoch");
+   if(row.length!==10||typeof row[0]!=="string"||!row[0].endsWith("Z"))throw Error("Invalid NASA epoch");
    const t=Date.parse(row[0]);if(!Number.isFinite(t)||(prev!==null&&t-prev!==3600000))throw Error("Non-hourly NASA UTC sequence: "+site);
    prev=t;if(row.slice(1).some(v=>typeof v!=="number"||!Number.isFinite(v)))throw Error("Non-numeric source angle");
    if(Math.abs((row[2]-row[5])-row[6])>0.00001||Math.abs((row[4]-row[7])-row[8])>0.00001)throw Error("LOLA/Horizons calculation mismatch");
+   if(!(row[9]>.9&&row[9]<1.1))throw Error("NASA solar AU distance missing");
   }
  }
  return data;
@@ -29,9 +30,9 @@ function requestFromObject(a){
  if(!SITES.includes(a.site))throw Error("Choose an available NASA site");
  if(typeof a.start!=="string"||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$/.test(a.start))throw Error("Use a complete UTC date and time");
  const start=Date.parse(a.start+":00Z");if(!Number.isFinite(start))throw Error("Invalid start time");
- const durationH=number(a.durationH,"Operation duration (hours)",0,168,true);
+ const durationH=number(a.durationH,"Operation duration (hours)",0,744,true);
  const requiredW=number(a.requiredW,"Power demand",0,undefined,true);
- const delayH=number(a.delayH,"Allowed delay",0,168);
+ const delayH=number(a.delayH,"Allowed delay",0,744);
  const area=number(a.area,"Panel area",0,undefined,true);
  const efficiency=number(a.efficiency,"Panel efficiency",0,100,true)/100;
  const tilt=number(a.tilt,"Panel tilt",0,90);
@@ -43,7 +44,7 @@ function requestFromObject(a){
 function referencePower(row,req){
  const sunAz=row[1]*R,sunEl=row[2]*R,panelTilt=req.tilt*R,panelAz=req.azimuth*R;
  const dot=Math.cos(panelTilt)*Math.sin(sunEl)+Math.sin(panelTilt)*Math.cos(sunEl)*Math.cos(sunAz-panelAz);
- return REFERENCE_IRRADIANCE*req.area*req.efficiency*Math.max(0,Math.min(1,dot));
+ return REFERENCE_IRRADIANCE/(row[9]*row[9])*req.area*req.efficiency*Math.max(0,Math.min(1,dot));
 }
 function labelClearance(clearance){
  if(Math.abs(clearance)<=EDGE)return {state:"near",text:"Near local edge — needs finer review"};
@@ -71,7 +72,7 @@ function evaluateCase(data,req,site,startMs){
  const causes={
    "SUN_LOCAL_SCREEN_BELOW_HORIZON":[],
    "EARTH_LOCAL_SCREEN_BELOW_HORIZON":[],
-   "PANEL_1AU_REFERENCE_BELOW_REQUEST":[],
+   "PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST":[],
    "SUN_NEAR_UNCERTAIN_LOCAL_EDGE":[],
    "EARTH_NEAR_UNCERTAIN_LOCAL_EDGE":[]
  };
@@ -83,17 +84,17 @@ function evaluateCase(data,req,site,startMs){
   else if(Math.abs(r[6])<=EDGE)causes.SUN_NEAR_UNCERTAIN_LOCAL_EDGE.push(r[0]);
   if(req.earthRequired&&r[8]<-EDGE)causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.push(r[0]);
   else if(req.earthRequired&&Math.abs(r[8])<=EDGE)causes.EARTH_NEAR_UNCERTAIN_LOCAL_EDGE.push(r[0]);
-  if(watts+1e-9<req.requiredW)causes.PANEL_1AU_REFERENCE_BELOW_REQUEST.push(r[0]);
+  if(watts+1e-9<req.requiredW)causes.PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST.push(r[0]);
  }
  out.minReferencePowerW=Number(minPower.toFixed(3));
  out.minSunLocalClearanceDeg=Number(minSun.toFixed(4));
  out.minEarthLocalClearanceDeg=Number(minEarth.toFixed(4));
  out.reasons=Object.entries(causes).filter(([k,t])=>t.length).map(([code,times])=>({code,times,sampleCount:times.length,firstUtc:times[0],lastUtc:times.at(-1)}));
  const hasConflict=causes.SUN_LOCAL_SCREEN_BELOW_HORIZON.length>0 ||
-  causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.length>0 ||causes.PANEL_1AU_REFERENCE_BELOW_REQUEST.length>0;
+  causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.length>0 ||causes.PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST.length>0;
  const isEdge=causes.SUN_NEAR_UNCERTAIN_LOCAL_EDGE.length>0 || causes.EARTH_NEAR_UNCERTAIN_LOCAL_EDGE.length>0;
  out.status=hasConflict?"potential_conflict":isEdge?"edge_review":"research_candidate";
- out.evidence={sampledUtc:relevant.map(x=>x[0]),limitations:["NASA source is hourly not continuous","only local 16-km LOLA skyline, distant terrain unknown","scientific frames and vertical references not independently reconciled","1 AU reference is NOT actual solar electrical power","solar eclipse/disc and uncertainty not quantified"],sourceHashes:{
+ out.evidence={sampledUtc:relevant.map(x=>x[0]),limitations:["NASA source is hourly not continuous","only local 16-km LOLA skyline, distant terrain unknown","scientific frames and vertical references not independently reconciled","distance-adjusted unshadowed power reference is NOT actual available power","solar eclipse/disc and uncertainty not quantified"],sourceHashes:{
     sun:data.sites[site].meta.sun_sha256,earth:data.sites[site].meta.earth_sha256,lola:data.sites[site].meta.terrain_sha256
   }};
  return out;
@@ -163,10 +164,10 @@ function updatePoint(){
  $("earthClearance").textContent=formatDelta(row[8]);
  $("sunStatus").textContent=Engine.labelClearance(row[6]).text;
  $("earthStatus").textContent=Engine.labelClearance(row[8]).text;
- $("sourceCsv").href=DOCS+site.toLowerCase()+"_audit/terrain_screen_hourly.csv";
+ $("sourceCsv").href=DOCS+site.toLowerCase()+"_audit/extended_dec2026.csv";
  $("sourceCsv").textContent="Original "+site+" source screening CSV";
  $("sourceHash").textContent="LOLA SHA256: "+siteData.meta.terrain_sha256.slice(0,12)+"…";
- $("datasetStatus").textContent="169 JPL UTC epochs · verified source structure";
+ $("datasetStatus").textContent=siteData.rows.length+" actual JPL UTC epochs · Sun distance from NASA";
  $("timeSlider").value=String(state.index);
  graph(site);
 }
@@ -183,7 +184,7 @@ function compareCards(){
  let html="";
  for(const site of SITES){
   const s=state.data.sites[site],stats=Engine.siteStats(state.data,site);
-  html+='<article class="compare-card"><h3>'+escape(s.name)+'</h3><small>'+escape(site)+" · "+s.lat+"°, "+s.lon_east+'°E</small><span class="count">'+stats.sunAbove+'/169</span><small>Sun samples above LOCAL skyline by >0.25°</small><div class="counts"><span>'+stats.sunNear+' near-edge</span><span>'+stats.sunBelow+' possible local blocks</span></div><div class="counts"><span>Earth local blocks: '+stats.earthBelow+'</span><span>Unverified</span></div></article>';
+  html+='<article class="compare-card"><h3>'+escape(s.name)+'</h3><small>'+escape(site)+" · "+s.lat+"°, "+s.lon_east+'°E</small><span class="count">'+stats.sunAbove+'/'+stats.count+'</span><small>Sun samples above LOCAL skyline by >0.25°</small><div class="counts"><span>'+stats.sunNear+' near-edge</span><span>'+stats.sunBelow+' possible local blocks</span></div><div class="counts"><span>Earth local blocks: '+stats.earthBelow+'</span><span>Unverified</span></div></article>';
  }
  $("siteCards").innerHTML=html;
 }
@@ -195,7 +196,7 @@ function formRequest(){
 const reasonText={
  SUN_LOCAL_SCREEN_BELOW_HORIZON:"Sun below the sampled local skyline",
  EARTH_LOCAL_SCREEN_BELOW_HORIZON:"Earth below the sampled local skyline",
- PANEL_1AU_REFERENCE_BELOW_REQUEST:"Panel geometry produces less than the requested power in the UNshadowed 1-AU reference model",
+ PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST:"Panel geometry produces less than the requested power in the UNshadowed distance-adjusted reference model",
  SUN_NEAR_UNCERTAIN_LOCAL_EDGE:"Sun close to local skyline; finer data needed",
  EARTH_NEAR_UNCERTAIN_LOCAL_EDGE:"Earth close to local skyline; finer data needed",
  OUTSIDE_NASA_COVERAGE:"Time request extends outside the verified source timestamps",
@@ -221,7 +222,7 @@ function render(){
  }else{
   $("alternatives").innerHTML=report.candidates.map((a,i)=>{
    const caution=a.status==="edge_review";
-   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' original hourly samples · min 1-AU reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun local clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Time Margin: <b>UNKNOWN</b></p></div>';
+   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' original hourly samples · min distance-adjusted reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun local clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Time Margin: <b>UNKNOWN</b></p></div>';
   }).join("");
  }
  $("exportBtn").disabled=false;
