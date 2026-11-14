@@ -62,6 +62,63 @@ a{color:var(--teal)}
 .s6 .evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3%;margin:4% 0 3.7%}.s6 .evidence{border-top:3px solid #47bbd5;padding:2% 1% 0}.s6 .evidence-number{font-size:4em;font-weight:800;line-height:1;color:var(--teal)}.s6 .evidence h3{font-size:1.3em;margin:5% 0 6%}.s6 .evidence p{font-size:.94em;line-height:1.46}.s6 .validation{display:flex;flex-direction:column;gap:.65em;border:1px solid #285675;background:#123149;padding:2%;font-size:.86em}.s6 .evidence-note{font-size:.76em;margin-top:2%}
 .s7 .future{grid-template-columns:44% 54%;margin-top:2.5%}.s7 .future .item{grid-template-columns:7% 25% 66%;font-size:.92em;margin:6% 0}.s7 .person{font-size:.9em}.s7 .teamgrid{margin-top:8%;gap:14% 4%}.s7 .last-meta{border-top:1px solid #31536d;padding-top:1.5%;margin-top:3%;font-size:.75em;color:var(--muted);line-height:1.4}.s7 .last-meta b{color:var(--gold)}
 @media print{#presenterNotes{display:none!important}} 
+
+/* Slide 2 and 5 — presentation-safe layouts: fixed regions, no nested percentage-height cards */
+.s2 .body,.s5 .body{display:flex;flex-direction:column;min-height:0}
+.s2 .body>h2,.s5 .body>h2{font-size:2.15em;line-height:1.07;margin:1.8% 0 0;flex:none}
+.s2 .body>.under,.s5 .body>.under{margin:.75% 0 .95%;flex:none}
+.s2 .body>.desc,.s5 .body>.sub{font-size:1em;line-height:1.3;margin:0 0 1.45%;max-width:100%;flex:none}
+.s2 .problem-grid-v2{display:grid;grid-template-columns:minmax(0,1.07fr) minmax(0,1fr);gap:2%;min-height:0;flex:1;margin:0 0 1.3%}
+.s2 .mission-card{display:flex;flex-direction:column;gap:0;padding:3.2% 4.1%;min-width:0;min-height:0;overflow:hidden}
+.s2 .mission-card .eyebrow{font-size:.77em;line-height:1.2}
+.s2 .requirements{display:grid;grid-template-columns:27% 34% 39%;margin:3.1% 0 3.3%;align-items:center}
+.s2 .requirements>div{min-width:0;display:flex;flex-direction:column;gap:.45em;padding-left:8%;border-left:1px solid #31536a}
+.s2 .requirements>div:first-child{padding-left:0;border-left:0}
+.s2 .requirements strong{font-size:1.68em;color:#f7fcff;line-height:1.05;letter-spacing:-.025em}
+.s2 .requirements>div:last-child strong{font-size:1.15em}
+.s2 .requirements span{font-size:.62em;color:#9bbfd1;font-weight:800;line-height:1.25}
+.s2 .divider-line{border-top:1px solid #35546b;margin:0 0 3%}
+.s2 .site-label{font-size:.7em;color:var(--teal);font-weight:800;letter-spacing:.025em}
+.s2 .date{font-size:.83em;color:#c7d9e7;margin-top:1.3%}
+.s2 .power-result{display:flex;align-items:center;gap:4.5%;margin:4% 0 2.8%;min-width:0}
+.s2 .power-result>strong{color:var(--gold);font-size:2.55em;line-height:1;white-space:nowrap}
+.s2 .power-result>span{font-size:.79em;line-height:1.38;color:#afc7d8}
+.s2 .power-result b{color:#f3f8ff}
+.s2 .power-meter{width:100%;height:.6em;background:#2a4a5e;border-radius:50px;overflow:hidden;flex:none}
+.s2 .power-meter span{display:block;background:var(--gold);height:100%;width:50.2%;border-radius:50px}
+.s2 .fail-line{display:flex;align-items:center;gap:.5em;margin-top:2.7%;font-size:.83em;color:#ffb46f}
+.s2 .fail-dot{height:.65em;width:.65em;border-radius:50%;background:#ff977d;flex:none}
+.s2 .explain-stack{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:4%;min-height:0}
+.s2 .test-card{display:grid;grid-template-columns:17% minmax(0,1fr);gap:3%;align-items:center;min-height:0;overflow:hidden;padding:3% 4.5%}
+.s2 .test-symbol{font-size:3.15em;text-align:center;line-height:1}
+.s2 .sun-symbol{color:var(--gold)}.s2 .earth-symbol{color:var(--teal)}
+.s2 .test-card .eyebrow{font-size:.65em}
+.s2 .test-card h3{font-size:1.1em;line-height:1.2;margin:3% 0 3%}
+.s2 .test-card p{font-size:.79em;line-height:1.38}
+.s2 .decision-strip{display:flex;align-items:center;gap:2.5%;border:1px solid #365978;background:#0d2b41;border-radius:.38em;padding:1.25% 1.8%;font-size:.84em;min-height:3.05em;flex:none}
+.s2 .decision-strip strong{color:var(--gold);flex:none;font-size:.92em}
+.s2 .decision-strip span{font-weight:700}
+.s5 .case-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2.2%;flex:1;min-height:0;margin-bottom:1.3%}
+.s5 .outcome{padding:5.4% 6%;min-height:0;min-width:0;display:flex;flex-direction:column;overflow:hidden;border-top:3px solid #8d6470}
+.s5 .warn-outcome{border-top-color:var(--gold)}.s5 .good-outcome{border-top-color:var(--green)}
+.s5 .case-kicker{font-size:.77em;color:#cde4f0;font-weight:800;letter-spacing:.03em}
+.s5 .case-number{font-size:3em;font-weight:800;line-height:1.08;margin:5% 0 0;white-space:nowrap;letter-spacing:-.04em;color:#f5f9fc}
+.s5 .case-number span{font-size:.44em;letter-spacing:0;color:var(--muted)}
+.s5 .case-unit{font-size:.77em;color:#a9c3d4;margin-top:1%}
+.s5 .case-rule{height:1px;background:#335369;margin:6% 0 6%;flex:none}
+.s5 .case-analysis{font-size:.89em;color:#c5d9e8;line-height:1.3}
+.s5 .case-stressed{display:flex;justify-content:space-between;align-items:center;gap:2%;font-size:.82em;line-height:1.2;color:#b8d0dd}
+.s5 .case-stressed strong{white-space:nowrap;color:var(--gold);font-size:1.15em}
+.s5 .good-outcome .case-stressed strong{color:var(--green)}
+.s5 .case-verdict{margin-top:auto;font-size:.81em;font-weight:800;letter-spacing:.015em;line-height:1.2;padding-top:5%}
+.s5 .bad{color:#ff9e91}.s5 .warning{color:var(--gold)}.s5 .good{color:var(--green)}
+.s5 .takeaway-row{display:flex;align-items:stretch;gap:2%;min-height:3.4em;flex:none;margin-bottom:1.1%}
+.s5 .takeaway-text{display:flex;align-items:center;gap:1em;flex:1;background:#112e43;border-left:3px solid var(--gold);padding:1.1% 1.4%;font-size:.79em;font-weight:700;line-height:1.34}
+.s5 .takeaway-text strong{color:var(--gold);flex:none}
+.s5 .demo-button{background:var(--gold);color:#112130;border:0;border-radius:.3em;min-width:18%;font-size:.74em;font-weight:800;text-align:center;display:flex;align-items:center;justify-content:center;text-decoration:none;padding:.6em}
+.s5 .scope-line{font-size:.7em;line-height:1.35;margin:0;color:#a7bfce;flex:none}
+@media print{.s2 .mission-card,.s2 .test-card,.s5 .outcome{overflow:hidden}}
+
 </style></head>
 <body><nav class="controls" aria-label="Presentation controls">
 <button id="prev" type="button">← Previous</button><span class="count" id="count">1 / 7</span><button id="next" type="button">Next →</button>
@@ -76,14 +133,39 @@ a{color:var(--teal)}
 <div class="rightmark"><div class="orbit"><span class="moon"></span><span class="earth"></span></div><div class="word">ZENITH</div><div class="tiny" style="letter-spacing:.25em">LUNAR LANDING SITE NAVIGATOR</div></div></div>
 <div class="footer"><span>ZENITH / LUNAR LANDING SITE NAVIGATOR</span><span>01 / 07</span></div></section>
 <section class="slide s2" aria-label="Slide 2 — The Problem">
-<div class="top"><div class="logo"><span class="ring"></span><span><em>NASA</em><br>SPACE APPS<br>CHALLENGE</span></div><div class="sep"></div><span>NASA SPACE APPS CHALLENGE 2026</span><span class="right">02 / THE PROBLEM, THROUGH A PERSON</span></div>
-<div class="body"><h2 data-editable>One window. Two requirements.</h2><div class="under"></div><p class="desc" data-editable>Sara is a fictional lunar planner. She needs six hours at ≥100 W, with Earth’s center above the terrain skyline throughout.</p>
-<div class="problem-grid"><div class="card sara"><div class="eyebrow" data-editable>SARA / ILLUSTRATIVE MISSION PLANNER</div><div class="metricrow"><div class="metric"><div class="big" data-editable>6 h</div><div class="tag" data-editable>OPERATION</div></div><div class="metric"><div class="big" data-editable>100 W</div><div class="tag" data-editable>MINIMUM</div></div><div class="metric"><div class="ew" data-editable>EARTH<br>VISIBLE</div></div></div><hr><div class="tag muted strong" data-editable>ORIGINAL WINDOW / SITE01 · CONNECTING RIDGE</div><div class="when" data-editable>21 Dec 2026 · 00:00 UTC</div><div class="reading"><span class="watt" data-editable>50.2 W</span><span class="need" data-editable>MINIMUM MODELED POWER<br><b style="color:var(--light)">vs 100 W required</b></span></div><div class="bar"><span></span></div><div class="below" data-editable>ORIGINAL PLAN FAILS THE POWER REQUIREMENT</div><p class="assumption" data-editable>Hypothetical panel settings; not flight hardware.</p></div>
-<div class="causes"><div class="eyebrow" data-editable>WHY THE CONDITIONS CAN CONFLICT</div>
-<div class="card"><svg class="ridge" viewBox="0 0 240 130" aria-label="Sun above ideal horizon but terrain ridge blocks the direction"><circle cx="51" cy="37" r="20" fill="#ffbd4b"/><g stroke="#ffbd4b" stroke-width="2.5"><path d="M51 6V-2M51 72V82M20 37H7M83 37H96M29 15L20 6M73 59L83 69M29 59L20 69M73 15L83 6"/><path d="M75 57L156 57"/></g><path d="M30 116H211" stroke="#41687e"/><path d="M94 125L115 104L137 107L158 57L182 87L202 76L222 125Z" fill="none" stroke="#2c8299" stroke-width="2.4"/><text x="130" y="129" font-size="10" fill="#a2bfcd">LOCAL RIDGE</text></svg><div><h3 data-editable>01 SUN → POWER</h3><p data-editable>A ridge can block the Sun even above the ideal geometric horizon. Panel angle also affects output.</p></div></div>
-<div class="card"><svg class="ridge" viewBox="0 0 240 130" aria-label="Earth-center line-of-sight over terrain"><circle cx="51" cy="37" r="24" fill="#0a3548" stroke="#46d3df" stroke-width="2"/><ellipse cx="51" cy="37" rx="11" ry="24" fill="none" stroke="#46d3df"/><path d="M28 37H74" stroke="#46d3df"/><path d="M78 47L156 58" stroke="#46d3df" stroke-width="2"/><path d="M30 116H211" stroke="#41687e"/><path d="M94 125L115 104L137 107L158 57L182 87L202 76L222 125Z" fill="none" stroke="#2c8299" stroke-width="2.4"/><text x="130" y="129" font-size="10" fill="#a2bfcd">LOCAL RIDGE</text></svg><div><h3 data-editable>02 EARTH → CLEARANCE</h3><p data-editable>Earth’s center must clear the local skyline. This does not verify an RF radio link.</p></div></div></div></div>
-<div class="banner" data-editable>THE QUESTION: WHICH SITE AND START TIME MEET BOTH CONDITIONS?</div>
-</div><div class="footer"><span>ZENITH / LUNAR LANDING SITE NAVIGATOR</span><span>02 / 07</span></div></section>
+<div class="top"><div class="logo"><span class="ring"></span><span><em>NASA</em><br>SPACE APPS<br>CHALLENGE</span></div><div class="sep"></div><span>NASA SPACE APPS CHALLENGE 2026</span><span class="right">02 / THE PROBLEM</span></div>
+<div class="body">
+<h2 data-editable>One mission. Two must-pass tests.</h2><div class="under"></div>
+<p class="desc" data-editable>Sara must run for six hours with enough solar power and a clear view of Earth's center.</p>
+<div class="problem-grid-v2">
+  <div class="card mission-card">
+    <div class="eyebrow" data-editable>SARA'S MISSION / ILLUSTRATIVE EXAMPLE</div>
+    <div class="requirements">
+      <div><strong data-editable>6 h</strong><span data-editable>OPERATION</span></div>
+      <div><strong data-editable>≥100 W</strong><span data-editable>MODELED POWER</span></div>
+      <div><strong data-editable>EARTH</strong><span data-editable>VISIBLE ABOVE TERRAIN</span></div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="site-label" data-editable>ORIGINAL PLAN · SITE01 / CONNECTING RIDGE</div>
+    <div class="date" data-editable>21 December 2026 · 00:00 UTC</div>
+    <div class="power-result"><strong data-editable>50.2 W</strong><span data-editable>minimum modeled power<br><b>100 W required</b></span></div>
+    <div class="power-meter" aria-label="50.2 W out of 100 W required"><span></span></div>
+    <div class="fail-line"><span class="fail-dot"></span><strong data-editable>THE ORIGINAL PLAN FAILS</strong></div>
+  </div>
+  <div class="explain-stack">
+    <div class="card test-card">
+      <div class="test-symbol sun-symbol" aria-hidden="true">☀</div>
+      <div><div class="eyebrow" data-editable>TEST 01 · POWER</div><h3 data-editable>Can sunlight reach the panel?</h3><p data-editable>Terrain can block the Sun; panel orientation changes the power estimate.</p></div>
+    </div>
+    <div class="card test-card">
+      <div class="test-symbol earth-symbol" aria-hidden="true">◉</div>
+      <div><div class="eyebrow" data-editable>TEST 02 · EARTH VIEW</div><h3 data-editable>Can Earth clear the ridge?</h3><p data-editable>We check geometric Earth-center visibility—not a confirmed radio connection.</p></div>
+    </div>
+  </div>
+</div>
+<div class="decision-strip"><strong data-editable>THE CHALLENGE</strong><span data-editable>Find a site and time that satisfy both tests for the same six hours.</span></div>
+</div>
+<div class="footer"><span>ZENITH / LUNAR LANDING SITE NAVIGATOR</span><span>02 / 07</span></div></section>
 <section class="slide s3" aria-label="Slide 3 — Solution">
 <div class="top"><div class="logo"><span class="ring"></span><span><em>NASA</em><br>SPACE APPS<br>CHALLENGE</span></div><div class="sep"></div><span>NASA SPACE APPS CHALLENGE 2026</span><span class="right">03 / OUR SOLUTION</span></div>
 <div class="body"><h2 data-editable>From a failed plan to explained alternatives.</h2><div class="under"></div><p class="sub" data-editable>ZENITH keeps six hours, 100 W and Earth visibility fixed while comparing site and time options.</p>
@@ -104,27 +186,20 @@ a{color:var(--teal)}
 <p class="caveat"><a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/NASA_RESOURCES.md">See source links and NASA data provenance ↗</a> · <span data-editable>Sampled model, not certified mission planning or RF analysis.</span></p>
 </div><div class="footer"><span>ZENITH / LUNAR LANDING SITE NAVIGATOR</span><span>04 / 07</span></div></section>
 <section class="slide s5" aria-label="Slide 5 — Demo">
-<div class="top"><div class="logo"><span class="ring"></span><span><em>NASA</em><br>SPACE APPS<br>CHALLENGE</span></div><div class="sep"></div><span>NASA SPACE APPS CHALLENGE 2026</span><span class="right">05 / DEMO</span></div>
+<div class="top"><div class="logo"><span class="ring"></span><span><em>NASA</em><br>SPACE APPS<br>CHALLENGE</span></div><div class="sep"></div><span>NASA SPACE APPS CHALLENGE 2026</span><span class="right">05 / LIVE DEMO</span></div>
 <div class="body">
-<h2 data-editable>The first pass is not the strongest option.</h2><div class="under"></div>
-<p class="sub" data-editable>Site01 · 21 Dec 2026 · same 6 h, 100 W and Earth-center visibility constraints</p>
-<div class="demo-grid">
-<div class="demo-steps"><div class="eyebrow" data-editable>LIVE CONSOLE / THREE CLICKS</div>
- <div class="listline"><b>1</b><span data-editable>Load Sara’s original plan</span></div>
- <div class="listline"><b>2</b><span data-editable>See why 00:00 fails</span></div>
- <div class="listline"><b style="background:var(--gold)">3</b><span data-editable>Compare 12:40 and 17:45</span></div>
- <div class="live"><a href="https://fayzeh-elzghier.github.io/lunar-window/docs/mission-console.html" target="_blank" rel="noopener noreferrer">OPEN LIVE DEMO ↗</a></div>
- <p class="backup"><a href="https://fayzeh-elzghier.github.io/lunar-window/docs/demo/mission-rescue-demo.mp4" target="_blank" rel="noopener noreferrer">Backup video ↗</a></p>
+<h2 data-editable>Same mission. Three very different outcomes.</h2><div class="under"></div>
+<p class="sub" data-editable>Site01 · 21 Dec 2026 · 6 hours · ≥100 W · Earth-center visibility required</p>
+<div class="case-cards">
+  <div class="card outcome fail-outcome"><div class="case-kicker" data-editable>00:00 UTC · ORIGINAL</div><div class="case-number" data-editable>50.2<span> W</span></div><div class="case-unit" data-editable>Minimum modeled power</div><div class="case-rule"></div><div class="case-analysis" data-editable>Below the 100 W requirement</div><div class="case-verdict bad" data-editable>✕ ORIGINAL FAILS</div></div>
+  <div class="card outcome warn-outcome"><div class="case-kicker" data-editable>12:40 UTC · EARLIEST PASS</div><div class="case-number" data-editable>100.3<span> W</span></div><div class="case-unit" data-editable>Nominal minimum</div><div class="case-rule"></div><div class="case-stressed"><span data-editable>Under stress test</span><strong data-editable>82.5 W</strong></div><div class="case-verdict warning" data-editable>! FAILS STRESS TEST</div></div>
+  <div class="card outcome good-outcome"><div class="case-kicker" data-editable>17:45 UTC · LATER START</div><div class="case-number" data-editable>120.1<span> W</span></div><div class="case-unit" data-editable>Nominal minimum</div><div class="case-rule"></div><div class="case-stressed"><span data-editable>Under stress test</span><strong data-editable>100.25 W</strong></div><div class="case-verdict good" data-editable>✓ PASSES DEFINED TEST</div></div>
 </div>
-<div class="card demo-results"><div class="eyebrow" data-editable>MINIMUM MODELED POWER / WATTS</div>
- <div class="case-row case-head"><span>START UTC</span><span>NOMINAL</span><span>STRESSED*</span><span>RESULT</span></div>
- <div class="case-row"><b data-editable>00:00 · original</b><strong data-editable>50.2</strong><span>—</span><span class="case-status fail" data-editable>FAILS</span></div>
- <div class="case-row"><b data-editable>12:40 · earliest</b><strong data-editable>100.3</strong><strong class="gold" data-editable>82.5</strong><span class="case-status fail" data-editable>FAILS STRESS</span></div>
- <div class="case-row"><b data-editable>17:45 · later</b><strong data-editable>120.1</strong><strong class="mint" data-editable>100.25</strong><span class="case-status pass" data-editable>PASSES TEST</span></div>
- <p class="demo-foot" data-editable>*Illustrative −10% output, nine ±1° tilt/azimuth combinations; 17:45 has only a ~0.25 W margin.</p>
-</div></div>
-<div class="demo-takeaway" data-editable>TRADE-OFF: 5 H 05 MIN LATER PASSES THE DEFINED TEST — NOT A GUARANTEE OF MISSION SUCCESS.</div>
-</div><div class="footer"><span>ZENITH / LUNAR LANDING SITE NAVIGATOR</span><span>05 / 07</span></div></section>
+<div class="takeaway-row"><div class="takeaway-text"><strong data-editable>THE INSIGHT</strong><span data-editable>Waiting 5 h 05 min longer makes this specific modeled stress test pass.</span></div>
+<a class="demo-button" href="https://fayzeh-elzghier.github.io/lunar-window/docs/mission-console.html" target="_blank" rel="noopener noreferrer">OPEN LIVE DEMO ↗</a></div>
+<p class="scope-line" data-editable>Stress: −10% output and ±1° panel offsets. The later case clears 100 W by only 0.25 W; no flight-safety claim.</p>
+</div>
+<div class="footer"><span>ZENITH / LUNAR LANDING SITE NAVIGATOR</span><span>05 / 07</span></div></section>
 <section class="slide s6" aria-label="Slide 6 — Impact">
 <div class="top"><div class="logo"><span class="ring"></span><span><em>NASA</em><br>SPACE APPS<br>CHALLENGE</span></div><div class="sep"></div><span>NASA SPACE APPS CHALLENGE 2026</span><span class="right">06 / IMPACT</span></div>
 <div class="body">
