@@ -61,12 +61,14 @@ a{color:var(--teal)}
 .s5 .demo-grid{grid-template-columns:32% 66%;gap:2%;height:58%;margin-top:1.5%}.s5 .demo-steps .listline{margin:6% 0;font-size:1em}.s5 .live{font-size:.9em;margin-top:6%;border-radius:.3em}.s5 .backup{font-size:.77em;margin-top:3%}.s5 .demo-results{padding:2.2% 3.5%}.s5 .case-row{display:grid;grid-template-columns:30% 17% 21% 27%;gap:1.25%;align-items:center;padding:2.3% 0;border-bottom:1px solid #2d4e65;font-size:.94em}.s5 .case-head{font-size:.68em;font-weight:800;color:var(--teal);margin-top:1.4%}.s5 .case-row strong{font-size:1.23em}.s5 .case-status{font-size:.84em;font-weight:800}.s5 .fail{color:#ff9687}.s5 .pass{color:var(--green)}.s5 .demo-foot{font-size:.77em;line-height:1.45;margin-top:3%}.s5 .demo-takeaway{margin-top:1.9%;font-size:.94em;font-weight:800;background:#123047;border-left:3px solid var(--gold);padding:1.2% 1.8%}
 .s6 .evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3%;margin:4% 0 3.7%}.s6 .evidence{border-top:3px solid #47bbd5;padding:2% 1% 0}.s6 .evidence-number{font-size:4em;font-weight:800;line-height:1;color:var(--teal)}.s6 .evidence h3{font-size:1.3em;margin:5% 0 6%}.s6 .evidence p{font-size:.94em;line-height:1.46}.s6 .validation{display:flex;flex-direction:column;gap:.65em;border:1px solid #285675;background:#123149;padding:2%;font-size:.86em}.s6 .evidence-note{font-size:.76em;margin-top:2%}
 .s7 .future{grid-template-columns:44% 54%;margin-top:2.5%}.s7 .future .item{grid-template-columns:7% 25% 66%;font-size:.92em;margin:6% 0}.s7 .person{font-size:.9em}.s7 .teamgrid{margin-top:8%;gap:14% 4%}.s7 .last-meta{border-top:1px solid #31536d;padding-top:1.5%;margin-top:3%;font-size:.75em;color:var(--muted);line-height:1.4}.s7 .last-meta b{color:var(--gold)}
+@media print{#presenterNotes{display:none!important}} 
 </style></head>
 <body><nav class="controls" aria-label="Presentation controls">
 <button id="prev" type="button">← Previous</button><span class="count" id="count">1 / 7</span><button id="next" type="button">Next →</button>
 <button id="edit" type="button">Edit text</button><button id="save" type="button">Download edited HTML</button>
-<button id="print" type="button">Print / Save PDF</button><span id="editNote">Final judging edition · Edit text, then download the modified HTML.</span>
+<button id="print" type="button">Print / Save PDF</button><button id="notesToggle" type="button" aria-pressed="false">Presenter notes</button><span id="editNote">Final judging edition · Edit text, then download the modified HTML.</span>
 </nav>
+<aside id="presenterNotes" aria-live="polite" style="display:none;max-width:1000px;margin:10px auto;padding:14px 20px;background:#10283e;color:#e9f6ff;border:1px solid #3d6b82;border-radius:8px;font:15px/1.5 Arial,sans-serif"></aside>
 <main class="stage" id="deck">
 <section class="slide s1 active" aria-label="Slide 1 — Title">
 <div class="top"><div class="logo"><span class="ring"></span><span><em>NASA</em><br>SPACE APPS<br>CHALLENGE</span></div><div class="sep"></div><span>NASA SPACE APPS CHALLENGE 2026</span><span class="right">01 / TITLE &amp; TAGLINE</span></div>
@@ -156,14 +158,31 @@ a{color:var(--teal)}
 </div><div class="footer"><span>ZENITH / LUNAR LANDING SITE NAVIGATOR</span><span>07 / 07</span></div></section>
 </main>
 <script>
+
+// Five-minute speaker guide: one message per slide. Notes never appear on the projected slides.
+const presenterNotes=[
+["0:00–0:25 · Opening","Imagine planning a six-hour operation near the Moon’s south pole. A good-looking location is not enough. The timing must also work. ZENITH helps us understand why a plan fails, then compare alternatives."],
+["0:25–1:10 · Human problem","Meet Sara, a fictional mission planner. She needs six hours, at least 100 watts of modeled solar power, and a clear geometric view toward Earth. Her original start provides only about 50 watts. A ridge, the Sun angle, and the panel orientation all matter. This is a planning example, not a real mission."],
+["1:10–1:45 · Our contribution","We keep Sara’s requirements fixed. First we diagnose the failure. Then we search allowed site and time options. Finally we test sensitivity and export the reasoning. Our contribution is the transparent decision workflow, not a new NASA ephemeris."],
+["1:45–2:20 · Evidence","We use original NASA JPL Horizons positions, LOLA terrain and NASA-listed south-pole reference sites. These feed a sampled geometric and simplified power screen. The source data and numerical checks are documented in our repository."],
+["2:20–3:50 · Live demo","Open the console. Load Sara’s example: 00:00 fails at about 50.2 W. The first nominal pass is 12:40, with 100.3 W, but under a 10% output reduction and ±1° panel offsets it falls to 82.5 W. At 17:45, the nominal result is 120.1 W and the stressed result is about 100.3 W. The later start is more robust under this particular test, not guaranteed safe. Show the comparison and the evidence export; do not spend time navigating unrelated screens."],
+["3:50–4:25 · Impact","This is why we do not simply report PASS or FAIL. We show how fragile a candidate is. Among 153 nominal candidate starts in this test, 92 survive the stated ±1° stress profile; none survive the wider ±5° profile. Showing failure limits is part of trustworthy planning."],
+["4:25–5:00 · Close","ZENITH is a research prototype, not flight software. Next we need independent geometry and terrain validation, realistic electrical and eclipse modeling, and actual ground-station link analysis. Our message is simple: find a possible window, understand its assumptions, and never hide the risks. Thank you."]
+];
+const notesBox=document.getElementById('presenterNotes');
+let notesVisible=false;
+function renderNotes(){const [time,script]=presenterNotes[current];notesBox.textContent=time+' — '+script;notesBox.style.display=notesVisible?'block':'none';}
+document.getElementById('notesToggle').onclick=()=>{notesVisible=!notesVisible;document.getElementById('notesToggle').setAttribute('aria-pressed',String(notesVisible));renderNotes();};
+
 const slides=[...document.querySelectorAll('.slide')];let current=0;let editing=false;
 const count=document.getElementById('count');
-function go(n){current=(n+slides.length)%slides.length;slides.forEach((el,i)=>el.classList.toggle('active',i===current));count.textContent=(current+1)+' / '+slides.length;location.hash='slide-'+(current+1);}
+function go(n){current=(n+slides.length)%slides.length;slides.forEach((el,i)=>el.classList.toggle('active',i===current));count.textContent=(current+1)+' / '+slides.length;renderNotes();location.hash='slide-'+(current+1);}
 document.getElementById('prev').onclick=()=>go(current-1);
 document.getElementById('next').onclick=()=>go(current+1);
 document.addEventListener('keydown',e=>{if(editing&&['INPUT','TEXTAREA'].includes(e.target.tagName))return;if(!editing&&e.key==='ArrowRight')go(current+1);if(!editing&&e.key==='ArrowLeft')go(current-1);});
 document.getElementById('edit').onclick=()=>{editing=!editing;document.body.classList.toggle('editing',editing);document.querySelectorAll('[data-editable]').forEach(el=>el.contentEditable=editing?'true':'false');document.getElementById('edit').textContent=editing?'Stop editing':'Edit text';document.getElementById('editNote').textContent=editing?'Click on slide text to edit, then Download edited HTML to save it.':'Text and visual layout are editable in this HTML source.';};
 document.getElementById('save').onclick=()=>{let clone=document.documentElement.cloneNode(true);clone.querySelectorAll('[contenteditable]').forEach(n=>n.removeAttribute('contenteditable'));clone.querySelector('body').classList.remove('editing');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['<!doctype html>\n'+clone.outerHTML],{type:'text/html'}));a.download='zenith-pitch-editable.html';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
 document.getElementById('print').onclick=()=>window.print();
+renderNotes();
 const initial=location.hash.match(/slide-(\d+)/);if(initial)go(Math.min(slides.length-1,Math.max(0,parseInt(initial[1])-1)));
 </script></body></html>
