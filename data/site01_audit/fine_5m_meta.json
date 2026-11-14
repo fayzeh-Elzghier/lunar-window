@@ -1,0 +1,61 @@
+{
+  "site_id": "Site01",
+  "actual_epochs": 1441,
+  "cadence_seconds": 300,
+  "start_utc": "2026-12-20T00:00:00+00:00",
+  "end_utc": "2026-12-25T00:00:00+00:00",
+  "nasa_sun": {
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27222.51%2C-89.4632%2C1.946632568359%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-20%27&STOP_TIME=%272026-12-25%27&STEP_SIZE=%275m%27&QUANTITIES=%274%2C20%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27&TIME_TYPE=%27UT%27&APPARENT=%27AIRLESS%27&RANGE_UNITS=%27AU%27&SUPPRESS_RANGE_RATE=%27YES%27",
+    "sha256": "4058658b4d47ea1c423905c76a4b35383d98e4cea5606a342672d637bc1e041e",
+    "epoch_count": 1441,
+    "params": {
+      "format": "text",
+      "COMMAND": "'10'",
+      "CENTER": "'coord@301'",
+      "COORD_TYPE": "'GEODETIC'",
+      "SITE_COORD": "'222.51,-89.4632,1.946632568359'",
+      "MAKE_EPHEM": "'YES'",
+      "EPHEM_TYPE": "'OBSERVER'",
+      "START_TIME": "'2026-12-20'",
+      "STOP_TIME": "'2026-12-25'",
+      "STEP_SIZE": "'5m'",
+      "QUANTITIES": "'4,20'",
+      "CSV_FORMAT": "'YES'",
+      "OBJ_DATA": "'NO'",
+      "TIME_TYPE": "'UT'",
+      "APPARENT": "'AIRLESS'",
+      "RANGE_UNITS": "'AU'",
+      "SUPPRESS_RANGE_RATE": "'YES'"
+    }
+  },
+  "nasa_earth": {
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27399%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27222.51%2C-89.4632%2C1.946632568359%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-20%27&STOP_TIME=%272026-12-25%27&STEP_SIZE=%275m%27&QUANTITIES=%274%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27&TIME_TYPE=%27UT%27&APPARENT=%27AIRLESS%27&RANGE_UNITS=%27AU%27&SUPPRESS_RANGE_RATE=%27YES%27",
+    "sha256": "cbcc1aa90a6c60fab5b0d47acb2e34f1268d3cc688c6599087f14fcd0f19232f",
+    "epoch_count": 1441,
+    "params": {
+      "format": "text",
+      "COMMAND": "'399'",
+      "CENTER": "'coord@301'",
+      "COORD_TYPE": "'GEODETIC'",
+      "SITE_COORD": "'222.51,-89.4632,1.946632568359'",
+      "MAKE_EPHEM": "'YES'",
+      "EPHEM_TYPE": "'OBSERVER'",
+      "START_TIME": "'2026-12-20'",
+      "STOP_TIME": "'2026-12-25'",
+      "STEP_SIZE": "'5m'",
+      "QUANTITIES": "'4'",
+      "CSV_FORMAT": "'YES'",
+      "OBJ_DATA": "'NO'",
+      "TIME_TYPE": "'UT'",
+      "APPARENT": "'AIRLESS'",
+      "RANGE_UNITS": "'AU'",
+      "SUPPRESS_RANGE_RATE": "'YES'"
+    }
+  },
+  "far_lola_original_sha256": "82030dcbdd7c4bb0c7d858e9b4b293b9f2cda5a543ba31ec0f42784bd6beee5a",
+  "far_lola_bearing_table_sha256": "6e54beb6a7891a1fbeb9d36130795385548d64c758934a6f102e4a1109b075ac",
+  "site_altitude_provisional_km": 1.946632568359375,
+  "model_status": "NASA_5MIN__PROVISIONAL_5M_PLUS_80M_LOLA__NOT_A_VERIFIED_WINDOW",
+  "physical_time_margin": "UNKNOWN",
+  "note": "5min original JPL samples; not certified continuous sunlight, Earth RF link, terrain/eclipse/far-field error"
+}
