@@ -76,17 +76,38 @@ function siteStats(data,site){
   sunBelow:count(6,1,"below"),sunNear:count(6,1,"near"),sunAbove:count(6,1,"above"),
   earthBelow:count(8,3,"below"),earthNear:count(8,3,"near"),earthAbove:count(8,3,"above")};
 }
+function chooseEvidence(data,site,startMs,endMs){
+ const fine=global.LUNAR_FINE_DATA;
+ const fineAvailable=fine&&fine.schema==="lunar-window-real-five-minute-v1"&&fine.cadence_seconds===300&&
+  SITES.every(x=>fine.sites?.[x]?.rows?.length===1441);
+ const useFine=fineAvailable&&startMs>=Date.parse(fine.range_start_utc)&&endMs<=Date.parse(fine.range_end_utc);
+ return {rows:useFine?fine.sites[site].rows:data.sites[site]?.rows,
+   stepMs:useFine?300000:3600000,cadence:useFine?"original NASA 5-minute":"original NASA hourly",
+   fineUsed:!!useFine};
+}
 function evaluateCase(data,req,site,startMs){
- const rows=data.sites[site]?.rows;
- const out={site,startUtc:new Date(startMs).toISOString(),finishUtc:new Date(startMs+req.durationMs).toISOString(),
+ const endMs=startMs+req.durationMs;
+ const evidence=chooseEvidence(data,site,startMs,endMs),rows=evidence.rows;
+ const out={site,cadence:evidence.cadence,cadenceSeconds:evidence.stepMs/1000,fineUsed:evidence.fineUsed,startUtc:new Date(startMs).toISOString(),finishUtc:new Date(startMs+req.durationMs).toISOString(),
    startDelayH:(startMs-req.startMs)/3600000,remainingUserDelayH:Math.max(0,(req.delayMs-(startMs-req.startMs))/3600000),status:"insufficient_data",evidence:[],
    reasons:[],sampleCount:0,marginSeconds:null,physicalWindowEndKnown:false,
    validation:"PROVISIONAL_LOCAL_SCREEN_ONLY"};
  if(!rows){out.reasons.push({code:"NO_NASA_SOURCE",times:[]});return out}
  const min=Date.parse(rows[0][0]),max=Date.parse(rows.at(-1)[0]);
- if(startMs<min||startMs+req.durationMs>max){out.reasons.push({code:"OUTSIDE_NASA_COVERAGE",times:[]});return out}
- const relevant=rows.filter(r=>{const t=Date.parse(r[0]);return t>=startMs&&t<startMs+req.durationMs});
+ if(startMs<min||endMs>max){out.reasons.push({code:"OUTSIDE_NASA_COVERAGE",times:[]});return out}
+ const alignStart=(startMs-min)%evidence.stepMs===0,alignEnd=(endMs-min)%evidence.stepMs===0;
+ if(!alignStart||!alignEnd){
+  out.reasons.push({code:"UNSAMPLED_BOUNDARY",times:[],
+   explanation:"Requested start or end lies between original NASA sample epochs; no interpolated timestamps added."});
+  return out;
+ }
+ const relevant=rows.filter(r=>{const t=Date.parse(r[0]);return t>=startMs&&t<endMs});
  if(!relevant.length){out.reasons.push({code:"NO_SAMPLED_EPOCH",times:[]});return out}
+ const expectedCount=Math.round((endMs-startMs)/evidence.stepMs);
+ if(relevant.length!==expectedCount||relevant[0][0]!==new Date(startMs).toISOString().replace(".000Z","Z")){
+  out.reasons.push({code:"SAMPLE_TIME_GAP",times:[],explanation:"Missing NASA timestamp inside interval"});
+  return out;
+ }
  out.sampleCount=relevant.length;
  const causes={
    "SUN_LOCAL_SCREEN_BELOW_HORIZON":[],
@@ -114,13 +135,22 @@ function evaluateCase(data,req,site,startMs){
   causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.length>0 ||causes.PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST.length>0;
  const isEdge=causes.SUN_NEAR_UNCERTAIN_LOCAL_EDGE.length>0 || causes.EARTH_NEAR_UNCERTAIN_LOCAL_EDGE.length>0;
  out.status=hasConflict?"potential_conflict":isEdge?"edge_review":"research_candidate";
- out.evidence={sampledUtc:relevant.map(x=>x[0]),limitations:["NASA local height-error RMS review threshold is approximate; far 80m terrain error not quantified; not a confidence bound","NASA source is hourly not continuous","only sampled 5m+80m LOLA skyline to about 300km, farther terrain still unknown","scientific frames and vertical references not independently reconciled","distance-adjusted unshadowed power reference is NOT actual available power","solar eclipse/disc and uncertainty not quantified"],sourceHashes:{
+ out.evidence={cadence:evidence.cadence,fineUsed:evidence.fineUsed,
+  sampledUtc:relevant.map(x=>x[0]),limitations:["NASA local height-error RMS review threshold is approximate; far 80m terrain error not quantified; not a confidence bound","NASA source is hourly not continuous","only sampled 5m+80m LOLA skyline to about 300km, farther terrain still unknown","scientific frames and vertical references not independently reconciled","distance-adjusted unshadowed power reference is NOT actual available power","solar eclipse/disc and uncertainty not quantified"],sourceHashes:{
     sun:data.sites[site].meta.sun_sha256,earth:data.sites[site].meta.earth_sha256,lola:data.sites[site].meta.terrain_sha256
   }};
  return out;
 }
 function searchCases(data,req){
- const cases=[],last=req.delayMs;const step=3600000,delays=[];
+ const cases=[],last=req.delayMs;
+ // Prefer original NASA 5-minute cadence only where BOTH sites and the whole
+ // candidate search horizon have identical fine-source coverage.
+ const fine=global.LUNAR_FINE_DATA;
+ const bothFine=!!(fine&&fine.schema==="lunar-window-real-five-minute-v1"&&
+   SITES.every(x=>fine.sites?.[x]?.rows?.length===1441));
+ const fineSearch=bothFine&&req.startMs>=Date.parse(fine.range_start_utc)&&
+   req.startMs+last+req.durationMs<=Date.parse(fine.range_end_utc);
+ const step=fineSearch?300000:3600000,delays=[];
  for(let delta=0;delta<=last;delta+=step)delays.push(delta);
  if(last>0&&delays.at(-1)!==last)delays.push(last);
  for(const site of [req.site,...SITES.filter(x=>x!==req.site)])
@@ -135,7 +165,7 @@ function searchCases(data,req){
  candidates.sort(sort);
  return {
   kind:"RESEARCH_SCREEN_NOT_MISSION_CERTIFICATION",request:req,
-  scannedCaseCount:cases.length,original,candidates:candidates.slice(0,15),
+  scannedCaseCount:cases.length,searchResolutionMinutes:step/60000,original,candidates:candidates.slice(0,15),
   candidateCount:candidates.length,
   potentialConflictCount:cases.filter(c=>c.status==="potential_conflict").length,
   insufficientDataCount:cases.filter(c=>c.status==="insufficient_data").length,
@@ -219,7 +249,9 @@ const reasonText={
  PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST:"Panel geometry produces less than the requested power in the UNshadowed distance-adjusted reference model",
  SUN_NEAR_UNCERTAIN_LOCAL_EDGE:"Sun close to local skyline; finer data needed",
  EARTH_NEAR_UNCERTAIN_LOCAL_EDGE:"Earth close to local skyline; finer data needed",
- OUTSIDE_NASA_COVERAGE:"Time request extends outside the verified source timestamps",
+ OUTSIDE_NASA_COVERAGE:"Time request extends outside the available NASA source timestamps",
+ UNSAMPLED_BOUNDARY:"Start/end falls between original NASA sample times; no fabricated interpolation",
+ SAMPLE_TIME_GAP:"Missing original NASA timestamp in the requested interval",
  NO_SAMPLED_EPOCH:"No NASA sample inside this requested interval",
  NO_NASA_SOURCE:"No NASA data available"
 };
@@ -234,15 +266,15 @@ function render(){
  const headingClass=original.status==="research_candidate"?"candidate":original.status==="insufficient_data"?"unknown":"risk";
  const pieces=original.reasons.map(r=>'<p class="reason"><strong>'+escape(reasonText[r.code]||r.code)+'</strong> · '+r.sampleCount+' sample(s); first '+escape(r.firstUtc||"n/a")+'</p>');
  const zero=original.reasons.length===0?'<p>No adverse point samples in this range under the provisional local and unshadowed reference screen; that does NOT establish uninterrupted illumination or a working link.</p>':pieces.join("");
- $("report").innerHTML='<div class="status-line"><strong class="'+headingClass+'">'+escape(stateLabel)+'</strong><p>Site '+escape(original.site)+' · '+escape(utcLabel(original.startUtc))+' · '+original.sampleCount+' real UTC samples inspected</p></div><div class="report-grid"><div><small>Minimum unshadowed 1-AU panel reference</small><strong>'+((original.minReferencePowerW===undefined)?"Unknown":fixed(original.minReferencePowerW,1)+" W")+'</strong></div><div><small>Min Sun local clearance</small><strong>'+((original.minSunLocalClearanceDeg===undefined)?"Unknown":formatDelta(original.minSunLocalClearanceDeg))+'</strong></div><div><small>Time Margin</small><strong class="unknown">UNKNOWN</strong></div></div>'+zero+'<p class="small-note">Potential conflicts are based on observed hourly NASA geometry and a <b>provisional</b> local terrain model. This is not a scientific verdict about actual continuous power, RF link, or safe landing.</p>';
+ $("report").innerHTML='<div class="status-line"><strong class="'+headingClass+'">'+escape(stateLabel)+'</strong><p>Site '+escape(original.site)+' · '+escape(utcLabel(original.startUtc))+' · '+original.sampleCount+' actual NASA samples ('+escape(original.cadence)+') inspected</p></div><div class="report-grid"><div><small>Minimum distance-adjusted unshadowed panel reference</small><strong>'+((original.minReferencePowerW===undefined)?"Unknown":fixed(original.minReferencePowerW,1)+" W")+'</strong></div><div><small>Min Sun local clearance</small><strong>'+((original.minSunLocalClearanceDeg===undefined)?"Unknown":formatDelta(original.minSunLocalClearanceDeg))+'</strong></div><div><small>Time Margin</small><strong class="unknown">UNKNOWN</strong></div></div>'+zero+'<p class="small-note">Potential conflicts are based on observed hourly NASA geometry and a <b>provisional</b> local terrain model. This is not a scientific verdict about actual continuous power, RF link, or safe landing.</p>';
  const count=report.candidateCount;
- $("caseCount").textContent=report.scannedCaseCount+" cases checked · "+count+" preliminary candidates · 0 certified alternatives";
+ $("caseCount").textContent=report.scannedCaseCount+" cases screened at "+report.searchResolutionMinutes+"-minute start steps · "+count+" preliminary candidates · 0 certified alternatives";
  if(!count){
   $("alternatives").innerHTML='<div class="explain">No preliminary candidates met these user-entered requirements within the sampled NASA time range and allowed delay. This does not prove that no real lunar option exists. Try changing the date or explicitly making Earth visibility optional.</div>';
  }else{
   $("alternatives").innerHTML=report.candidates.map((a,i)=>{
    const caution=a.status==="edge_review";
-   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' original hourly samples · user delay budget left '+fixed(a.remainingUserDelayH,1)+' h · min distance-adjusted reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun local clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Time Margin: <b>UNKNOWN</b></p></div>';
+   return '<div class="alternative"><div class="topline"><b>'+escape(state.data.sites[a.site].name)+'</b><span class="tag '+(caution?"caution":"good")+'">'+(caution?"Near edge":"Investigate")+'</span></div><p><strong>'+escape(utcLabel(a.startUtc))+'</strong></p><p>Start delay '+fixed(a.startDelayH,2)+' h · '+a.sampleCount+' actual NASA samples ('+escape(a.cadence)+') · user delay budget left '+fixed(a.remainingUserDelayH,1)+' h · min distance-adjusted reference '+fixed(a.minReferencePowerW,1)+' W</p><p>Sun local clearance: '+formatDelta(a.minSunLocalClearanceDeg)+' · Time Margin: <b>UNKNOWN</b></p></div>';
   }).join("");
  }
  $("exportBtn").disabled=false;
