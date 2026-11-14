@@ -43,7 +43,10 @@ jobs:
         run: |
           python -m unittest discover -s tests -v
           python -m compileall -q scripts src tests
-          git diff --check
+          # Verify authored/generated UI whitespace only. Raw NASA Horizons text
+          # deliberately preserves source bytes (including trailing spaces) for SHA256
+          # reproducibility; CSVs use CRLF and are source data, not code style.
+          git diff --check -- docs/index.html src scripts tests .github/workflows
       - name: Publish NASA provenance artifact for reproducibility
         if: success()
         uses: actions/upload-artifact@v4
