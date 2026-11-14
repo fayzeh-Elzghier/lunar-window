@@ -43,8 +43,8 @@ def rebuild():
     if len(rows)!=169 or rows[0]["t"]!="2026-12-01T00:00:00Z" or rows[-1]["t"]!="2026-12-08T00:00:00Z":
         raise ValueError("Unexpected source provenance or coverage; audit before changing site/time labels")
     html=TARGET.read_text(encoding="utf-8")
-    replacement="const rows="+json.dumps(rows,separators=(",",":"),allow_nan=False).replace("<","\\u003c")+";\nlet currentSite="
-    html,count=re.subn(r"const rows=.*?;\s*let currentSite=",lambda _:replacement,html,count=1,flags=re.S)
+    replacement="const site04Rows="+json.dumps(rows,separators=(",",":"),allow_nan=False).replace("<","\\u003c")+";\nconst site01Rows="
+    html,count=re.subn(r"const site04Rows=.*?;\s*const site01Rows=",lambda _:replacement,html,count=1,flags=re.S)
     if count!=1:raise ValueError("Cannot find embedded NASA dataset; do not overwrite dashboard")
     TARGET.write_text(html,encoding="utf-8")
     print("Rebuilt dashboard with",len(rows),"unchanged source timestamps from",SOURCE)
