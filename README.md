@@ -16,7 +16,7 @@ An evidence-first web application to explore real lunar south-pole Sun and Earth
 - **[Original NASA 5-minute JPL source](data/site01_audit/fine_5m_dec2026.csv)** (Site01) and [Site04](data/site04_audit/fine_5m_dec2026.csv) — real source observations; no artificial lunar values.
 - **[Seven-slide PDF/PPTX copies](docs/judges-slides.html)** — downloadable copies were generated for the team separately; the public HTML slide presentation is the submission link.
 
-**Not yet claimed:** official Space Apps submission, independent mission-science validation, continuous operating-window certification, or physical Time Margin. The 26-scenario acceptance register is a development checklist, not 26 certified scientific passes.
+**NEW — Real NASA sampled-reference slack:** The Site01 / 22 Dec 2026 06:00 UTC demo now computes **24h 20m of point-sampled reference margin**, bounded by the actual later passing/failing JPL samples. [Read exact calculation and uncertainty limits](docs/TIME_MARGIN_METHOD.md). This is NOT verified physical Time Margin.\n\n**Not yet claimed:** official Space Apps submission, independent mission-science validation, continuous operating-window certification, or physical Time Margin. The 26-scenario acceptance register is a development checklist, not 26 certified scientific passes.
 
 ## Start here — integrated demo (Fayzeh + Ala)
 
