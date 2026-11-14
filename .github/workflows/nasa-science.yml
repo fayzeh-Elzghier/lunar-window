@@ -9,6 +9,7 @@ on:
       - 'scripts/embed_site01_data.py'
       - 'scripts/compute_local_horizon.py'
       - 'src/solar_geometry.py'
+      - 'scripts/compare_local_skyline.py'
 
 permissions:
   contents: write
@@ -37,6 +38,8 @@ jobs:
         run: python scripts/compute_local_horizon.py --site Site01
       - name: Calculate provisional local terrain skyline for Site04
         run: python scripts/compute_local_horizon.py --site Site04
+      - name: Compute NASA-derived provisional Sun/Earth local terrain screening
+        run: python scripts/compare_local_skyline.py
       - name: Embed verified-source Site01 angles (NOT terrain visibility)
         run: python scripts/embed_site01_data.py
       - name: Run source-integrity checks (not mission-feasibility certification)
@@ -60,6 +63,8 @@ jobs:
             data/site01_audit/metadata.json
             data/site01_audit/local_horizon.csv
             data/site01_audit/local_horizon_meta.json
+            data/site01_audit/terrain_screen_hourly.csv
+            data/site04_audit/terrain_screen_hourly.csv
             data/site04_audit/local_horizon.csv
             data/site04_audit/local_horizon_meta.json
           retention-days: 30
@@ -72,6 +77,8 @@ jobs:
             data/site01_audit/earth.txt data/site01_audit/metadata.json \
             data/site01_audit/queries.json data/site01_audit/local_horizon.csv \
             data/site01_audit/local_horizon_meta.json \
+            data/site01_audit/terrain_screen_hourly.csv \
+            data/site04_audit/terrain_screen_hourly.csv \
             data/site04_audit/local_horizon.csv data/site04_audit/local_horizon_meta.json
           if git diff --cached --quiet; then
             echo "No generated source records changed; nothing to commit."
