@@ -28,6 +28,8 @@ async function main(){
  // The real NASA 5-minute demo: Site01, Dec 21, 6h, 100W, 72h permitted delay.
  assert.equal(await page.locator("#startUtc").inputValue(),"2026-12-21T00:00");
  assert.equal(await page.locator("#earthRequired").isChecked(),true);
+ const invalid=await page.locator("#planForm").evaluate(form=>[...form.elements].filter(x=>x.willValidate&&!x.checkValidity()).map(x=>({id:x.id,validity:x.validity.stepMismatch?"stepMismatch":"invalid"})));
+ assert.deepEqual(invalid,[],"Valid source demo settings must be accepted by native HTML validation");
  await page.locator("#evaluate").click();
  await page.waitForTimeout(2000);
  console.log("DEBUG CASES:",await page.locator("#caseCount").innerText());
