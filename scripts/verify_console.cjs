@@ -52,6 +52,21 @@ assert.equal(fineReport.searchResolutionMinutes,5);
 assert.equal(fineReport.scannedCaseCount,1730);
 assert.equal(fineReport.original.fineUsed,true);
 assert.equal(fineReport.original.sampleCount,72);
+assert.equal(fineReport.original.sampledMarginMinutes,null);
+const verifiedSampledExample=e.evaluateCase(
+ evidence,fineReq,"Site01",Date.parse("2026-12-22T06:00:00Z"));
+assert.equal(verifiedSampledExample.status,"edge_review");
+assert.equal(verifiedSampledExample.sampledMarginMinutes,1460);
+assert.equal(verifiedSampledExample.sampledMarginStatus,"OBSERVED_SAMPLED_REFERENCE_END__NOT_PHYSICAL_WINDOW");
+assert.equal(verifiedSampledExample.sampledModelWindow.lastPassingUtc,"2026-12-23T12:20:00Z");
+assert.equal(verifiedSampledExample.sampledModelWindow.firstFailingUtc,"2026-12-23T12:25:00Z");
+assert.equal(verifiedSampledExample.marginSeconds,null); // physical Time Margin NOT claimed
+assert.equal(verifiedSampledExample.physicalWindowEndKnown,false);
+const nearSourceEnd=e.evaluateCase(evidence,
+ request({site:"Site01",start:"2026-12-24T17:00",durationH:"6",earthRequired:false}),
+ "Site01",Date.parse("2026-12-24T17:00:00Z"));
+assert.equal(nearSourceEnd.sampledMarginMinutes,null);
+
 assert.equal(fineReport.original.marginSeconds,null);
 assert.equal(fineReport.certifiedAlternativeCount,0);
 assert.ok(fineReport.original.reasons.some(x=>x.code==="PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST"));
