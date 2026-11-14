@@ -54,13 +54,18 @@ The remaining *user-defined delay allowance* would be **72 − 30 = 42 hours** a
 
 A meaningful innovation story is thus **original constraints → traceable cause → alternative date within user delay → uncertainty/what remains → decision-maker does not receive an invented approval.**
 
-### 60–75 second screen-recording narration
+### 30-second demo narration — official NASA maximum
 
-1. **0–12 s — Problem:** “Lunar south-pole missions face severe sunlight and Earth-visibility constraints. Separate NASA tools make rapid comparison difficult.”
-2. **12–26 s — Evidence:** “We use NASA's actual JPL Horizons Sun/Earth geometry and original LOLA topography for two curated south-pole sites. Every number has source provenance.”
-3. **26–43 s — Initial plan:** “Here is a six-hour experiment requiring 100 watts and Earth visibility. The selected original start has an orientation-based reference power shortfall.”
-4. **43–58 s — Our innovation:** “Mission Rescue checks allowable time shifts and alternate sites, explains constraints, and lists candidates prioritized by the user's requirements.”
-5. **58–75 s — Integrity and impact:** “It proposes a later research candidate, but does not call it a confirmed operating window. Missing scientific validation and the physical time margin are shown as unknown. That traceability is essential for trustworthy mission planning.”
+The NASA Space Apps 2026 demo must be **30 seconds or less**, or use **up to seven slides**. The public [seven-slide HTML demonstration](judges-slides.html) is available as the primary source-traceable submission option.
+
+If making a short video, use this exact structure without a false mission pass:
+
+- **0–6 s — Problem:** “Lunar south-pole operations need both usable sunlight and Earth visibility, and the conditions change over time.”
+- **6–13 s — Evidence:** “Lunar Window connects original NASA JPL Horizons positions with actual LRO/LOLA terrain for two curated sites.”
+- **13–22 s — Innovation:** “Mission Rescue screens the original six-hour plan and allowed site or start changes, reporting the reasons and trade-offs.”
+- **22–30 s — Integrity:** “We identify NASA-based research candidates, never invent mission success. True physical Time Margin remains unknown until continuous verification.”
+
+Include the following visible captions: **AI-assisted development; original NASA data; research prototype, not operational certification.** The full interactive software remains linked separately.
 
 **Do not show a 'MISSION SUCCESS' banner or claim full compliance with 26 acceptance cases.** The 26-case matrix specifies desired acceptance behavior, not completed physical verification.
 
