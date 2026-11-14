@@ -40,7 +40,7 @@ No rule requires downloading all four linked resources, and claiming a resource 
 ## D. What the current website does — الموجود في الواجهة
 
 Open [index.html](index.html):
-- Shows two named NASA candidate site cards. **Only Site04 has angles**; Site01 reports missing dataset.
+- Shows two named NASA candidate site cards. **Both Site01 and Site04 now have genuine NASA Horizons angular datasets** (169 hourly times each); neither has scientifically validated continuous operation windows.
 - A slider explores exactly 169 **actual Horizons timestamps**, and two elevation curves plot Sun and Earth. Connecting lines are a visualization, not extra NASA measurements.
 - Displays actual Site04 azimuth and elevation numbers at the chosen timestamp.
 - Accepts operation duration, power demand, assumed panel area/efficiency/orientation, Earth-visibility requirement, maximum start delay, priority and a delay preview. **These are user assumptions, not NASA measurements.**
@@ -66,7 +66,7 @@ This is a **planning aid within its model**, not proof a lander can land safely 
 
 **Priority 1 — SCIENCE (Fayzeh):** finish / independently check terrain horizon and altitude/coordinate-frame conventions for Site04, including coverage of distant obstacles. Do **not** pretend a small local raster proves the entire skyline. Confirm eclipse handling and panel incidence assumptions. If validation is not possible, keep those outputs explicitly unavailable.
 
-**Priority 2 — COMPARISON (Fayzeh):** retrieve Site01 Sun/Earth from the **same JPL Horizons settings/time frame** and inspect its NASA LOLA source; calculate scientifically comparable illumination/visibility. Align both sites' coverage before claiming any winner.
+**Priority 2 — COMPARISON (Fayzeh):** Site01 Sun/Earth and local LOLA sources are now obtained. **Next:** validate far terrain, height/frame consistency and crossings before scientific illumination/visibility conclusions. Align both sites' coverage before claiming any winner.
 
 **Priority 3 — RESCUE (Fayzeh + Ala):** connect verified continuous windows to `mission_rescue.py` and then to the website. Make 4 cases actually selectable: original, delayed same site, changed site, changed site + delay. Report simultaneous failures and verified time margin; never auto-relax constraints.
 
@@ -83,7 +83,7 @@ This is a **planning aid within its model**, not proof a lander can land safely 
 - NOT "We verified all 26 cases" (they are an acceptance matrix).
 - NOT "This produces 100 W at Site04" (100 W is only a requested load).
 - NOT "We guarantee Earth communication" (at best, geometric opportunity).
-- NOT "All NASA resources have been integrated" (only Horizons numerically; LOLA surface audit partly).
+- NOT "All NASA resources have been integrated" (Horizons and provisional LOLA terrain screening only; QuickMap/Moon Trek remain reference links).
 - NOT "6 hours always work" or "the best landing site is X" without real evidence.
 
 The challenge also mentions public/educator usability and comparison of dates; retain plain language and a time slider. The [2025 local rubric](https://www.spaceappschallenge.org/) categories are broadly relevant, but no fixed 2026 weights were confirmed.
