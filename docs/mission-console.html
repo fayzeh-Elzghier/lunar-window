@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#071120"><meta name="description" content="Lunar Window: explainable NASA-powered lunar site and time comparison with evidence-based Mission Rescue screening.">
 <title>Mission Rescue Console | Lunar Window — NASA Space Apps</title>
 <link rel="stylesheet" href="./mission-console.css">
-<script defer src="./data/mission_dataset_month.js"></script>
+<script defer src="./data/mission_dataset_far.js"></script>
 <script defer src="./data/lola_uncertainty.js"></script>
 <script defer src="./mission-console.js"></script>
 </head><body>
@@ -17,7 +17,7 @@
 <p>Pick a lunar south-pole site, time, and operating constraints. Explore original Sun and Earth geometry, diagnose <strong>potential</strong> conflicts, and compare site/time changes — without inventing a successful lunar mission.</p>
 <div class="chip-row"><span class="chip">2 NASA south-pole sites</span><span class="chip">1,490 NASA site-time records</span><span class="chip">UTC · Dec 1–Jan 1, 2027</span></div></div>
 <div class="moon-graphic" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="moon-disc"></div><div class="moon-caption">SOUTH POLE / MISSION RESCUE</div></div></section>
-<div class="wrap"><div id="statusBar" class="warning" role="status"><span>⚠</span><div><strong>Research prototype — science validation pending.</strong> NASA positions, real Sun distance and local LOLA elevation screens are authentic, but distant terrain, DEM/ephemeris frame alignment, continuous windows and actual available power are not independently validated. No operational certification or verified Time Margin is claimed.</div></div>
+<div class="wrap"><div id="statusBar" class="warning" role="status"><span>⚠</span><div><strong>Research prototype — science validation pending.</strong> NASA positions and Sun distance are authentic; sampled 5m local and 80m far-field LOLA terrain are included out to ~300km, but complete terrain coverage, frame alignment, continuous windows and available power are not independently validated. No operational certification or verified Time Margin is claimed.</div></div>
 <div class="workspace">
 <aside class="controls card" aria-labelledby="planTitle"><div class="section-kicker">01 · MISSION CONTROL</div><h2 id="planTitle">Plan your operation</h2>
 <p class="muted intro">All hardware values below are <strong>user-selected assumptions</strong>, not NASA spacecraft specifications.</p>
@@ -53,10 +53,10 @@
 <div class="metric solar"><small>Sun above LOCAL skyline by</small><strong id="sunClearance">—</strong><span id="sunStatus">Unverified local terrain</span></div>
 <div class="metric terra"><small>Earth above LOCAL skyline by</small><strong id="earthClearance">—</strong><span id="earthStatus">Unverified local terrain</span></div>
 </div>
-<div class="chart-head"><h3>Angular clearance from sampled LOLA skyline</h3><div class="legend"><span><i class="point sun-color"></i>Sun</span><span><i class="point earth-color"></i>Earth</span></div></div>
+<div class="chart-head"><h3>Angular clearance from sampled near + far LOLA skyline</h3><div class="legend"><span><i class="point sun-color"></i>Sun</span><span><i class="point earth-color"></i>Earth</span></div></div>
 <svg id="terrainGraph" viewBox="0 0 860 280" role="img" aria-label="Provisional Sun and Earth angular clearance in degrees over real sampled times"></svg>
-<p class="graph-foot">0° = local LOLA skyline. 0° is <b>not</b> the global verified horizon. The review threshold also considers original NASA LOLA height-error RMS, but is not a formal confidence bound.</p>
-<div class="source-line">Source: <a id="sourceCsv" href="./data/mission_dataset_month.json">time-aligned NASA evidence</a> · <span id="sourceHash">Provenance checked</span></div>
+<p class="graph-foot">0° = sampled 5m near + 80m far LOLA skyline (approximately 300km coverage). The entire lunar horizon is NOT proven clear. Review thresholds use a preliminary local NASA height-error RMS and are NOT formal confidence bounds for far-field terrain.</p>
+<div class="source-line">Source: <a id="sourceCsv" href="./data/mission_dataset_far.json">time-aligned NASA evidence</a> · <span id="sourceHash">Provenance checked</span></div>
 </section>
 <section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Two sites. Same scientific limitations.</h2><p class="muted">Comparisons count actual hourly samples, not continuous illumination duration or validated radio links.</p>
 <div id="siteCards" class="compare-grid" aria-live="polite"></div>
