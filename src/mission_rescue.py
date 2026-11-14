@@ -125,7 +125,16 @@ def evaluate(req,data):
     unknown=bool(fails["INSUFFICIENT_COVERAGE"])
     status="requirements_not_met" if known_fail else ("insufficient_data" if unknown else "requirements_met")
     reasons=[{"code":k,"intervals":_intervals(v)} for k,v in fails.items() if v]
-    if known_fail and good:reasons.append({"code":"NO_CONTIGUOUS_WINDOW","intervals":_intervals(good)})
+    if known_fail:
+        # Even if there is no overlap at all, explain that a continuous
+        # window cannot satisfy the mission. Separate power/Earth failures
+        # remain present with their full UTC intervals.
+        groups=_intervals(good)
+        longest=max((utc(g["end_utc"])-utc(g["start_utc"])).total_seconds() for g in groups) if groups else 0.0
+        if longest<req.duration:
+            reasons.append({"code":"NO_CONTIGUOUS_WINDOW",
+                            "intervals":groups,
+                            "explanation":"No uninterrupted overlap satisfies the requested duration"})
     return {"status":status,"start_utc":stamp(req.start),"end_utc":stamp(end),
             "site_id":req.site_id,"reasons":reasons,"earth_requirement_enabled":req.earth_required}
 
