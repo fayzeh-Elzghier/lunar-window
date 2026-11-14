@@ -6,11 +6,11 @@ An evidence-first web application to explore real lunar south-pole Sun and Earth
 
 **Our creativity and innovation:** an *explainable multi-case Mission Rescue* decision workflow: identify all causes of failed power and geometric Earth-visibility requirements, test permitted site/start changes, rank valid alternatives by user priority, and display the **time margin** before a verified window ends. Not just a pretty lunar map.
 
-> **Scientific status:** A real NASA/JPL Horizons Site04 dataset and source audit are present. The full LOLA terrain horizon, site-specific power estimate, Site01 geometry, continuous operations windows and scientifically validated rescue recommendations are **not yet complete**. The live dashboard correctly reports **INSUFFICIENT DATA**, not an invented win.
+> **Scientific status:** Real JPL Horizons ephemerides for **both Site01 and Site04** (169 true UTC epochs each) are present. Local LOLA horizon screening is available for both sites, but distant terrain, independent frame validation, actual available power, continuous operation windows and verified rescue alternatives remain **incomplete**. The live dashboard correctly reports **INSUFFICIENT DATA**, not an invented win.
 
 ## Quick start
 
-Open [the interactive HTML dashboard](docs/index.html) in a browser. It contains **169 actual calculated JPL Horizons timestamps**, 2026-12-01 00:00 through 2026-12-08 00:00 UTC, at an audited representative Shackleton Rim site point. Use the slider to inspect the actual azimuth/elevation of the Sun and Earth; the reference zero line is **local horizontal, not the verified LOLA terrain horizon**.
+Open [the interactive HTML dashboard](docs/index.html) in a browser. It contains **169 actual JPL Horizons timestamps per site (338 site-time records total)**, 2026-12-01 00:00 to 2026-12-08 00:00 UTC, for the two NASA-listed south-pole locations. Use the slider to inspect the actual azimuth/elevation of the Sun and Earth; the reference zero line is **local horizontal, not the verified LOLA terrain horizon**.
 
 GitHub Pages may optionally be enabled by the repository owner with **Settings → Pages → Deploy from branch → main → /docs**. A public live deployment is not claimed until enabled and verified.
 
@@ -44,10 +44,10 @@ The dashboard builder uses **only** `data/site04_audit/sample.csv`; it rejects t
 
 **Real code pushed; see [scientific status and reproducibility audit](docs/SCIENTIFIC_STATUS.md).**
 
-- **NASA Site01 acquisition**: [script](scripts/acquire_site01.py) requests original site-specific JPL Horizons Sun/Earth angles and NASA LOLA Site01 LDEM. The [GitHub Actions pipeline](.github/workflows/nasa-science.yml) is configured to run that acquisition and commit only structurally verified source files. **Check the workflow and generated files before claiming Site01 was acquired.**
+- **NASA Site01 acquisition**: [script](scripts/acquire_site01.py) requests original site-specific JPL Horizons Sun/Earth angles and NASA LOLA Site01 LDEM. The [GitHub Actions pipeline](.github/workflows/nasa-science.yml) is configured to run that acquisition and commit only structurally verified source files. **Acquisition succeeded and its original 169-row Site01 CSV, raw Sun/Earth outputs and query provenance are now in the repository.**
 - **Terrain horizon**: [lunar-curvature-corrected local skyline script](scripts/compute_local_horizon.py) samples original NASA LOLA pixels in all azimuths and reports unknown distant terrain explicitly. Local-tile results are **provisional**, NOT independently verified full horizons.
 - **Solar orientation**: [panel incidence model](src/solar_geometry.py) and the Site04 dashboard show a **1 AU unshadowed irradiance reference** from real JPL angular data and user-defined panel geometry, using [NASA Goddard's ~1361 W/m² reference](https://earth.gsfc.nasa.gov/climate/projects/solar-irradiance/science). The [169-row NASA-derived reference CSV](data/site04_audit/panel_1au_reference.csv) and [calculation audit](docs/SITE04_POWER_GEOMETRY.md) are committed. Not actual solar power or a reason for a mission pass.
-- **Site01 browser integration**: [source hash verifier/embedder](scripts/embed_site01_data.py) adds actual Site01 readings to offline HTML only when all 169 original NASA epochs and raw files are available and checked.
+- **Site01 browser integration**: [source hash verifier/embedder](scripts/embed_site01_data.py) has imported 169 actual Site01 NASA records. The interface now visualizes both sites and their **provisional** local terrain-screening angles without presenting these as validated visibility or power.
 - **No synthetic astronomy**. The 26-case register remains a requirements checklist, not 26 passed scientific tests.
 
 ### Automated NASA source workflow
@@ -63,7 +63,7 @@ python scripts/embed_site01_data.py
 python -m unittest discover -s tests -v
 ```
 
-Only the NASA source request and local-horizon *code* are confirmed committed at this stage; generated Site01 files must be inspected after a successful execution. This process does not certify continuous operating windows, radio link, or physical Time Margin.
+Site01 source data and both provisional local LOLA horizon tables are committed. The [NASA Horizons vs LOLA comparison](docs/STEP_03_TERRAIN_SCREEN.md) and [Site01](data/site01_audit/terrain_screen_hourly.csv) / [Site04](data/site04_audit/terrain_screen_hourly.csv) hourly diagnostic files are also committed. This does **not** certify continuous operation windows, ground-station radio contact, or physical Time Margin.
 
 ## Core calculation, once upstream science is verified
 
