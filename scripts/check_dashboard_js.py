@@ -39,6 +39,8 @@ def main():
     if "INSUFFICIENT DATA" not in html or "terrain beyond the 16 km LOLA tile is unknown" not in html:
         raise ValueError("Science warnings disappeared; do not deploy")
     ids=set(re.findall(r'\bid="([^"]+)"',html))
+    # The result snapshot element is created dynamically by the form handler.
+    ids.update(re.findall(r"\bid=\u0027([^\u0027]+)\u0027",html))
     static_lookups=set(re.findall(r'\$\("([A-Za-z0-9_-]+)"\)',js))
     missing=sorted(static_lookups-ids)
     if missing:raise ValueError("Missing UI elements referenced from JavaScript: "+str(missing))
