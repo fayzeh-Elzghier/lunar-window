@@ -1,0 +1,53 @@
+name: NASA high-cadence demo astronomy (5 minute)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/acquire_5minute_demo.py'
+      - '.github/workflows/nasa-five-minute.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: lunar-window-original-jpl-5minute
+  cancel-in-progress: false
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Request actual JPL Horizons every 5 minutes (two sites, two bodies)
+        run: python scripts/acquire_5minute_demo.py
+      - name: Validate raw source and reproducible UTC structure
+        run: |
+          python -m compileall -q scripts src tests
+          python -m unittest discover -s tests -v
+      - name: Archive original source and checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasa-jpl-five-minute-original-demo-evidence
+          path: |
+            data/site01_audit/fine_5m*
+            data/site04_audit/fine_5m*
+          retention-days: 30
+      - name: Commit original NASA files with no force push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/site01_audit/fine_5m* data/site04_audit/fine_5m*
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'data: NASA/JPL Horizons actual five-minute Sun and Earth demo series'
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then git rebase --abort || true; exit 1; fi
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((i*2))
+          done
+          exit 1
