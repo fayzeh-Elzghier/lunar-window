@@ -14,11 +14,20 @@ a{color:#b6ddff}a:hover{text-decoration-thickness:2px}.wrap{width:min(1270px,cal
 </style>
 </head><body>
 <div class="wrap">
-<header class="top"><div class="brand">◕ LUNAR <em>WINDOW</em><span class="tiny"> / NASA Space Apps 2026</span></div><nav><a href="#compare">Explore</a><a href="#rescue">Mission Rescue</a><a href="#sources">Sources</a></nav></header>
+<header class="top"><div class="brand">◕ LUNAR <em>WINDOW</em><span class="tiny"> / NASA Space Apps 2026</span></div><nav><a href="#method">How it works</a><a href="#compare">Explore</a><a href="#rescue">Mission Rescue</a><a href="#sources">Sources</a></nav></header>
 <section class="intro"><div><span class="pill">LUNAR LANDING SITE NAVIGATOR · RESEARCH PROTOTYPE</span><h1>Know the window.<br><span>Rescue the mission.</span></h1>
 <p class="lead">Explore real NASA Sun–Earth geometry, then examine how changing a site or start time could affect continuous operations. Our innovation is an <b>explainable multi-case rescue workflow with time margin</b> — never a fabricated success story.</p>
 <span class="pill">Two NASA-listed south-pole candidate points</span> <span class="pill">All times UTC</span></div><div class="moon" aria-hidden="true"></div></section>
 <div class="bar" role="note"><strong>Scientific gate:</strong> Site04 Horizons angles are real NASA-calculated ephemerides. Terrain-aware visibility, solar Watts, confirmed communication windows and Rescue recommendations remain <strong>UNVERIFIED</strong> until LOLA horizon and model checks are complete.</div>
+<section class="panel" id="method" aria-labelledby="method-title"><div class="tiny">START HERE / 3-MINUTE EXPLANATION FOR THE TEAM</div><h2 id="method-title">What NASA gave us. What we built. What is still missing.</h2>
+<div class="cases">
+<div class="case"><b>1. NASA coordinates + JPL Horizons ✓</b><p>At a precise lunar site and UTC time, compute Sun/Earth azimuth and elevation. Site04: 169 real NASA-calculated hourly records, Dec 1–8, 2026. Values are predictions, not actual mission measurements.</p></div>
+<div class="case"><b>2. NASA LOLA terrain — pending verification</b><p>The elevation raster helps estimate the real terrain skyline. One Site04 elevation was audited, but horizon directions, distant terrain and reference conventions still require checks. Horizontal zero is not terrain horizon.</p></div>
+<div class="case"><b>3. Mission Rescue — our innovation</b><p>Compare original plan vs delayed starts vs another site, explain all confirmed constraints and prioritize alternatives. Time margin is reported only after the continuous window's real physical end is established.</p></div>
+<div class="case"><b>4. What we can claim today</b><p>Verified source acquisition and displayed Horizons angles for Site04; a programmed Rescue framework. Not yet verified: Site01 geometry, actual terrain horizon, electrical power, continuous Earth opportunity or a successful rescue recommendation.</p></div>
+</div>
+<p class="note">For Fayzeh &amp; Ala: <a href="TEAM_QUICK_GUIDE.md">Read our 10-minute team guide (Arabic + English)</a>. Check the <a href="https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/" target="_blank" rel="noopener">official challenge objectives</a>. Our data provenance is <a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/data/site04_audit/queries.json" target="_blank" rel="noopener">reproducible</a>.</p>
+</section>
 <div class="grid">
 <main>
 <section class="panel" id="compare"><div class="tiny">01 / Curated lunar sites</div><h2>Explore & compare candidates</h2><p class="muted">Representative coordinates from NASA Lunar Surface Data Book, Table A2-2. These are not certified safe landing points.</p>
