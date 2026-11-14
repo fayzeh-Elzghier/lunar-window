@@ -16,7 +16,7 @@
 <section class="hero wrap"><div class="hero-copy"><div class="eyebrow"><span class="live-dot"></span> REAL NASA DATA · EVIDENCE-FIRST MISSION PLANNING</div>
 <h1>Know the window.<br><em>Rescue the mission.</em></h1>
 <p>Pick a lunar south-pole site, time, and operating constraints. Explore original Sun and Earth geometry, diagnose <strong>potential</strong> conflicts, and compare site/time changes — without inventing a successful lunar mission.</p>
-<div class="chip-row"><span class="chip">2 NASA south-pole sites</span><span class="chip">1,490 NASA site-time records</span><span class="chip">UTC · Dec 1–Jan 1, 2027</span></div></div>
+<div class="chip-row"><span class="chip">2 NASA south-pole sites</span><span class="chip">1,490 monthly + 2,882 fine-cadence NASA site-time records</span><span class="chip">UTC · Dec 2026 / 5-minute demo window</span></div></div>
 <div class="moon-graphic" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="moon-disc"></div><div class="moon-caption">SOUTH POLE / MISSION RESCUE</div></div></section>
 <div class="wrap"><div id="statusBar" class="warning" role="status"><span>⚠</span><div><strong>Research prototype — science validation pending.</strong> NASA positions and Sun distance are authentic; sampled 5m local and 80m far-field LOLA terrain are included out to ~300km, but complete terrain coverage, frame alignment, continuous windows and available power are not independently validated. No operational certification or verified Time Margin is claimed.</div></div>
 <div class="workspace">
@@ -51,19 +51,19 @@
 <div class="metrics">
 <div class="metric solar"><small>Sun azimuth / elevation</small><strong id="sunAngles">—</strong></div>
 <div class="metric terra"><small>Earth azimuth / elevation</small><strong id="earthAngles">—</strong></div>
-<div class="metric solar"><small>Sun above LOCAL skyline by</small><strong id="sunClearance">—</strong><span id="sunStatus">Unverified local terrain</span></div>
-<div class="metric terra"><small>Earth above LOCAL skyline by</small><strong id="earthClearance">—</strong><span id="earthStatus">Unverified local terrain</span></div>
+<div class="metric solar"><small>Sun clearance vs sampled terrain</small><strong id="sunClearance">—</strong><span id="sunStatus">Unverified local terrain</span></div>
+<div class="metric terra"><small>Earth clearance vs sampled terrain</small><strong id="earthClearance">—</strong><span id="earthStatus">Unverified local terrain</span></div>
 </div>
 <div class="chart-head"><h3>Angular clearance from sampled near + far LOLA skyline</h3><div class="legend"><span><i class="point sun-color"></i>Sun</span><span><i class="point earth-color"></i>Earth</span></div></div>
 <svg id="terrainGraph" viewBox="0 0 860 280" role="img" aria-label="Provisional Sun and Earth angular clearance in degrees over real sampled times"></svg>
 <p class="graph-foot">0° = sampled 5m near + 80m far LOLA skyline (approximately 300km coverage). The entire lunar horizon is NOT proven clear. Review thresholds use a preliminary local NASA height-error RMS and are NOT formal confidence bounds for far-field terrain.</p>
 <div class="source-line">Source: <a id="sourceCsv" href="./data/mission_dataset_far.json">time-aligned NASA evidence</a> · <span id="sourceHash">Provenance checked</span></div>
 </section>
-<section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Two sites. Same scientific limitations.</h2><p class="muted">Comparisons count actual hourly samples, not continuous illumination duration or validated radio links.</p>
+<section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Two sites. Same scientific limitations.</h2><p class="muted">Site-wide comparisons count original NASA hourly samples; the Dec 20–25 mission screen uses 5-minute JPL samples when the whole request is covered. Neither establishes continuous illumination or a certified RF link.</p>
 <div id="siteCards" class="compare-grid" aria-live="polite"></div>
 <div class="explain"><b>Why this matters:</b> A sample above the <em>local</em> skyline can still be blocked by unmodelled distant mountains; a sample near the local edge requires finer timing and uncertainty evaluation. Neither is an operational pass.</div>
 </section>
-<section class="card" id="results"><div class="panel-top"><div><div class="section-kicker">04 · OUR INNOVATION</div><h2>Mission Rescue — Explainable screening</h2><p class="muted">We analyze the original plan, permissible delays, and switching sites under unchanged requirements. Every suggested case is only a <strong>research candidate</strong> until science validation is complete.</p></div><span class="source-pill">NO SYNTHETIC NASA DATA</span></div>
+<section class="card" id="results"><div class="panel-top"><div><div class="section-kicker">04 · OUR INNOVATION · 5-MINUTE NASA DEMO SCREENING</div><h2>Mission Rescue — Explainable screening</h2><p class="muted">We analyze the original plan, permissible delays, and switching sites under unchanged requirements. Every suggested case is only a <strong>research candidate</strong> until science validation is complete.</p></div><span class="source-pill">NO SYNTHETIC NASA DATA</span></div>
 <div id="report" class="report" aria-live="polite"><div class="empty-state">Choose your mission constraints, then select <b>Run multi-case screening</b>.</div></div>
 <div class="case-top"><h3>Alternative cases</h3><span id="caseCount" class="small-note"></span></div>
 <div id="alternatives" class="alternatives"><div class="small-note">No scenarios evaluated yet.</div></div>
@@ -72,8 +72,8 @@
 </section>
 </div></div>
 <section class="card resources" id="sources"><div class="section-kicker">05 · EVIDENCE & LIMITATIONS</div><h2>Every number has a NASA source.</h2>
-<div class="source-grid"><article><b><a href="https://ssd.jpl.nasa.gov/horizons/app.html" target="_blank" rel="noopener">NASA/JPL Horizons</a></b><p>Actually used: 169 true UTC Sun/Earth azimuth/elevation records for each curated lunar site.</p></article>
-<article><b><a href="https://pgda.gsfc.nasa.gov/products/78" target="_blank" rel="noopener">NASA LRO / LOLA</a></b><p>Actually used: 5 m site DEMs to compute preliminary local terrain sky profiles. Distant coverage and frame alignment remain unresolved.</p></article>
+<div class="source-grid"><article><b><a href="https://ssd.jpl.nasa.gov/horizons/app.html" target="_blank" rel="noopener">NASA/JPL Horizons</a></b><p>Actually used: 745 hourly Sun/Earth source epochs per site, plus 1,441 original 5-minute epochs per site around the demonstration dates.</p></article>
+<article><b><a href="https://pgda.gsfc.nasa.gov/products/78" target="_blank" rel="noopener">NASA LRO / LOLA</a></b><p>Actually used: local 5 m DEMs, a wider 80 m south-pole DEM sampled to ~300 km, and local total-height RMS error maps. The complete horizon and frame alignment remain unverified.</p></article>
 <article><b><a href="https://quickmap.lroc.asu.edu/" target="_blank" rel="noopener">LROC QuickMap</a></b><p>Official challenge reference for exploring terrain and image context. Not a numerical feed in this version.</p></article>
 <article><b><a href="https://trek.nasa.gov/moon/" target="_blank" rel="noopener">NASA Moon Trek</a></b><p>Official challenge visualization reference. Not a numerical feed in this version.</p></article>
 </div>
