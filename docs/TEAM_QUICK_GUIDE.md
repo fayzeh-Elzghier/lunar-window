@@ -1,89 +1,67 @@
-# Lunar Window — 10-minute team briefing (Fayzeh + Ala)
-# شرح المشروع لفايزة وآلاء قبل إنهاء التنفيذ
+# Lunar Window — 3-minute walkthrough for Fayzeh and Ala 🌙
 
-**Last reviewed: 2026-11-14.** This file describes the repository state, **not** a fully validated lunar mission model.
+**Updated November 14, 2026.** This is the CURRENT project handoff for both scientific and frontend contributions. Older descriptions saying Site01 data were missing are obsolete.
 
-## A. What NASA asks for — المطلوب الأصلي
+## Open the working project
 
-The [official challenge: Lunar Landing Site Navigator](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/) asks for an **intuitive comparison tool** to choose lunar sites and dates and visualize the Sun and Earth **relative to the horizon**, to understand solar power potential and direct-to-Earth communication opportunity. The detailed site selection, custom coordinates, 3D, animations and alternatives are suggestions (*may include*), not all mandatory obligations.
+- **Live mission website:** https://fayzeh-elzghier.github.io/lunar-window/mission-console.html
+- **Original Horizons explorer:** https://fayzeh-elzghier.github.io/lunar-window/
+- **Repo:** https://github.com/fayzeh-Elzghier/lunar-window
+- **Source-driven demo story:** [SUBMISSION_DEMO.md](SUBMISSION_DEMO.md)
 
-Our innovation is **Mission Rescue**: explain why a plan fails, evaluate changes in location/start time under user constraints, compare multiple cases and show a **verified time margin** rather than an arbitrary score.
+## How it works — simple explanation
 
-## B. The science in four steps — من أين يبدأ الرقم؟
+1. **NASA coordinates:** Site01 Connecting Ridge and Site04 Shackleton Rim are published lunar south-pole reference points.
+2. **NASA/JPL Horizons:** Original future astronomical calculations tell us the direction (azimuth/elevation) to Sun and Earth and the Sun's range in AU for **745 hourly timestamps per site** from 1 December 2026 to 1 January 2027.
+3. **NASA LOLA topography:** Authentic 5 m site terrain plus 80 m large-area South Pole DEM data provide preliminary **terrain sky-obstruction angles**, sampled outward to ~300 km. The observer height, coordinate frame, distant coverage and error are NOT independently validated into a complete physical horizon.
+4. **NASA LOLA RMS:** An additional genuine NASA raster provides local-height uncertainty. Our **review heuristic** uses an approximate 3× propagated RMS plus a 0.25° floor; this is NOT a formal 3-sigma physical confidence interval and excludes error in the far terrain.
+5. **Panel model:** Given the user's *assumed* area/efficiency/tilt/azimuth, a simple orientation dot product and NASA Sun distance give an unshadowed **solar reference**, not verified operating watts.
+6. **Our innovation — Mission Rescue:** Try the original plan and allowed site/time changes; show point-sample causes and possible candidates, but **NO certified mission pass and NO known physical Time Margin** until uninterrupted, scientifically verified windows are built.
 
-1. **Coordinates**: a NASA published reference location for Site04 Shackleton Rim (R04). Site01 Connecting Ridge (R01) is listed for eventual comparison. These feature centers are not safe landing certifications. [NASA Lunar Surface Data Book](https://ntrs.nasa.gov/api/citations/20230007818/downloads/ACD-50044%20Lunar%20Surface%20Data%20Book%20Rev%20A.pdf#page=58).
-2. **Angles over time**: [JPL Horizons](https://ssd.jpl.nasa.gov/horizons/app.html) answers: *At this location and UTC time, in which azimuth/elevation direction are the Sun and Earth?* The raw Site04 output is `data/site04_audit/sun.txt`, `earth.txt`, combined by timestamp in `sample.csv` (169 hourly times from Dec 1 to Dec 8, 2026). Real **NASA-computed future ephemerides**, not fabricated samples or actual lunar-mission measurements. [Queries and parameters](../data/site04_audit/queries.json).
-3. **Terrain horizon**: [NASA LRO/LOLA](https://pgda.gsfc.nasa.gov/products/78) provides actual surface elevations. The audit obtained a Site04 raster and read the local elevation, but has **not** computed or verified the skyline in every direction. A 0° local-horizontal line is **NOT** the true terrain horizon.
-4. **Mission assessment**: only after independent horizon/physics verification can we calculate Sun illumination, estimated electrical Watts from the user's *assumed* panel, geometric Earth opportunity, continuous windows, and valid rescue alternatives/time margins. **Not completed**.
+## Demo to reproduce from ORIGINAL NASA records
 
-### Real example — قراءة أصلية، بدون اختلاق
+Open the Console and use the already selected example:
 
-At **2026-12-01 00:00 UTC** for Site04, JPL Horizons reported:
-- Sun azimuth **91.939769°**, elevation **+1.462253°** above the provisional local horizontal.
-- Earth azimuth **178.539374°**, elevation **−1.843399°** relative to that same provisional local horizontal.
-
-These numbers DO NOT yet prove that the Sun is unshadowed by actual terrain, that a panel generates a certain number of watts, or that a radio link exists.
-
-## C. Official challenge Resources — الفرق بين مستخدم ومرجعي
-
-| Challenge-linked resource | Actual role in our repository |
+| Input | Value |
 |---|---|
-| [NASA JPL Horizons](https://ssd.jpl.nasa.gov/horizons/app.html) | **Used numerically**: Site04 Sun/Earth directions; raw text and request provenance committed |
-| [LROC QuickMap](https://quickmap.lroc.asu.edu/) | **Reference only**: terrain imagery and map cross-check; no numerical data integration |
-| [NASA Moon Trek](https://trek.nasa.gov/moon/) | **Reference only**: terrain exploration / visual comparison; no numerical data integration |
-| [Canadian Space Agency lunar exploration](https://www.asc-csa.gc.ca/eng/astronomy/moon-exploration/) | **Context reference**, not a numeric source |
+| Original site | Connecting Ridge / Site01 |
+| Original time | 2026-12-21 00:00 UTC |
+| Operation duration | 6 hours |
+| Requested power | 100 W |
+| Max allowed start delay | 72 hours |
+| Panel | Area 1.5 m², efficiency 25%, tilt 30°, azimuth 90° |
+| Earth during operation | Required |
+| Priority | Earliest screened start |
 
-**Additional NASA source recommended by the challenge's Technical Approach**, not one of the four linked Resource cards: [NASA LRO/LOLA 5 m/pixel product](https://pgda.gsfc.nasa.gov/products/78). Already used for a provisional Site04 surface measurement; the complete horizon is still unverified.
+Click **Run multi-case screening**. The original six sampled hours show a modeled **unshadowed Sun-distance-corrected reference** around 32.82–44.29 W (under the assumed 100 W requirement). The tool then examines later UTC timestamps and the alternate site under the same assumptions.
 
-No rule requires downloading all four linked resources, and claiming a resource is "used" when only its webpage was read would hurt scientific validity. The key is **real NASA data materially supporting the analysis**.
+An early **candidate needing extra scientific verification** appears around **December 22, 06:00 UTC**, 30 h later; its 6-hour reference minimum is ~100.18 W with positive *sampled* Sun/Earth clearance, but it is **near the NASA local error review band**. It is NOT a physically validated 100-W operation.
 
-## D. What the current website does — الموجود في الواجهة
+The candidate has **42 h remaining inside the USER'S maximum 72 h scheduling-delay allowance**, but that is **NOT physical Time Margin**. The true physical Time Margin is UNKNOWN because the verified complete window end has not been established.
 
-Open [index.html](index.html):
-- Shows two named NASA candidate site cards. **Both Site01 and Site04 now have genuine NASA Horizons angular datasets** (169 hourly times each); neither has scientifically validated continuous operation windows.
-- A slider explores exactly 169 **actual Horizons timestamps**, and two elevation curves plot Sun and Earth. Connecting lines are a visualization, not extra NASA measurements.
-- Displays actual Site04 azimuth and elevation numbers at the chosen timestamp.
-- Accepts operation duration, power demand, assumed panel area/efficiency/orientation, Earth-visibility requirement, maximum start delay, priority and a delay preview. **These are user assumptions, not NASA measurements.**
-- Shows the Mission Rescue multi-case concept but returns **INSUFFICIENT DATA** for actual mission suitability, alternatives and true margin until upstream science is complete.
-- Explains resources and limitations so a judge is not misled.
+You can switch to power-only and other dates to see additional, authentic site-time cases. No programmatic fake astronomical data are included.
 
-The [mission_rescue.py](../src/mission_rescue.py) algorithm is an initial programmatic decision engine, **not yet connected to independently validated terrain-aware windows**. The 26 scenarios in [SCENARIO_MATRIX.md](SCENARIO_MATRIX.md) are **scientific acceptance requirements**, not completed NASA-driven passing tests.
+## What's done in each role?
 
-## E. What makes it creative? — الفرق بيننا وبين مجرد خريطة
+**Fayzeh's technical/scientific work completed as executable code and source files:** Original NASA extraction, UTC/time/hash checks, 745×2 Horizons ephemerides with Sun AU distances, LOLA 5 m local 360-bin horizon, NASA 80 m up-to-300-km sampled skyline, NASA local height RMS screening, unshadowed panel orientation/reference, multi-case selection, provenance and CI validation.
 
-Conventional display: "Sun is at elevation X; Earth is at elevation Y."
+**Ala's interface work completed as executable code:** Responsive, keyboard-accessible Mission Rescue Console; two sites; UTC time slider; color-coded real Sun/Earth geometry and terrain-clearance graphs; mission settings; changed-setting invalidation; multi-case alternatives with explanations; user-delay budget versus unknown physical margin; JSON source-traceable export; real NASA resource links; original explorer retained.
 
-Our intended verified decision flow:
-1. User says: selected site, start, duration, Watts and whether continuous Earth visibility is necessary.
-2. Scientific engine checks both physical conditions and their **continuous overlap**. If inadequate, it reports every confirmed cause with affected UTC intervals.
-3. Rescue examines the same site at later starts and the other site within the **user's allowed delay**, without changing hardware settings behind the scenes.
-4. Alternatives are sorted by **keep site**, **start earliest**, or **largest verified margin**, with source evidence and uncertainty.
-5. A window end must be physically established before calculating `margin = window_end − duration − selected_start`. If data simply end, true margin is **unknown**.
+## Honest science limitations — be prepared if judges ask
 
-This is a **planning aid within its model**, not proof a lander can land safely or radio to a named ground station.
+- No independent scientific reconciliation of LOLA MOON_ME / DE421 frame with Horizons DE441 ephemeris and site local normal/vertical datum.
+- Far terrain has been sampled out to ~300 km with an 80 m DEM, **not all lunar obstacles**; far-field error raster and correlations remain unquantified.
+- Hourly values cannot certify continuous 6-hour sunlight/communications.
+- Sun/Earth centers are not finite-disc eclipse-aware, and Earth-center geometry is not a guaranteed ground-station RF link.
+- Panel reference is not actual electrical system output; batteries, thermal and landing safety are outside MVP.
+- The remaining physical Time Margin is **UNKNOWN**, as is any certified feasible alternative.
 
-## F. The shortest honest completion plan — الأولوية حسب الوقت
+## Source and execution proof
 
-**Priority 1 — SCIENCE (Fayzeh):** finish / independently check terrain horizon and altitude/coordinate-frame conventions for Site04, including coverage of distant obstacles. Do **not** pretend a small local raster proves the entire skyline. Confirm eclipse handling and panel incidence assumptions. If validation is not possible, keep those outputs explicitly unavailable.
+- [NASA source register](NASA_RESOURCES.md).
+- [Actual combined 5m+80m screen, Site01](../data/site01_audit/far_screen_dec2026.csv) and [Site04](../data/site04_audit/far_screen_dec2026.csv).
+- [NASA original JPL monthly provenance Site01](../data/site01_audit/extended_dec2026_meta.json) and [Site04](../data/site04_audit/extended_dec2026_meta.json).
+- [Code/unit checks](../scripts/verify_console.cjs) and [Github CI](https://github.com/fayzeh-Elzghier/lunar-window/actions/workflows/verify.yml).
+- [Challenge page](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/).
 
-**Priority 2 — COMPARISON (Fayzeh):** Site01 Sun/Earth and local LOLA sources are now obtained. **Next:** validate far terrain, height/frame consistency and crossings before scientific illumination/visibility conclusions. Align both sites' coverage before claiming any winner.
-
-**Priority 3 — RESCUE (Fayzeh + Ala):** connect verified continuous windows to `mission_rescue.py` and then to the website. Make 4 cases actually selectable: original, delayed same site, changed site, changed site + delay. Report simultaneous failures and verified time margin; never auto-relax constraints.
-
-**Priority 4 — SUBMIT (both):** run scientific checks and software tests; choose an *actual* verified example, prepare a short demo: data → environmental geometry → failure reason → tested alternative → margin → limitations. Publish the accessible website and traceable GitHub source. No manufactured success story.
-
-**Do not prioritize now:** decorative 3D globe, extra random sites, battery model, thermal model, post-operation downlink scheduler, autonomous spacecraft planning, fake positive examples.
-
-## G. Two-minute explanation for the team
-
-> فايزة بتأخذ موقعًا موثقًا من NASA، وبتستخدم JPL Horizons لحساب اتجاه الشمس والأرض حسب الوقت. بعدين بتحتاج نموذج LOLA لتحسب إذا الجبال بتحجبهم، ومنه تحسب القدرة الشمسية التقديرية وفترات رؤية الأرض. آلاء بتعرض كل هذا برسوم سهلة ومقارنة بين المواقع والتواريخ. ابتكارنا Mission Rescue بفحص الخطة، بفسر الفشل، وبدور على تغيير موقع أو وقت ضمن شروط المستخدم وبعرض هامش الوقت لما نقدر نثبته علميًا. الآن البيانات الفلكية الحقيقية لـSite04 موجودة؛ لكن التحقق من أفق التضاريس والمقارنة والتوصيات لم يكتمل.
-
-## H. What NOT to say to judges
-
-- NOT "We verified all 26 cases" (they are an acceptance matrix).
-- NOT "This produces 100 W at Site04" (100 W is only a requested load).
-- NOT "We guarantee Earth communication" (at best, geometric opportunity).
-- NOT "All NASA resources have been integrated" (Horizons and provisional LOLA terrain screening only; QuickMap/Moon Trek remain reference links).
-- NOT "6 hours always work" or "the best landing site is X" without real evidence.
-
-The challenge also mentions public/educator usability and comparison of dates; retain plain language and a time slider. The [2025 local rubric](https://www.spaceappschallenge.org/) categories are broadly relevant, but no fixed 2026 weights were confirmed.
+**Team presentation rule:** describe the feature as *explainable scientific screening and research-candidate rescue*, not NASA-certified power availability, flight readiness or actual continuous-window optimization. Record the screen only from the live tool with truthful statuses; never substitute an invented successful scenario.
