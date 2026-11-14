@@ -1,0 +1,12 @@
+{
+  "site_id": "Site04",
+  "nasa_source": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_toterr.tif",
+  "raster_sha256": "416c4baa3b64def0182bb3379a1a9228482efd8ce32a39309ea8de5d0330fbe6",
+  "observer_z_rms_m": 0.2064795047044754,
+  "records": 360,
+  "computed": 360,
+  "angular_rms_degrees_max": 1.007103366,
+  "approximation": "uncorrelated two-point Z-error projection, not validated uncertainty bound",
+  "excluded": "DEM correlations, frame/datum, distant terrain, panel/eclipse, hourly temporal crossing",
+  "scientific_status": "PROVISIONAL_ONLY__NO_MISSION_PASS"
+}
