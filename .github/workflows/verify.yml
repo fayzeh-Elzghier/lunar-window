@@ -20,5 +20,7 @@ jobs:
           python-version: '3.11'
       - name: Validate Python syntax
         run: python -m compileall -q src scripts tests
+      - name: Check offline website JS and NASA/LOLA time alignment
+        run: python scripts/check_dashboard_js.py
       - name: NASA provenance and science-release safeguards
         run: python -m unittest discover -s tests -v
