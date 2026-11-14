@@ -11,6 +11,7 @@ import unittest
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"src"))
 from mission_rescue import request, evaluate, rescue, scenario_matrix
+from solar_geometry import unshadowed_reference_1au_w, panel_incidence_factor
 from scripts.rebuild_site04_dashboard import source_rows
 
 def constraints():
@@ -64,5 +65,33 @@ class RealDataAndSafetyTests(unittest.TestCase):
     def test_no_fake_sampling_at_site01(self):
         req=request(constraints())
         self.assertEqual(evaluate(req,{"site_id":"Site01"})["status"],"insufficient_data")
+
+class NASAEvidenceIntegrityTests(unittest.TestCase):
+    def test_original_site04_raw_responses_match_recorded_hashes(self):
+        import json
+        import hashlib
+        directory=ROOT/"data/site04_audit"
+        entries=json.loads((directory/"queries.json").read_text())
+        for name in ("sun","earth"):
+            record=entries[name]
+            raw=(directory/(name+".txt")).read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),record["sha256"])
+            self.assertIn("ssd.jpl.nasa.gov/api/horizons.api",record["url"])
+            self.assertIn(b"$$SOE",raw)
+            self.assertIn(b"$$EOE",raw)
+
+    def test_panel_geometry_uses_actual_nasa_sun_angles(self):
+        actual=source_rows(ROOT/"data/site04_audit/sample.csv")[0]
+        watts=unshadowed_reference_1au_w(actual["sa"],actual["se"],1,.25,30,90)
+        self.assertGreater(watts,0)
+        self.assertLessEqual(watts,1361*.25)
+        # These are a 1 AU reference and actual Horizons angles, NOT lunar power.
+        away=unshadowed_reference_1au_w(actual["sa"],actual["se"],1,.25,90,270)
+        self.assertEqual(away,0)
+
+    def test_invalid_1au_panel_reference_is_rejected(self):
+        actual=source_rows(ROOT/"data/site04_audit/sample.csv")[0]
+        with self.assertRaises(ValueError):
+            unshadowed_reference_1au_w(actual["sa"],actual["se"],1,1.5,30,90)
 
 if __name__=="__main__":unittest.main()
