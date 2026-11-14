@@ -5,6 +5,7 @@
 <title>Mission Rescue Console | Lunar Window — NASA Space Apps</title>
 <link rel="stylesheet" href="./mission-console.css">
 <script defer src="./data/mission_dataset_month.js"></script>
+<script defer src="./data/lola_uncertainty.js"></script>
 <script defer src="./mission-console.js"></script>
 </head><body>
 <a class="skip" href="#mission">Skip to main content</a>
@@ -54,7 +55,7 @@
 </div>
 <div class="chart-head"><h3>Angular clearance from sampled LOLA skyline</h3><div class="legend"><span><i class="point sun-color"></i>Sun</span><span><i class="point earth-color"></i>Earth</span></div></div>
 <svg id="terrainGraph" viewBox="0 0 860 280" role="img" aria-label="Provisional Sun and Earth angular clearance in degrees over real sampled times"></svg>
-<p class="graph-foot">0° = local LOLA skyline. 0° is <b>not</b> the global verified horizon. A ±0.25° review band is an interface flag, not a quantified measurement error.</p>
+<p class="graph-foot">0° = local LOLA skyline. 0° is <b>not</b> the global verified horizon. The review threshold also considers original NASA LOLA height-error RMS, but is not a formal confidence bound.</p>
 <div class="source-line">Source: <a id="sourceCsv" href="./data/mission_dataset_month.json">time-aligned NASA evidence</a> · <span id="sourceHash">Provenance checked</span></div>
 </section>
 <section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Two sites. Same scientific limitations.</h2><p class="muted">Comparisons count actual hourly samples, not continuous illumination duration or validated radio links.</p>
