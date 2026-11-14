@@ -39,6 +39,8 @@ async function main(){
  assert.match(await page.locator("#decisionBrief").innerText(),/92 of 153/);
  assert.match(await page.locator("#decisionBrief").innerText(),/17:45/);
  assert.equal(await page.locator("#inspectStress").isVisible(),true);
+ fs.mkdirSync("docs/demo",{recursive:true});
+ await page.locator("#decisionBrief").screenshot({path:"docs/demo/decision-summary.png"});
  assert.ok(await page.locator("#horizonGraph path, #horizonGraph polyline").count()>0);
  assert.ok(await page.locator("#powerGraph path, #powerGraph polyline").count()>0);
  assert.match(await page.locator("#reviewCases").innerText(),/560 near-edge/);

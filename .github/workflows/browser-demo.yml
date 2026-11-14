@@ -60,6 +60,7 @@ jobs:
             artifacts/browser/*.png
             artifacts/browser/*.webm
             docs/demo/*.mp4
+            docs/demo/decision-summary.png
           retention-days: 30
       - name: Publish real-source screen recording on public GitHub Pages
         run: |
@@ -74,7 +75,7 @@ jobs:
           if [ "$bytes" -gt 15000000 ]; then echo 'Video too large'; exit 1; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/demo/mission-rescue-demo.mp4
+          git add docs/demo/mission-rescue-demo.mp4 docs/demo/decision-summary.png
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'demo: real Chromium app walkthrough under 30 seconds with AI disclosure'
           for i in 1 2 3 4 5; do
