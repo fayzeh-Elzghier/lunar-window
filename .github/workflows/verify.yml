@@ -24,3 +24,9 @@ jobs:
         run: python scripts/check_dashboard_js.py
       - name: NASA provenance and science-release safeguards
         run: python -m unittest discover -s tests -v
+      - name: Validate new console and source-derived scenarios (no synthetic space data)
+        run: |
+          node --check docs/mission-console.js
+          node --check docs/data/mission_dataset.js
+          node --check scripts/verify_console.cjs
+          node scripts/verify_console.cjs
