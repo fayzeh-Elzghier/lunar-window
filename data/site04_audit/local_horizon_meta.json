@@ -1,0 +1,18 @@
+{
+  "site_id": "Site04",
+  "lola_source_url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_surf.tif",
+  "raster_sha256": "38ff70dbdf2f066c2cfa94a646c3a59d653ce7f6b4528b15fc1b43ee397ce758",
+  "latitude_deg": -89.7668,
+  "east_longitude_deg": 188.13,
+  "center_z_m": 771.043212890625,
+  "observer_height_m": 2,
+  "sampling_step_m": 5,
+  "azimuth_step_deg": 1,
+  "reference_radius_m": 1737400.0,
+  "method": "great-circle radial lunar LOS + local DEM sampled maxima",
+  "frame": "provisional ME; verify DEM Z datum/DE421 vs Horizons DE441",
+  "uncertainty": "not quantified; LOLA Z errors, pixel sampling, far obstacles unmodelled",
+  "coverage": "finite local LOLA tile; all skyline directions incomplete at distant ranges",
+  "mission_feasibility": "INSUFFICIENT_DATA",
+  "visibility_status": "NOT VALIDATED"
+}

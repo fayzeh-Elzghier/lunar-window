@@ -1,0 +1,48 @@
+{
+  "sun": {
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27222.51%2C-89.4632%2C1.946632568359%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-01%27&STOP_TIME=%272026-12-08%27&STEP_SIZE=%271h%27&TIME_TYPE=%27UT%27&QUANTITIES=%274%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27",
+    "parameters": {
+      "format": "text",
+      "COMMAND": "'10'",
+      "CENTER": "'coord@301'",
+      "COORD_TYPE": "'GEODETIC'",
+      "SITE_COORD": "'222.51,-89.4632,1.946632568359'",
+      "MAKE_EPHEM": "'YES'",
+      "EPHEM_TYPE": "'OBSERVER'",
+      "START_TIME": "'2026-12-01'",
+      "STOP_TIME": "'2026-12-08'",
+      "STEP_SIZE": "'1h'",
+      "TIME_TYPE": "'UT'",
+      "QUANTITIES": "'4'",
+      "CSV_FORMAT": "'YES'",
+      "OBJ_DATA": "'NO'"
+    },
+    "retrieved_utc": "2026-11-14T01:42:13.363379+00:00",
+    "sha256": "689dcc2b91b3ee0a6f2a6a2d2d6a3e7e566c7bfe6f28e1a85e4d437492463aed",
+    "rows": 169,
+    "observer_vertical_reference": "provisional; not certified terrain-aware"
+  },
+  "earth": {
+    "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27399%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27222.51%2C-89.4632%2C1.946632568359%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-01%27&STOP_TIME=%272026-12-08%27&STEP_SIZE=%271h%27&TIME_TYPE=%27UT%27&QUANTITIES=%274%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27",
+    "parameters": {
+      "format": "text",
+      "COMMAND": "'399'",
+      "CENTER": "'coord@301'",
+      "COORD_TYPE": "'GEODETIC'",
+      "SITE_COORD": "'222.51,-89.4632,1.946632568359'",
+      "MAKE_EPHEM": "'YES'",
+      "EPHEM_TYPE": "'OBSERVER'",
+      "START_TIME": "'2026-12-01'",
+      "STOP_TIME": "'2026-12-08'",
+      "STEP_SIZE": "'1h'",
+      "TIME_TYPE": "'UT'",
+      "QUANTITIES": "'4'",
+      "CSV_FORMAT": "'YES'",
+      "OBJ_DATA": "'NO'"
+    },
+    "retrieved_utc": "2026-11-14T01:42:13.572094+00:00",
+    "sha256": "5ed483bb129cfa49a136bd660f3eb2273264e62ea38898192b118d619f73fe31",
+    "rows": 169,
+    "observer_vertical_reference": "provisional; not certified terrain-aware"
+  }
+}

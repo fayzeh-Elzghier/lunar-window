@@ -1,0 +1,47 @@
+{
+  "source_url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site01/Site01_final_adj_5mpp_surf.tif",
+  "sha256": "3ba7b97cb00a2bcf21189c3aeb535f65afc21207154ab9f0d43c5bdc1f7e747e",
+  "latitude_deg": -89.4632,
+  "east_longitude_deg": 222.51,
+  "signed_longitude_deg": -137.49,
+  "site_id": "Site01",
+  "moon_reference_radius_m": 1737400.0,
+  "shape_px": [
+    3200,
+    3200
+  ],
+  "resolution_m": [
+    5.0,
+    5.0
+  ],
+  "bounds_m": [
+    -19000.0,
+    -20000.0,
+    -3000.0,
+    -4000.0
+  ],
+  "crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+  "projected_xy_m": [
+    -10999.144814332796,
+    -11999.255038124045
+  ],
+  "pixel_row_col": [
+    1599,
+    1600
+  ],
+  "containing_pixel_surface_z_m": 1944.632568359375,
+  "device_height_above_surface_m": 2.0,
+  "provisional_horizons_altitude_km": 1.946632568359375,
+  "vertical_datum_status": "provisional; DEM Z definition and DE421/DE441 alignment need independent verification",
+  "terrain_horizon_status": "not computed",
+  "site_comparison_status": "unverified",
+  "horizons": {
+    "start_utc": "2026-12-01T00:00:00+00:00",
+    "stop_utc": "2026-12-08T00:00:00+00:00",
+    "step_minutes": 60,
+    "aligned_epochs": 169,
+    "status": "ephemeris angles only",
+    "scientific_mission_assessment": "INSUFFICIENT_DATA",
+    "independent_validation": "pending"
+  }
+}
