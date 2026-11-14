@@ -5,13 +5,13 @@
 ## What has *actually* been obtained
 
 - ✅ Official NASA Lunar Surface Data Book reference coordinates: Site04 Shackleton Rim (-89.7668, 188.13 E), Site01 Connecting Ridge (-89.4632, 222.51 E); see table A2-2.
-- ✅ Site04 real JPL Horizons raw output for Sun (10), Earth (399), **169 hourly UTC epochs, 2026-12-01 to 2026-12-08**, in `data/site04_audit/`. These are **ephemeris predictions**, not spacecraft measurements. Original URLs/hashes in `queries.json`.
+- ✅ Site01 and Site04 real JPL Horizons raw outputs for Sun (10), Earth (399), **169 hourly UTC epochs per site, 2026-12-01 to 2026-12-08**, in `data/site01_audit/` and `data/site04_audit/`. These are **ephemeris predictions**, not spacecraft measurements. Original URLs/hashes in `queries.json`.
 - ✅ Site04 NASA LOLA 5 m LDEM containing-pixel elevation obtained and audited, **vertical datum provisional**; local horizon has not been verified.
-- ✅ Interactive offline HTML plots Site04 real Sun/Earth angular positions.
+- ✅ Interactive offline HTML plots both sites' original Sun/Earth angles, plus their source-derived provisional local LOLA skyline clearance over time.
 - ✅ `src/mission_rescue.py`: constraint checks, multi-case search architecture, simultaneous failure reporting and bounded margin logic, guarded against missing/unverified scientific evidence. It is not wired to independently verified mission windows.
 - ✅ `src/solar_geometry.py` and the dashboard compute a transparent **unoccluded 1 AU incidence-based reference** from actual NASA Sun angles and user-set panel geometry. This is **NOT available lunar electrical power** or a mission-pass claim. NASA Goddard irradiance reference: https://earth.gsfc.nasa.gov/climate/projects/solar-irradiance/science .
 
-## What has been implemented *as a pipeline*, but not yet observed to succeed
+## Successfully generated source files and science pipeline (not yet independently validated)
 
 - `scripts/acquire_site01.py`: downloads the actual Site01 NASA LOLA 5m DEM and requests both Sun/Earth Horizons tables; rejects missing/invalid/misaligned data and writes original raw responses, CSV, query provenance and hashes.
 - `scripts/embed_site01_data.py`: checks raw file hashes and timestamps; only then inserts actual Site01 angles into offline `docs/index.html`.
@@ -26,7 +26,7 @@
 - `data/site01_audit/local_horizon.csv` and `data/site04_audit/local_horizon.csv`
 - The updated offline `docs/index.html` with 169 real Site01 angular samples in addition to Site04.
 
-These files are not described as present until their GitHub existence is individually confirmed. If the automation is unavailable, run the same scripts on a networked Python 3.11 environment with `numpy` and `rasterio`.
+These source files and the two local-horizon CSVs have now been individually confirmed on GitHub. The [hourly provisional terrain screen](STEP_03_TERRAIN_SCREEN.md) and CSVs are published for both sites, but do not certify physical windows. If the automation is unavailable, run the same scripts on a networked Python 3.11 environment with `numpy` and `rasterio`.
 
 ## Independent science gates not yet passed
 
