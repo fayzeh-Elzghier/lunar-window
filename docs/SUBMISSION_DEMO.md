@@ -22,7 +22,7 @@ NASA's [2026 Lunar Landing Site Navigator](https://www.spaceappschallenge.org/20
 | Site01 Connecting Ridge (R01) and Site04 Shackleton Rim (R04) | NASA Lunar Surface Data Book, table A2-2 | Both curated points included |
 | Sun and Earth angles | JPL Horizons (target IDs 10/399, Moon observer) | **745 actual UTC hourly epochs/site**, 1 Dec 2026–1 Jan 2027 |
 | Sun distance | Horizons observer-range quantity 20, AU | Actual Sun-distance field available at all 745 epochs/site |
-| Local terrain skyline | NASA LRO/LOLA landing-site 5 m elevation DEM | 360 real sampled local-azimuth profiles per site; spherical curvature model; **provisional** |
+| Sampled near+far terrain skyline | NASA LRO/LOLA landing-site 5 m DEM and **NASA south-pole large-area 80 m DEM** | 360 actual NASA-derived direction profiles/site, screening local obstacles and far relief out to approximately 300 km; **provisional**, not a certified whole-Moon horizon |
 | Local RMS elevation screening | NASA LRO/LOLA 5 m total-height RMS GeoTIFF | 360 azimuth-specific *approximate* angular RMS values per site, **not** a formal confidence bound |
 | Panel reference | NASA Goddard TSI reference ~1361 W/m² at 1 AU × inverse-square Sun distance correction × fixed panel dot-product | Unshadowed geometric reference, **not available operating electrical power** |
 | Multi-case Mission Rescue | Actual above hourly outputs, entered constraints | Working **research screening only**; no certified feasibility or physical Time Margin |
