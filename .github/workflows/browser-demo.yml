@@ -9,6 +9,7 @@ on:
       - 'docs/mission-console.js'
       - 'docs/mission-console.css'
       - 'docs/mission-explorer.js'
+      - 'docs/decision-brief.js'
       - 'docs/data/**'
       - 'docs/judges-slides.html'
       - '.github/workflows/browser-demo.yml'

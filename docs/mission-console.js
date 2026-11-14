@@ -224,6 +224,19 @@ function evaluateCase(data,req,site,startMs,forcedEvidence=null){
   }};
  return out;
 }
+// Explicit sensitivity exercise, not a probability distribution or flight margin.
+// Test nominal and declared mounting offsets with 10% lower output.
+function stressCase(rows,req,c,offset=1){
+ const relevant=rows.filter(r=>Date.parse(r[0])>=Date.parse(c.startUtc)&&Date.parse(r[0])<Date.parse(c.finishUtc));
+ let minimum=Infinity;
+ for(const dt of [-offset,0,offset])for(const da of [-offset,0,offset]){
+  const q={...req,tilt:Math.max(0,Math.min(90,req.tilt+dt)),azimuth:(req.azimuth+da+360)%360};
+  for(const r of relevant)minimum=Math.min(minimum,estimatedPower(r,q)*0.9);
+ }
+ return {minimumPowerW:Number(minimum.toFixed(3)),passes:minimum+1e-9>=req.requiredW,
+   outputFactor:0.9,tiltOffsetsDeg:[-offset,0,offset],azimuthOffsetsDeg:[-offset,0,offset],
+   scope:"Nine sampled orientation combinations and 10% lower output; not all uncertainties or a confidence bound"};
+}
 function searchCases(data,req){
  const cases=[],last=req.delayMs;
  // Prefer original NASA 5-minute cadence only where BOTH sites and the whole
@@ -248,12 +261,17 @@ function searchCases(data,req){
   if(req.priority==="clearance")return (b.minSunLocalClearanceDeg??-Infinity)-(a.minSunLocalClearanceDeg??-Infinity)||a.startDelayH-b.startDelayH;
   return a.startDelayH-b.startDelayH||(a.site!==req.site)-(b.site!==req.site);
  };
+ for(const c of candidates){c.sensitivity=stressCase(selected.sites[c.site].rows,req,c);c.severeSensitivity=stressCase(selected.sites[c.site].rows,req,c,5);}
  candidates.sort(sort);
  reviewCases.sort(sort);
  return {
   kind:"RESEARCH_SCREEN_NOT_MISSION_CERTIFICATION",request:req,
   scannedCaseCount:cases.length,searchResolutionMinutes:step/60000,original,candidates:candidates.slice(0,5),
   candidateCount:candidates.length,
+  sensitivityCandidate:candidates.find(c=>c.sensitivity.passes)||null,
+  sensitivityPassCount:candidates.filter(c=>c.sensitivity.passes).length,
+  severeSensitivityPassCount:candidates.filter(c=>c.severeSensitivity.passes).length,
+  sensitivityAssumptions:"Illustrative 10% output reduction and nine orientation combinations (tilt/azimuth -1,0,+1 degrees); severe profile uses -5,0,+5 degrees; unchanged mission constraints; not certification",
   reviewCases:reviewCases.slice(0,5),reviewCount:reviewCases.length,
   comparableCadenceSeconds:step/1000,
   potentialConflictCount:cases.filter(c=>c.status==="potential_conflict").length,
@@ -266,7 +284,7 @@ function searchCases(data,req){
   evaluationTimeUtc:null // deterministic; no fabricated timestamp or background work
  };
 }
-const Engine={assertData,validateBundle,requestFromObject,referencePower,estimatedPower,nextSet,referenceSamplePass,sampleRunMargin,labelClearance,siteStats,evaluateCase,searchCases};
+const Engine={assertData,validateBundle,requestFromObject,referencePower,estimatedPower,nextSet,referenceSamplePass,sampleRunMargin,labelClearance,siteStats,evaluateCase,stressCase,searchCases};
 global.LunarEngine=Engine;
 if(typeof document==="undefined")return;
 function $(id){return document.getElementById(id)}
@@ -320,6 +338,7 @@ function setSite(site){
  state.site=site;
  for(const id of SITES){$(id.toLowerCase()+"Btn").classList.toggle("selected",id===site);$(id.toLowerCase()+"Btn").setAttribute("aria-pressed",String(id===site));}
  state.report=null;$("exportBtn").disabled=true;
+ document.dispatchEvent(new CustomEvent("lunar-report-change",{detail:null}));
  $("report").innerHTML='<div class="empty-state">Site changed. Run the screen again with this site as the original plan.</div>';
  $("alternatives").textContent="No scenarios evaluated for the changed site.";
  $("caseCount").textContent="";$("reviewCases").textContent="";
@@ -374,10 +393,12 @@ function render(){
   }).join("");
  }
  $("exportBtn").disabled=false;
+ document.dispatchEvent(new CustomEvent("lunar-report-change",{detail:report}));
 }
 function invalidate(){
  if(!state.report)return;
  state.report=null;$("exportBtn").disabled=true;
+ document.dispatchEvent(new CustomEvent("lunar-report-change",{detail:null}));
  $("report").innerHTML='<div class="empty-state">Mission inputs changed. Previous findings are no longer current; run the screening again.</div>';
  $("reviewCases").textContent="";$("alternatives").textContent="Results invalidated by the changed settings.";$("caseCount").textContent="";
 }

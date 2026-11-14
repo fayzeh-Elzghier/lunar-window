@@ -82,3 +82,4 @@ body{
 #reviewCases:empty{display:none}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #f6c667;outline-offset:4px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.decision-brief{margin:24px 0}.decision-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.decision-grid article{padding:20px;border:1px solid #456078;border-radius:12px;background:#0d2132}.decision-grid article>strong{font-size:1.7rem;color:#f6c667}.decision-grid h3{font-size:1rem}.decision-grid p{line-height:1.5}.decision-brief button{margin-top:12px}@media(max-width:850px){.decision-grid{grid-template-columns:1fr}}

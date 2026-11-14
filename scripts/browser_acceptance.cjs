@@ -36,6 +36,9 @@ async function main(){
  assert.match(await page.locator("#caseCount").innerText(),/0 certified alternatives/);
  assert.equal(await page.locator("#exportBtn").isEnabled(),true);
  assert.match(await page.locator("#caseCount").innerText(),/153 preliminary candidates/);
+ assert.match(await page.locator("#decisionBrief").innerText(),/92 of 153/);
+ assert.match(await page.locator("#decisionBrief").innerText(),/17:45/);
+ assert.equal(await page.locator("#inspectStress").isVisible(),true);
  assert.ok(await page.locator("#horizonGraph path, #horizonGraph polyline").count()>0);
  assert.ok(await page.locator("#powerGraph path, #powerGraph polyline").count()>0);
  assert.match(await page.locator("#reviewCases").innerText(),/560 near-edge/);
@@ -52,6 +55,7 @@ async function main(){
  // The scientific uncertainty must never disappear after changing panels.
  await page.locator("#requiredPowerW").fill("110");
  assert.match(await page.locator("#report").innerText(),/inputs changed|Previous findings are no longer current/);
+ assert.match(await page.locator("#decisionBrief").innerText(),/Settings changed/);
  assert.equal(await page.locator("#exportBtn").isDisabled(),true);
  await quiet(900);
  // Switch to a different real NASA location and re-run. Same hardware.
@@ -86,6 +90,10 @@ async function main(){
  assert.equal(await phone.locator("#evaluate").isVisible(),true);
  await phone.locator("#evaluate").click();
  assert.match(await phone.locator("#caseCount").innerText(),/5-minute/);
+ await phone.locator("#inspectStress").click();
+ assert.equal(await phone.locator("#startUtc").inputValue(),"2026-12-21T17:45");
+ assert.ok(Math.abs(Number(await phone.locator("#delayH").inputValue())-54.25)<1e-8);
+ assert.match(await phone.locator("#report").innerText(),/Research candidate/);
  await mobile.close();await browser.close();
  assert.deepEqual(pageErrors,[],"JavaScript browser exceptions");
  console.log("PASS Chromium desktop/mobile real NASA, 1730 5-minute cases, stale-setting protection, 7-slide navigation, true UI video");

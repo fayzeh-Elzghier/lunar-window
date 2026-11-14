@@ -24,6 +24,10 @@ Click **Load Sara’s delayed-operation example**. Assumptions: Site01, December
 
 The original model has a power shortfall. The five-minute search evaluates 1,730 site/start combinations, finds 153 preliminary candidates and separates 560 near-edge review cases. The earliest candidate is Site01 on **December 21 at 12:40 UTC**. These reproducible counts depend on the exact settings and current sampled model; they are not mission-certification results. The old 30°/24h20m example is a historical uncertainty regression, not the current demonstration.
 
+## What changed after the judging review
+
+The first nominal candidate is fragile: its minimum modeled 100.283 W drops to 82.531 W under an illustrative 10% output reduction and ±1° tilt/azimuth offsets. A later candidate at **December 21, 17:45 UTC** yields 100.250 W in that same stress exercise. 92 of 153 nominal candidates meet this profile; none meets the wider ±5° profile. These are discrete sensitivity tests, not validated uncertainty bounds. No mission requirements are relaxed. [Calculation evidence](docs/NUMERICAL_VERIFICATION.md) · [judges’ brief](docs/JUDGES_BRIEF.md).
+
 ## Run checks
 
 Python 3.11+ and Node 22; the offline checks need no third-party Python packages:
@@ -34,6 +38,7 @@ python scripts/check_dashboard_js.py
 python -m unittest discover -s tests -v
 node scripts/verify_console.cjs
 node scripts/verify_extended.cjs
+python scripts/verify_numerics.py
 ```
 
 GitHub Actions also runs desktop/mobile browser acceptance. Open `docs/index.html` directly for offline viewing, or serve `docs/` with a static file server.

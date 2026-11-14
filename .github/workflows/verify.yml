@@ -34,3 +34,8 @@ jobs:
         run: |
           node --check docs/mission-explorer.js
           node scripts/verify_extended.cjs
+      - name: Separate numerical implementation and raw NASA verification
+        run: |
+          node --check docs/decision-brief.js
+          python scripts/verify_numerics.py
+          git diff --exit-code -- docs/NUMERICAL_VERIFICATION.md

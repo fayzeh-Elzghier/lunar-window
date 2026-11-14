@@ -10,6 +10,7 @@
 <script defer src="./data/horizon_profiles.js"></script>
 <script defer src="./mission-console.js"></script>
 <script defer src="./mission-explorer.js"></script>
+<script defer src="./decision-brief.js"></script>
 </head><body>
 <a class="skip" href="#mission">Skip to main content</a>
 <header class="top"><a class="brand" href="./index.html"><span class="brand-moon">◑</span><span>LUNAR<span class="gold">WINDOW</span><small>NASA SPACE APPS · 2026</small></span></a>
@@ -22,6 +23,7 @@
 <div class="moon-graphic" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="moon-disc"></div><div class="moon-caption">SOUTH POLE / MISSION RESCUE</div></div></section>
 <div class="wrap"><div id="statusBar" class="warning" role="status"><span>ⓘ</span><div><strong>Planning model, not mission certification.</strong> Uses NASA ephemerides and sampled lunar terrain. Estimated power assumes an ideal fixed panel, binary Sun-center visibility, no batteries, eclipses or electrical losses. Earth-center visibility is not a ground-station contact. <a href="#sources">Model limits and sources</a>.</div></div>
 <div class="demo-tools"><button id="loadDemo" type="button" class="secondary">Load Sara’s delayed-operation example</button><button id="delay30" type="button" class="secondary">What if we start 30 minutes later?</button><span id="demoFeedback" role="status"></span></div>
+<section id="decisionBrief" class="card decision-brief" aria-live="polite"><div class="section-kicker">THE DECISION, IN ONE MINUTE</div><h2>Can Sara keep her operation running?</h2><p>Sara is an illustrative surface-operations planner. She needs six hours at 100 W and geometric Earth visibility. Load her example to compare the original plan, the earliest candidate, and a candidate that survives an explicit sensitivity test.</p><p class="small-note">NASA supplies the geometry and terrain. The payload, panel and sensitivity assumptions are ours.</p></section>
 <div class="workspace">
 <aside class="controls card" aria-labelledby="planTitle"><div class="section-kicker">01 · MISSION CONTROL</div><h2 id="planTitle">Plan your operation</h2>
 <p class="muted intro">All hardware values below are <strong>user-selected assumptions</strong>, not NASA spacecraft specifications.</p>
@@ -72,11 +74,12 @@
 <div id="report" class="report" aria-live="polite"><div class="empty-state">Choose your mission constraints, then select <b>Run multi-case screening</b>.</div></div>
 <div class="case-top"><h3>Alternative cases</h3><span id="caseCount" class="small-note"></span></div>
 <div id="alternatives" class="alternatives"><div class="small-note">No scenarios evaluated yet.</div></div>
-<div id="reviewCases" class="explain" aria-live="polite"></div>
+<details><summary>Inspect unresolved near-edge cases</summary><div id="reviewCases" class="explain" aria-live="polite"></div></details>
 <details class="margin-warning"><summary>How to interpret time margin</summary><p>Sampled reference slack measures how far a sampled passing run extends beyond the requested finish, when a later failing sample brackets its end. Dataset cutoffs return unknown. This does not establish a continuously validated physical window.</p><a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/TIME_MARGIN_METHOD.md">Method and limitations</a></details>
 <div class="report-actions"><button id="exportBtn" type="button" class="secondary" disabled>Export traceable report (JSON)</button><a class="small-link" href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/mission-console.js" target="_blank" rel="noopener">Inspect rescue logic</a></div>
 </section>
 </div></div>
+<section class="card resources" id="validation"><div class="section-kicker">CHECK THE CALCULATION</div><h2>Evidence you can inspect</h2><p>A separate Python implementation checks the browser's power formula using three-dimensional vectors, verifies original raw JPL records against the displayed fine samples, and checks the sensitivity decisions. This is implementation verification, not an independent ephemeris solution or scientific certification.</p><a href="./NUMERICAL_VERIFICATION.md">Read the reproducible calculation report</a> · <a href="./JUDGES_BRIEF.md">Read the judges’ evidence brief</a></section>
 <section class="card resources" id="sources"><div class="section-kicker">05 · EVIDENCE & LIMITATIONS</div><h2>NASA inputs. Transparent model assumptions.</h2>
 <div class="source-grid"><article><b><a href="https://ssd.jpl.nasa.gov/horizons/app.html" target="_blank" rel="noopener">NASA/JPL Horizons</a></b><p>Actually used: 745 hourly Sun/Earth source epochs per site, plus 1,441 original 5-minute epochs per site around the demonstration dates.</p></article>
 <article><b><a href="https://pgda.gsfc.nasa.gov/products/78" target="_blank" rel="noopener">NASA LRO / LOLA</a></b><p>Actually used: local 5 m DEMs, a wider 80 m south-pole DEM sampled to ~300 km, and local total-height RMS error maps. The complete horizon and frame alignment remain unverified.</p></article>

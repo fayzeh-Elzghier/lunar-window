@@ -1,3 +1,5 @@
+> Updated judging story: after inspecting the first nominal candidate, compare the sensitivity-tested 17:45 UTC candidate. See [judges’ brief](JUDGES_BRIEF.md) and [numerical verification](NUMERICAL_VERIFICATION.md).
+
 # Current demonstration — Sara’s operation
 
 Sara is a fictional lunar surface operations planner. Her team wants to operate a hypothetical lander payload at Site 01 for six hours starting December 21, 2026 at 00: 00 UTC, drawing 100 W while maintaining geometric Earth visibility. A launch or commissioning delay forces her to reconsider the start time. The scenario and hardware assumptions are illustrative; the ephemerides and terrain inputs are NASA data.

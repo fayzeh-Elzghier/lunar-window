@@ -37,3 +37,10 @@ No invented numeric rubric weights or winning score is assigned.
 ## Remaining science work
 
 Independent validation of frame/vertical consistency and the full terrain horizon, far-field error propagation, sub-sample event refinement, solar-disk/eclipses, realistic power storage/losses and ground-station RF analysis remain necessary for mission use. The project implements a transparent preliminary planning model, not a certified lander design.
+
+## Added after rubric review
+
+- Three-case decision summary: original, first nominal candidate, and first candidate meeting an explicit sensitivity profile.
+- Nine orientation combinations with 10% lower output at ±1° and ±5°; no hidden relaxation of mission requirements.
+- Separate vector-based numerical verification against raw NASA records: [report](NUMERICAL_VERIFICATION.md). This is implementation verification, not independent scientific validation.
+- [Judges’ evidence brief and bilingual delivery guide](JUDGES_BRIEF.md), including honest comparison with existing NASA tools and a pending human evaluation protocol.
