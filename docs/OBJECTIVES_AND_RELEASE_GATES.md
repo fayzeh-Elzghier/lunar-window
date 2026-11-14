@@ -4,8 +4,8 @@ Based on the team's attached **2026 Lunar Landing Site Navigator** PDF, pages 3â
 
 | Challenge objective | Currently present | Essential truthfulness gate |
 |---|---|---|
-| Interactive curated lunar site selection and comparison | Site04 and Site01 site selector; NASA representative coordinates | Site01 site-specific ephemeris missing; cannot claim complete science comparison |
-| Date/time selection and exploration | 169 true Site04 hourly Horizons epochs, Dec 1â€“8 2026 | User-requested arbitrary date must not be extrapolated |
+| Interactive curated lunar site selection and comparison | Site04 and Site01 site selector; NASA representative coordinates | Site01 actual Horizons ephemeris acquired; full terrain/physical comparison still unvalidated |
+| Date/time selection and exploration | 169 true hourly Horizons epochs for EACH site, Dec 1â€“8 2026 | User-requested arbitrary date must not be extrapolated |
 | Sun/Earth position relative to horizon | NASA azimuth/elevation relative to local horizontal | LOLA local terrain horizon not verified yet; zero line is not terrain |
 | Power / Earth-communication opportunity | Requested constraints displayed, evidence gating active | Physical panel incidence and terrain visibility not yet independently checked; don't claim link or watts |
 | Multiple visualizations | Two elevation curves, geometry metrics, time slider, scenario cards | Curves join real samples visually; no claimed between-sample measurements |
@@ -24,4 +24,4 @@ Based on the team's attached **2026 Lunar Landing Site Navigator** PDF, pages 3â
 7. **UI:** loading, no-coverage, stale-request, no-alternative, verified/pass/fail labels; source provenance and UTC.
 8. **Submission:** a demo story using an actually computed and independently validated case, no invented winner or NASA endorsement.
 
-Current scientific release: **BLOCKED**. Site04 real geometry is available; mission-feasibility claims are not.
+Current scientific release: **BLOCKED**. Both sites' real NASA ephemerides and provisional LOLA local horizon comparisons are present; actual mission-feasibility claims remain unsupported.
