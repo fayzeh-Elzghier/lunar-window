@@ -1,0 +1,75 @@
+name: NASA source acquisition and scientific safety checks
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/nasa-science.yml'
+      - 'scripts/acquire_site01.py'
+      - 'scripts/embed_site01_data.py'
+      - 'scripts/compute_local_horizon.py'
+      - 'src/solar_geometry.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nasa-source-acquisition-main
+  cancel-in-progress: false
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install minimal science libraries
+        run: python -m pip install --disable-pip-version-check numpy rasterio
+      - name: Fetch official NASA Site01 LOLA and Horizons data (no synthetic)
+        run: python scripts/acquire_site01.py
+      - name: Calculate provisional local terrain skyline for Site01
+        run: python scripts/compute_local_horizon.py --site Site01
+      - name: Calculate provisional local terrain skyline for Site04
+        run: python scripts/compute_local_horizon.py --site Site04
+      - name: Embed verified-source Site01 angles (NOT terrain visibility)
+        run: python scripts/embed_site01_data.py
+      - name: Run source-integrity checks (not mission-feasibility certification)
+        run: |
+          python -m unittest discover -s tests -v
+          python -m compileall -q scripts src tests
+          git diff --check
+      - name: Publish NASA provenance artifact for reproducibility
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lunar-window-nasa-site01-and-local-horizon
+          path: |
+            data/site01_audit/sample.csv
+            data/site01_audit/sun.txt
+            data/site01_audit/earth.txt
+            data/site01_audit/queries.json
+            data/site01_audit/metadata.json
+            data/site01_audit/local_horizon.csv
+            data/site01_audit/local_horizon_meta.json
+            data/site04_audit/local_horizon.csv
+            data/site04_audit/local_horizon_meta.json
+          retention-days: 30
+      - name: Commit only source records and explicitly provisional outputs
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html data/site01_audit/sample.csv data/site01_audit/sun.txt \
+            data/site01_audit/earth.txt data/site01_audit/metadata.json \
+            data/site01_audit/queries.json data/site01_audit/local_horizon.csv \
+            data/site01_audit/local_horizon_meta.json \
+            data/site04_audit/local_horizon.csv data/site04_audit/local_horizon_meta.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: ingest actual NASA Site01 ephemeris and provisional LOLA local skylines"
+            git push origin HEAD:main
+          fi
