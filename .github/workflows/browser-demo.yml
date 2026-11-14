@@ -40,6 +40,8 @@ jobs:
           sleep 2
       - name: Desktop, mobile, NASA and seven-slide browser acceptance
         run: node scripts/browser_acceptance.cjs
+      - name: Install video encoder on Ubuntu 26.04
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Encode real browser screencast under 30 seconds
         run: |
           mkdir -p docs/demo
