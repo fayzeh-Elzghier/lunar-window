@@ -27,6 +27,14 @@ jobs:
         run: python -m pip install rasterio numpy
       - name: Discover NASA official 80m South Pole DEM and screen 300 km of distant terrain
         run: python scripts/audit_far_lola.py
+      - name: Rebuild dependent evidence as one consistent model
+        run: |
+          python scripts/build_far_evidence.py
+          python scripts/rebuild_cached_fine.py
+          python scripts/build_5minute_evidence.py
+          python scripts/build_horizon_profiles.py
+          node scripts/verify_console.cjs
+          node scripts/verify_extended.cjs
       - name: Save provenance and explicitly provisional far-field horizon
         uses: actions/upload-artifact@v4
         with:
@@ -38,11 +46,16 @@ jobs:
             data/site04_audit/far_lola_meta.json
           retention-days: 30
       - name: Publish only compact evidence files (never raw large imagery)
+        if: github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/site01_audit/far_lola_horizon.csv data/site01_audit/far_lola_meta.json \
             data/site04_audit/far_lola_horizon.csv data/site04_audit/far_lola_meta.json
+          git add data/site01_audit/far_screen_dec2026.csv data/site04_audit/far_screen_dec2026.csv \
+            data/site01_audit/fine_5m_dec2026.csv data/site04_audit/fine_5m_dec2026.csv \
+            data/site01_audit/fine_5m_meta.json data/site04_audit/fine_5m_meta.json \
+            docs/data/mission_dataset_far.* docs/data/mission_dataset_fine.* docs/data/horizon_profiles.js
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "data: source-traceable provisional NASA South Pole distant terrain audit"
           for i in 1 2 3 4 5; do

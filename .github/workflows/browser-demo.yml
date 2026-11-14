@@ -63,11 +63,10 @@ jobs:
       - name: Publish real-source screen recording on public GitHub Pages
         run: |
           test -s docs/demo/mission-rescue-demo.mp4
-          # The public demo binary may already exist from an earlier validated run.
-          # Do not overwrite it and create a needless binary rebase conflict.
+          # Only publish a recording of the current source revision.
           git fetch origin main
-          if git cat-file -e origin/main:docs/demo/mission-rescue-demo.mp4 2>/dev/null; then
-            echo "Public demo exists. New verified recording is in the Actions artifact; no binary rewrite."
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo "Source changed during capture; retain this recording as a versioned Actions artifact."
             exit 0
           fi
           bytes=$(stat -c '%s' docs/demo/mission-rescue-demo.mp4)

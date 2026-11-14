@@ -69,11 +69,11 @@ jobs:
             data/site04_audit/local_horizon_meta.json
           retention-days: 30
       - name: Commit source records and provisional outputs without overwriting concurrent edits
-        if: success()
+        if: success() && github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html data/site01_audit/sample.csv data/site01_audit/sun.txt \
+          git add docs/legacy-explorer.html data/site01_audit/sample.csv data/site01_audit/sun.txt \
             data/site01_audit/earth.txt data/site01_audit/metadata.json \
             data/site01_audit/queries.json data/site01_audit/local_horizon.csv \
             data/site01_audit/local_horizon_meta.json \
