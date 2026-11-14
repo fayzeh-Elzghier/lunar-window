@@ -25,6 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          fetch-depth: 0  # Needed to rebase generated data safely onto the latest main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -59,7 +60,7 @@ jobs:
             data/site04_audit/local_horizon.csv
             data/site04_audit/local_horizon_meta.json
           retention-days: 30
-      - name: Commit only source records and explicitly provisional outputs
+      - name: Commit source records and provisional outputs without overwriting concurrent edits
         if: success()
         run: |
           git config user.name "github-actions[bot]"
@@ -69,7 +70,28 @@ jobs:
             data/site01_audit/queries.json data/site01_audit/local_horizon.csv \
             data/site01_audit/local_horizon_meta.json \
             data/site04_audit/local_horizon.csv data/site04_audit/local_horizon_meta.json
-          if ! git diff --cached --quiet; then
-            git commit -m "data: ingest actual NASA Site01 ephemeris and provisional LOLA local skylines"
-            git push origin HEAD:main
+          if git diff --cached --quiet; then
+            echo "No generated source records changed; nothing to commit."
+            exit 0
           fi
+
+          git commit -m "data: ingest actual NASA Site01 ephemeris and provisional LOLA local skylines"
+          # The main branch can advance while NASA source acquisition runs.
+          # Rebase ONLY our generated-data commit onto the latest main and retry
+          # non-force pushes. Abort on a real conflict; never discard team edits.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "::error::Generated outputs conflict with newer work on main. Review the uploaded provenance artifact; no force push was attempted."
+              exit 1
+            fi
+            if git push origin HEAD:main; then
+              echo "Generated NASA source records safely published on main."
+              exit 0
+            fi
+            echo "::warning::main advanced during push (attempt ${attempt}/5); fetching and retrying without force."
+            sleep $((attempt * 2))
+          done
+          echo "::error::main kept advancing; provenance artifact remains available. Retry this workflow when commits settle."
+          exit 1
