@@ -43,6 +43,7 @@ async function main(){
  await page.locator("#decisionBrief").screenshot({path:"docs/demo/decision-summary.png"});
  assert.ok(await page.locator("#horizonGraph path, #horizonGraph polyline").count()>0);
  assert.ok(await page.locator("#powerGraph path, #powerGraph polyline").count()>0);
+ await page.getByText("Inspect unresolved near-edge cases",{exact:true}).click();
  assert.match(await page.locator("#reviewCases").innerText(),/560 near-edge/);
  await page.locator("[data-apply-start]").first().click();
  assert.equal(await page.locator("#startUtc").inputValue(),"2026-12-21T12:40");
