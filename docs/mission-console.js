@@ -7,10 +7,11 @@
 "use strict";
 const SITES=["Site01","Site04"];
 const R= Math.PI/180;
-const EDGE=0.25; // UI review band, NOT validated uncertainty
+const EDGE=0.25; // review floor, NOT a quantified scientific uncertainty bound
 const REFERENCE_IRRADIANCE=1361; // W/m² at 1 AU; NOT actual lunar epoch irradiance
 const DOCS="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/data/";
 function assertData(data){
+ if(!global.LOLA_RMS||global.LOLA_RMS.schema!=="nasa-lola-local-angular-rms-v1")throw Error("NASA LOLA error model not loaded");
  if(!data||data.schema!=="lunar-window-evidence-v3"||!data.sites)throw Error("NASA evidence bundle missing or wrong schema");
  for(const site of SITES){
   const s=data.sites[site];if(!s||!Array.isArray(s.rows)||s.rows.length!==745||!s.meta?.sun_sha256||!s.meta?.terrain_sha256)throw Error("Incomplete NASA provenance: "+site);
@@ -46,16 +47,34 @@ function referencePower(row,req){
  const dot=Math.cos(panelTilt)*Math.sin(sunEl)+Math.sin(panelTilt)*Math.cos(sunEl)*Math.cos(sunAz-panelAz);
  return REFERENCE_IRRADIANCE/(row[9]*row[9])*req.area*req.efficiency*Math.max(0,Math.min(1,dot));
 }
-function labelClearance(clearance){
- if(Math.abs(clearance)<=EDGE)return {state:"near",text:"Near local edge — needs finer review"};
+function localRms(site,az){
+ const source=global.LOLA_RMS;
+ if(!source||source.schema!=="nasa-lola-local-angular-rms-v1"||!source.sites?.[site]||source.sites[site].rms.length!==360)
+   throw Error("NASA/LOLA height-error evidence missing");
+ const values=source.sites[site].rms;
+ const x=Math.floor(az),factor=az-x;
+ const sigma=values[x]*(1-factor)+values[(x+1)%360]*factor;
+ if(!Number.isFinite(sigma)||sigma<0)throw Error("NASA LOLA RMS value invalid");
+ return sigma;
+}
+function reviewBand(site,az){
+ // 3× propagated local RMS is a cautious review trigger, NOT a formal 3-sigma bound.
+ return Math.max(EDGE,3*localRms(site,az));
+}
+function labelClearance(clearance,site,az){
+ if(Math.abs(clearance)<=reviewBand(site,az))return {state:"near",text:"Near local edge / NASA-LOLA RMS review — no clear visibility claim"};
  if(clearance<0)return {state:"below",text:"Potential local terrain obstruction"};
  return {state:"above",text:"Above sampled local skyline; distant terrain UNKNOWN"};
 }
 function siteStats(data,site){
  const rows=data.sites[site].rows;
- const count=(ix,condition)=>rows.filter(r=>condition(r[ix])).length;
- return {count:rows.length,sunBelow:count(6,x=>x<-EDGE),sunNear:count(6,x=>Math.abs(x)<=EDGE),sunAbove:count(6,x=>x>EDGE),
-         earthBelow:count(8,x=>x<-EDGE),earthNear:count(8,x=>Math.abs(x)<=EDGE),earthAbove:count(8,x=>x>EDGE)};
+ const count=(ix,azIdx,mode)=>rows.filter(r=>{
+    const delta=r[ix],band=reviewBand(site,r[azIdx]);
+    return mode==="below"?delta<-band:mode==="near"?Math.abs(delta)<=band:delta>band;
+ }).length;
+ return {count:rows.length,
+  sunBelow:count(6,1,"below"),sunNear:count(6,1,"near"),sunAbove:count(6,1,"above"),
+  earthBelow:count(8,3,"below"),earthNear:count(8,3,"near"),earthAbove:count(8,3,"above")};
 }
 function evaluateCase(data,req,site,startMs){
  const rows=data.sites[site]?.rows;
@@ -80,10 +99,11 @@ function evaluateCase(data,req,site,startMs){
  for(const r of relevant){
   const watts=referencePower(r,req);
   minPower=Math.min(minPower,watts);minSun=Math.min(minSun,r[6]);minEarth=Math.min(minEarth,r[8]);
-  if(r[6]<-EDGE)causes.SUN_LOCAL_SCREEN_BELOW_HORIZON.push(r[0]);
-  else if(Math.abs(r[6])<=EDGE)causes.SUN_NEAR_UNCERTAIN_LOCAL_EDGE.push(r[0]);
-  if(req.earthRequired&&r[8]<-EDGE)causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.push(r[0]);
-  else if(req.earthRequired&&Math.abs(r[8])<=EDGE)causes.EARTH_NEAR_UNCERTAIN_LOCAL_EDGE.push(r[0]);
+  const sunBand=reviewBand(site,r[1]),earthBand=reviewBand(site,r[3]);
+  if(r[6]<-sunBand)causes.SUN_LOCAL_SCREEN_BELOW_HORIZON.push(r[0]);
+  else if(Math.abs(r[6])<=sunBand)causes.SUN_NEAR_UNCERTAIN_LOCAL_EDGE.push(r[0]);
+  if(req.earthRequired&&r[8]<-earthBand)causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.push(r[0]);
+  else if(req.earthRequired&&Math.abs(r[8])<=earthBand)causes.EARTH_NEAR_UNCERTAIN_LOCAL_EDGE.push(r[0]);
   if(watts+1e-9<req.requiredW)causes.PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST.push(r[0]);
  }
  out.minReferencePowerW=Number(minPower.toFixed(3));
@@ -94,7 +114,7 @@ function evaluateCase(data,req,site,startMs){
   causes.EARTH_LOCAL_SCREEN_BELOW_HORIZON.length>0 ||causes.PANEL_UNSHADOWED_REFERENCE_BELOW_REQUEST.length>0;
  const isEdge=causes.SUN_NEAR_UNCERTAIN_LOCAL_EDGE.length>0 || causes.EARTH_NEAR_UNCERTAIN_LOCAL_EDGE.length>0;
  out.status=hasConflict?"potential_conflict":isEdge?"edge_review":"research_candidate";
- out.evidence={sampledUtc:relevant.map(x=>x[0]),limitations:["NASA source is hourly not continuous","only local 16-km LOLA skyline, distant terrain unknown","scientific frames and vertical references not independently reconciled","distance-adjusted unshadowed power reference is NOT actual available power","solar eclipse/disc and uncertainty not quantified"],sourceHashes:{
+ out.evidence={sampledUtc:relevant.map(x=>x[0]),limitations:["NASA local height-error RMS review threshold is approximate, not a confidence bound","NASA source is hourly not continuous","only local 16-km LOLA skyline, distant terrain unknown","scientific frames and vertical references not independently reconciled","distance-adjusted unshadowed power reference is NOT actual available power","solar eclipse/disc and uncertainty not quantified"],sourceHashes:{
     sun:data.sites[site].meta.sun_sha256,earth:data.sites[site].meta.earth_sha256,lola:data.sites[site].meta.terrain_sha256
   }};
  return out;
@@ -162,8 +182,8 @@ function updatePoint(){
  $("earthAngles").textContent=fixed(row[3],3)+"° / "+fixed(row[4],3)+"°";
  $("sunClearance").textContent=formatDelta(row[6]);
  $("earthClearance").textContent=formatDelta(row[8]);
- $("sunStatus").textContent=Engine.labelClearance(row[6]).text;
- $("earthStatus").textContent=Engine.labelClearance(row[8]).text;
+ $("sunStatus").textContent=Engine.labelClearance(row[6],site,row[1]).text;
+ $("earthStatus").textContent=Engine.labelClearance(row[8],site,row[3]).text;
  $("sourceCsv").href=DOCS+site.toLowerCase()+"_audit/extended_dec2026.csv";
  $("sourceCsv").textContent="Original "+site+" source screening CSV";
  $("sourceHash").textContent="LOLA SHA256: "+siteData.meta.terrain_sha256.slice(0,12)+"…";
