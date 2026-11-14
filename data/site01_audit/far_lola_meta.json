@@ -1,0 +1,14 @@
+{
+  "site": "Site01",
+  "official_product": "https://pgda.gsfc.nasa.gov/products/90",
+  "source_url": "https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDEM_80S_80MPP_ADJ.TIF",
+  "cog_sha256": "82030dcbdd7c4bb0c7d858e9b4b293b9f2cda5a543ba31ec0f42784bd6beee5a",
+  "site_local_source_sha256": "3ba7b97cb00a2bcf21189c3aeb535f65afc21207154ab9f0d43c5bdc1f7e747e",
+  "far_step_m": 240,
+  "far_start_m": 12000,
+  "far_target_end_m": 300000,
+  "far_checked_bins": 360,
+  "model": "radial spherical Moon terrain skylines (5m site local + 80m NASA South Pole DEM)",
+  "uncertainty": "far-field error raster, datum matching, lunar shape and sun/earth disc not yet independently checked",
+  "mission_status": "INSUFFICIENT_DATA__NOT_A_VERIFIED_SUN_EARTH_WINDOW"
+}
