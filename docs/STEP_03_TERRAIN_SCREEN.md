@@ -67,8 +67,8 @@ For our innovation: eventually, scientific data will yield **verified continuous
 
 ## Practical role split
 
-- **Fayzeh:** evidence completeness, datum check, long-range skyline, high-cadence crossing checks, power/distance/eclipse treatment, verified interval construction, Mission Rescue integration.
-- **Ala:** show real point-specific JPL/LOLA diagnostics with synchronized timestamps, explicit below/near/above local states, warning banners, citations, and user-friendly comparisons. Keep unvalidated states clearly labeled.
+- **:** evidence completeness, datum check, long-range skyline, high-cadence crossing checks, power/distance/eclipse treatment, verified interval construction, Mission Rescue integration.
+- **** show real point-specific JPL/LOLA diagnostics with synchronized timestamps, explicit below/near/above local states, warning banners, citations, and user-friendly comparisons. Keep unvalidated states clearly labeled.
 
 ### Core NASA sources
 - [NASA/JPL Horizons manual](https://ssd.jpl.nasa.gov/horizons/manual.html)

@@ -2,7 +2,7 @@
 
 # NASA Space Apps 2026 — Ready-to-Paste Submission Fields
 
-**Project title:** Lunar Window — Mission Rescue
+**Project title:** ZENITH — Mission Rescue
 
 **Selected challenge:** Lunar Landing Site Navigator
 
@@ -16,13 +16,13 @@
 
 ## 1. Short project summary
 
-Lunar Window is an evidence-first interactive research prototype for exploring solar power potential and direct-to-Earth geometric visibility at two NASA-curated lunar south-pole candidate sites. Using original NASA/JPL Horizons Sun and Earth ephemerides and NASA LRO/LOLA topographic measurements, it displays time-dependent terrain-clearance diagnostics, compares sites, and explains the potential conflicts in a user's operating plan. Our innovation, **Mission Rescue**, screens alternative sites and permissible start delays under unchanged user constraints, clearly distinguishes sampled candidates from verified operating windows, and keeps physical Time Margin UNKNOWN when science evidence cannot yet establish it.
+ZENITH is an evidence-first interactive research prototype for exploring solar power potential and direct-to-Earth geometric visibility at two NASA-curated lunar south-pole candidate sites. Using original NASA/JPL Horizons Sun and Earth ephemerides and NASA LRO/LOLA topographic measurements, it displays time-dependent terrain-clearance diagnostics, compares sites, and explains the potential conflicts in a user's operating plan. Our innovation, **Mission Rescue**, screens alternative sites and permissible start delays under unchanged user constraints, clearly distinguishes sampled candidates from verified operating windows, and keeps physical Time Margin UNKNOWN when science evidence cannot yet establish it.
 
 ## 2. The problem and our solution
 
 South-pole mission planners need to check multiple time-dependent environmental factors. Sun elevation relative to a smooth horizontal plane is not enough because nearby ridges and distant lunar relief may block sunlight. Earth-center elevation does not guarantee a direct-to-Earth RF link. A mission that requires simultaneous adequate power and geometric Earth opportunity needs a truly **continuous** overlap.
 
-Lunar Window brings these components into one intuitive interface. It presents NASA-authored geometry and source-traceable near/far terrain-screening data, lets users specify an operation duration, assumed panel geometry/efficiency, required watts, continuous Earth-visibility option and maximum allowed start delay, and screens the original case and alternate site/timing cases without silently changing the constraints.
+ZENITH brings these components into one intuitive interface. It presents NASA-authored geometry and source-traceable near/far terrain-screening data, lets users specify an operation duration, assumed panel geometry/efficiency, required watts, continuous Earth-visibility option and maximum allowed start delay, and screens the original case and alternate site/timing cases without silently changing the constraints.
 
 Our distinctive contribution is an explainable decision workflow. It reports all detected sampled conflict reasons and UTC intervals, explores potential rescue cases, allows user priorities, and separates **remaining user schedule allowance** from **true physical operating-window Time Margin**. The latter stays unknown unless independently validated continuous endpoints exist.
 

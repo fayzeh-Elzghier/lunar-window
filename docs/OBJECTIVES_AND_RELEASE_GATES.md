@@ -1,46 +1,13 @@
-# Objectives, judging evidence and release gates
+# Objectives and release gates
 
-Current implementation audit · 2026-11-14. This file supersedes earlier development snapshots. Functional coverage is distinct from scientific certification.
+The page opens with empty inputs and no calculated result. Load example is optional: it fills editable assumptions without evaluating them. Compare plans validates current inputs and captures the evaluated request. Clear inputs removes both comparisons, stops playback and disables exports. Missing values are not zero. Supported UTC coverage is shown before submission; panel completeness remains visible when collapsed.
 
-| Challenge objective | Implementation | Verification / boundary |
-|---|---|---|
-| Quickly compare locations and dates | Two curated south-pole sites, UTC timeline, same-time comparison | Actual NASA samples, common settings |
-| Understand Sun/Earth relative to horizon | Azimuth/elevation, 360° terrain silhouette, clearance timeline | Sampled LOLA horizon, not independent full-horizon validation |
-| Assess power potential | Fixed-panel incidence, actual Sun distance, binary terrain blocking, demand line | Ideal direct-power estimate; no battery or eclipse model |
-| Assess direct-to-Earth opportunities | Earth-center terrain clearance, required-visibility constraint | No RF/link-budget or ground-station guarantee |
-| Understand changes and next setting events | Sample brackets and elapsed-time ranges for next above-to-below transitions | No invented event at coverage end; intermediate crossings may be missed |
-| Support changed mission dates/sites | Search allowed starts and both sites under unchanged constraints | One common cadence per search; original unaligned start is explicitly insufficient |
-| Accessible educational exploration | Source labels, demo story, explanatory controls, keyboard focus, responsive layout | Two curated sites; custom coordinates and 3D are future extensions |
+The full comparison uses one common cadence across both sites. If the full search extends outside five-minute coverage, it uses hourly records. Inspect five-minute subset explicitly opens a separate bounded comparison in the interface: its assessed start range and original deadline are shown. Return to full-range comparison preserves the main report and form. JSON, CSV and print identify the active scope. Inputs invalidate both scopes. Fine and hourly candidates are never combined into one ranking.
 
-## Judging rubric evidence
+Both-site summaries are calculated over all eligible candidates before truncation. Duplicate site/start plans merge their roles. Inspection never edits the form. Use as new plan explicitly preserves the original absolute latest permitted start, including when inspecting a subset.
 
-| Criterion | Concrete evidence |
-|---|---|
-| Impact | Helps an operator identify why a fixed operation conflicts with power/visibility, then inspect alternatives |
-| Creativity | Mission Rescue preserves requirements and explains each conflict; unresolved edge cases are not promoted to recommendations |
-| Validity | Original NASA responses, hashes, cadence checks, terrain overlap guard, source-linked exports and analytical regression tests |
-| Relevance | Site/date, illumination, terrain horizon, Earth geometry and operating-window workflow directly address the challenge |
-| Presentation | Guided Sara example, live graphs, inspectable alternatives, source exports and seven-slide story |
+Challenge coverage: compare site/date operation plans; show Sun/Earth against sampled terrain; estimate ideal fixed-panel power; distinguish Earth-center geometry from RF contact; preserve constraints and explain alternatives. The scene is schematic and not a DEM reconstruction.
 
-No invented numeric rubric weights or winning score is assigned.
+Release checks: original source fingerprints and numerical regression; timing boundaries/gaps/censoring; deterministic complete-set sensitivity and both-site selection; scoped comparison/export consistency; stale-state invalidation; actual HTTP-served files and named browser versions. Older results do not certify the current revision. See CURRENT_REVIEW.md for final run records.
 
-## Release gates
-
-- Offline Python and JavaScript checks must pass.
-- Fine and hourly data must retain original raw provenance and regular cadence.
-- Both sites must be compared at a common cadence and fixed requirements.
-- Near/far terrain scans must overlap for every bearing; exported skyline hashes must match tables.
-- Missing data, invalid dates and cutoff events must not produce a mission pass.
-- Input edits must invalidate previous findings.
-- Browser acceptance checks desktop/mobile operation, exports, charts, stale results and slide navigation.
-
-## Remaining science work
-
-Independent validation of frame/vertical consistency and the full terrain horizon, far-field error propagation, sub-sample event refinement, solar-disk/eclipses, realistic power storage/losses and ground-station RF analysis remain necessary for mission use. The project implements a transparent preliminary planning model, not a certified lander design.
-
-## Added after rubric review
-
-- Three-case decision summary: original, first nominal candidate, and first candidate meeting an explicit sensitivity profile.
-- Nine orientation combinations with 10% lower output at ±1° and ±5°; no hidden relaxation of mission requirements.
-- Separate vector-based numerical verification against raw NASA records: [report](NUMERICAL_VERIFICATION.md). This is implementation verification, not independent scientific validation.
-- [Judges’ evidence brief and bilingual delivery guide](JUDGES_BRIEF.md), including honest comparison with existing NASA tools and a pending human evaluation protocol.
+Pending scientific evidence: SPICE/Horizons frame matching, terrain convergence, continuous operation, hardware losses/storage, eclipses and RF links. Pending human evidence: task completion, decision time, input errors and correct uncertainty/slack interpretation. No judging score is assigned.

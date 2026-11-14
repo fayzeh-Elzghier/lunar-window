@@ -1,4 +1,4 @@
-> Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
+> Historical development snapshot below. The current 2026-11-14 implementation and science audit is [SCIENCE_REVIEW.md](SCIENCE_REVIEW.md). It verifies both sites' 745 hourly and 1,441 five-minute records; no physical mission certification is established. Earlier requirements for acquisition or implementation below are historical, not a current task list.
 
 # Scientific implementation status (2026-11-14)
 
@@ -42,9 +42,3 @@ These source files and the two local-horizon CSVs have now been individually con
 ## Current decision
 
 Until full horizon/power/continuous visibility verification, the correct operation result is **INSUFFICIENT DATA**. No physical Time Margin or "best landing site" claim may be issued. Scientific uncertainty and missing coverage are *not* equivalent to guaranteed failure.
-
-## Team roles
-
-- Fayzeh: NASA provenance, coordinates, ephemerides, LOLA, physics, Mission Rescue and science validation.
-- Ala: 2D visualizations and interaction, accurate source labels, comparison presentation, synchronized timelines, user feedback and accessibility.
-- Both: integrate, science review, test, deploy and present the final reproducible result.

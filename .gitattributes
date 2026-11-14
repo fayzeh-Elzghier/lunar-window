@@ -1,0 +1,9 @@
+# Evidence fingerprints are byte-sensitive; preserve original committed LF bytes.
+data/** -text
+docs/data/** -text
+*.js text eol=lf
+*.cjs text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.css text eol=lf

@@ -9,10 +9,7 @@ Status: specification only. No scientific implementation or validation is claime
 Deliver one traceable site scenario from inputs to a visible result before adding automatic rescue recommendations.
 أول هدف: حالة واحدة من مدخلات واضحة إلى نتيجة يمكن مراجعتها، ثم التوسع للمقارنة والبدائل.
 
-Fayzeh owns science, data, calculations and integration. Ala owns interface, interaction, explanations and demo flow. Both review the integrated result.
-فايزة: البيانات والحسابات والتحقق والدمج. آلاء: الواجهة والتفاعل وتفسير النتائج. المراجعة النهائية مشتركة.
 
-### Fayzeh's first deliverable / أول تسليم لفايزة
 
 Create docs/data-audit.md with:
 - One exact coordinate in Shackleton Rim (LOLA Site04), its authoritative source, latitude, east-positive longitude, coordinate frame and vertical reference.
@@ -26,7 +23,6 @@ Do not silently reuse the earlier zero-reference-altitude prototype as a terrain
 
 التسليم الأول: نقطة موثقة، فترة زمنية، ملفات المصدر، جدول صغير، وسجل تحقق. لا نعتبر بيانات النموذج السابق ذات ارتفاع مرجعي صفري تحققًا للتضاريس.
 
-### Ala's first deliverable / أول تسليم لآلاء
 
 Create docs/ui-flow.md with a simple wireframe or written layout:
 1. Inputs: site/date/time, duration, power requirement, panel geometry, continuous Earth-visibility toggle.
@@ -35,10 +31,10 @@ Create docs/ui-flow.md with a simple wireframe or written layout:
 4. Alternatives area: reserved until the engine is validated.
 5. Sources and assumptions drawer.
 
-Start with explicitly labeled SYNTHETIC fixtures. Never present fixture numbers as NASA results.
+Synthetic analytical fixtures belong only in tests. Never present fixture numbers as NASA results.
 Include loading, invalid input, missing data, calculation failure and stale-result states.
 
-التسليم الأول لآلاء: ترتيب شاشة المدخلات والرسوم والنتيجة وحالات الخطأ. أي أرقام مؤقتة تحمل عبارة «بيانات تجريبية اصطناعية».
+يشمل تصميم الواجهة المدخلات والرسوم والنتيجة وحالات الخطأ. لا تُستخدم قيم فلكية مصطنعة في الواجهة.
 
 ### First review gate / شرط اجتياز المرحلة
 

@@ -91,10 +91,11 @@ for(const req of [{efficiency:"150"},{durationH:"-6"},{area:"0"},{azimuth:"360"}
  assert.throws(()=>request(req));
 }
 const html=read("docs/mission-console.html"),css=read("docs/mission-console.css"),js=read("docs/mission-console.js");
-assert.match(html,/NASA Space Apps/);assert.match(html,/time margin/i);assert.match(css,/@media/);
+assert.match(html,/Lunar Landing Site Navigator/);assert.match(html,/time margin/i);assert.match(css,/@media/);
 assert.ok(html.includes("data/mission_dataset_far.js")&&html.includes("mission-console.js")&&html.includes("data/mission_dataset_fine.js"));
 assert.ok(js.includes('scientificConclusion:"NO_VALIDATED_MISSION_PASS_AVAILABLE"'));
 const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
-const deref=new Set([...js.matchAll(/\$\("([A-Za-z0-9_-]+)"\)/g)].map(m=>m[1]));
+const ui=[js,...['mission-explorer.js','decision-brief.js','zenith-ui.js'].map(file=>read('docs/'+file))].join('\n');
+const deref=new Set([...ui.matchAll(/\$\(['"]([A-Za-z0-9_-]+)['"]\)/g)].map(m=>m[1]));
 assert.deepEqual([...deref].filter(x=>!ids.has(x)),[],"all static UI DOM IDs must exist");
 console.log("PASS real NASA source parity + 2 sites + operator input validation + multi-case no-certification gates + frontend DOM IDs");

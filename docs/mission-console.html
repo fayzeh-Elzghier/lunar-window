@@ -1,93 +1,148 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#071120"><meta name="description" content="Lunar Window: explainable NASA-powered lunar site and time comparison with evidence-based Mission Rescue screening.">
-<title>Mission Rescue Console | Lunar Window — NASA Space Apps</title>
-<link rel="stylesheet" href="./mission-console.css">
-<script defer src="./data/mission_dataset_far.js"></script>
-<script defer src="./data/mission_dataset_fine.js"></script>
-<script defer src="./data/lola_uncertainty.js"></script>
-<script defer src="./data/horizon_profiles.js"></script>
-<script defer src="./mission-console.js"></script>
-<script defer src="./mission-explorer.js"></script>
-<script defer src="./decision-brief.js"></script>
-</head><body>
-<a class="skip" href="#mission">Skip to main content</a>
-<header class="top"><a class="brand" href="./index.html"><span class="brand-moon">◑</span><span>LUNAR<span class="gold">WINDOW</span><small>NASA SPACE APPS · 2026</small></span></a>
-<nav aria-label="Primary navigation"><a href="#mission">Decision desk</a><a href="#compare">Compare sites</a><a href="#sources">Evidence</a><a href="./index.html">Project home</a></nav></header>
-<main id="mission">
-<section class="hero wrap"><div class="hero-copy"><div class="eyebrow"><span class="live-dot"></span> REAL NASA DATA · EVIDENCE-FIRST MISSION PLANNING</div>
-<h1>Know the window.<br><em>Rescue the mission.</em></h1>
-<p>Pick a lunar south-pole site, time, and operating constraints. Explore original Sun and Earth geometry, diagnose <strong>potential</strong> conflicts, and compare site/time changes — with an explanation and source record for every result.</p>
-<div class="chip-row"><span class="chip">2 NASA south-pole sites</span><span class="chip">1,490 monthly + 2,882 fine-cadence NASA site-time records</span><span class="chip">UTC · Dec 2026 / 5-minute demo window</span></div></div>
-<div class="moon-graphic" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="moon-disc"></div><div class="moon-caption">SOUTH POLE / MISSION RESCUE</div></div></section>
-<div class="wrap"><div id="statusBar" class="warning" role="status"><span>ⓘ</span><div><strong>Planning model, not mission certification.</strong> Uses NASA ephemerides and sampled lunar terrain. Estimated power assumes an ideal fixed panel, binary Sun-center visibility, no batteries, eclipses or electrical losses. Earth-center visibility is not a ground-station contact. <a href="#sources">Model limits and sources</a>.</div></div>
-<div class="demo-tools"><button id="loadDemo" type="button" class="secondary">Load Sara’s delayed-operation example</button><button id="delay30" type="button" class="secondary">What if we start 30 minutes later?</button><span id="demoFeedback" role="status"></span></div>
-<section id="decisionBrief" class="card decision-brief" aria-live="polite"><div class="section-kicker">THE DECISION, IN ONE MINUTE</div><h2>Can Sara keep her operation running?</h2><p>Sara is an illustrative surface-operations planner. She needs six hours at 100 W and geometric Earth visibility. Load her example to compare the original plan, the earliest candidate, and a candidate that survives an explicit sensitivity test.</p><p class="small-note">NASA supplies the geometry and terrain. The payload, panel and sensitivity assumptions are ours.</p></section>
-<div class="workspace">
-<aside class="controls card" aria-labelledby="planTitle"><div class="section-kicker">01 · MISSION CONTROL</div><h2 id="planTitle">Plan your operation</h2>
-<p class="muted intro">All hardware values below are <strong>user-selected assumptions</strong>, not NASA spacecraft specifications.</p>
-<form id="planForm">
-<fieldset class="fieldset"><legend>Choose lunar site</legend><div class="site-switch">
-<button class="site-btn selected" type="button" id="site01Btn" data-site="Site01" aria-pressed="true"><b>Connecting Ridge</b><small>Site01 · −89.4632°, 222.51°E</small></button>
-<button class="site-btn" type="button" id="site04Btn" data-site="Site04" aria-pressed="false"><b>Shackleton Rim</b><small>Site04 · −89.7668°, 188.13°E</small></button>
-</div></fieldset>
-<div class="field-grid">
-<label>Start date &amp; time <span>UTC</span><input id="startUtc" type="datetime-local" value="2026-12-21T00:00" min="2026-12-01T00:00" max="2027-01-01T00:00" required></label>
-<label>Operation duration <span>hours</span><input id="durationH" type="number" step=".25" value="6" min=".25" max="744" required></label>
-<label>Required power <span>watts</span><input id="requiredPowerW" type="number" min=".01" step="any" value="100" required></label>
-<label>Maximum allowed delay <span>hours</span><input id="delayH" type="number" min="0" max="744" step="any" value="72" required></label>
-<label>Solar panel area <span>m²</span><input id="panelArea" type="number" min=".01" step="any" value="1.5" required></label>
-<label>Panel efficiency <span>%</span><input id="panelEfficiency" type="number" min=".01" max="100" step="any" value="25" required></label>
-<label>Panel tilt <span>degrees</span><input id="panelTilt" type="number" min="0" max="90" step="1" value="60" required></label>
-<label>Panel azimuth <span>degrees from N</span><input id="panelAzimuth" type="number" min="0" max="359.999" step="1" value="90" required></label>
-</div>
-<label class="checkbox-line"><input id="earthRequired" type="checkbox" checked>Require geometric Earth visibility throughout operation</label>
-<label class="full-label">Rank research candidates by<select id="priority"><option value="earliest">Earliest screened start</option><option value="keep">Prefer original site</option><option value="clearance">Largest sampled clearance (not time margin)</option></select></label>
-<div class="quick-row"><button type="button" id="powerOnly" class="pill-button">Power-only scenario</button><button type="button" id="earthMode" class="pill-button selected">Power + Earth scenario</button></div>
-<button class="primary" id="evaluate" type="submit"><span>◎</span> Run multi-case screening</button>
-<p class="small-note" id="inputStatus" aria-live="polite">Choose requirements, compare model results, and inspect any unresolved edge cases.</p>
-</form></aside>
-<div class="main-panels">
-<section class="card" id="compare"><div class="panel-top"><div><div class="section-kicker">02 · ORIGINAL EPHEMERIDES</div><h2>Sun &amp; Earth over time</h2><p class="muted">Choose one of the 745 actual JPL Horizons hourly timestamps. After screening, this explorer shows the nearest hourly sample; the report retains the exact requested start and its own cadence. Lines connect samples visually.</p></div><div class="source-pill">JPL Horizons + NASA LOLA</div></div>
-<div class="date-row"><strong id="currentDate">Loading NASA source…</strong><span id="datasetStatus">Source verification pending</span></div>
-<input id="timeSlider" class="time-range" type="range" min="0" max="744" value="0" step="1" aria-label="Select exact JPL Horizons UTC time">
-<div class="range-ends"><span>Dec 1 00:00 UTC</span><span>Jan 1 00:00 UTC</span></div>
-<div class="metrics">
-<div class="metric solar"><small>Sun azimuth / elevation</small><strong id="sunAngles">—</strong></div>
-<div class="metric terra"><small>Earth azimuth / elevation</small><strong id="earthAngles">—</strong></div>
-<div class="metric solar"><small>Sun clearance vs sampled terrain</small><strong id="sunClearance">—</strong><span id="sunStatus">Unverified local terrain</span></div>
-<div class="metric terra"><small>Earth clearance vs sampled terrain</small><strong id="earthClearance">—</strong><span id="earthStatus">Unverified local terrain</span></div>
-</div>
-<div class="chart-head"><h3>Angular clearance from sampled near + far LOLA skyline</h3><div class="legend"><span><i class="point sun-color"></i>Sun</span><span><i class="point earth-color"></i>Earth</span></div></div>
-<svg id="terrainGraph" viewBox="0 0 860 280" role="img" aria-label="Provisional Sun and Earth angular clearance in degrees over real sampled times"></svg>
-<p class="graph-foot">0° = sampled 5m near + 80m far LOLA skyline (approximately 300km coverage). The entire lunar horizon is NOT proven clear. Review thresholds use a preliminary local NASA height-error RMS and are NOT formal confidence bounds for far-field terrain.</p>
-<div class="source-line">Source: <a id="sourceCsv" href="./data/mission_dataset_far.json">time-aligned NASA evidence</a> · <span id="sourceHash">Provenance checked</span></div>
-</section>
-<section class="card" id="skyView"><div class="section-kicker">LOCAL SKY</div><h2>What stands between the lander and the sky?</h2><p>Azimuth runs clockwise from north. The line is the sampled terrain horizon; the markers show Sun and Earth centers at the selected UTC time.</p><svg id="horizonGraph" viewBox="0 0 860 280" role="img" aria-label="Terrain horizon by compass direction with Sun and Earth positions"></svg><p id="skyText" class="small-note"></p></section>
-<section class="card" id="powerView"><div class="section-kicker">POWER &amp; COMMUNICATION</div><h2>Estimated power and next visibility changes</h2><p>Solid gold: estimated direct panel power after binary terrain blocking. Dashed gray: unshadowed reference. Red: your power requirement. All values use the fixed panel settings at left.</p><svg id="powerGraph" viewBox="0 0 860 280" role="img" aria-label="Estimated panel power and requested watts over time"></svg><div id="powerDetails" class="metrics" aria-live="polite"></div><div id="setEvents" class="compare-grid" aria-live="polite"></div><p class="small-note">Event times are brackets between actual samples, not exact sunset or Earthset. Near-horizon partial solar illumination and eclipses are excluded. Panel and observer heights are fixed at 2 m; reference directions use local radial vertical.</p><button id="exportCsv" type="button" class="secondary">Download selected-site model CSV</button></section>
-<section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Compare both sites at the selected time</h2><div id="instantComparison" class="compare-grid"></div><p class="muted">Site-wide comparisons count original NASA hourly samples; the Dec 20–25 mission screen uses 5-minute JPL samples when the whole request is covered. Neither establishes continuous illumination or a certified RF link.</p>
-<div id="siteCards" class="compare-grid" aria-live="polite"></div>
-<div class="explain"><b>Why this matters:</b> A change in location or start time changes illumination and Earth visibility. A model result near the terrain edge needs additional review; unresolved cases are kept separate from candidates.</div>
-</section>
-<section class="card" id="results"><div class="panel-top"><div><div class="section-kicker">04 · OUR INNOVATION · 5-MINUTE NASA DEMO SCREENING</div><h2>Mission Rescue — Explainable screening</h2><p class="muted">We analyze the original plan, permissible delays, and switching sites under unchanged requirements. Every suggested case is only a <strong>research candidate</strong> until science validation is complete.</p></div><span class="source-pill">NO SYNTHETIC NASA DATA</span></div>
-<div id="report" class="report" aria-live="polite"><div class="empty-state">Choose your mission constraints, then select <b>Run multi-case screening</b>.</div></div>
-<div class="case-top"><h3>Alternative cases</h3><span id="caseCount" class="small-note"></span></div>
-<div id="alternatives" class="alternatives"><div class="small-note">No scenarios evaluated yet.</div></div>
-<details><summary>Inspect unresolved near-edge cases</summary><div id="reviewCases" class="explain" aria-live="polite"></div></details>
-<details class="margin-warning"><summary>How to interpret time margin</summary><p>Sampled reference slack measures how far a sampled passing run extends beyond the requested finish, when a later failing sample brackets its end. Dataset cutoffs return unknown. This does not establish a continuously validated physical window.</p><a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/TIME_MARGIN_METHOD.md">Method and limitations</a></details>
-<div class="report-actions"><button id="exportBtn" type="button" class="secondary" disabled>Export traceable report (JSON)</button><a class="small-link" href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/mission-console.js" target="_blank" rel="noopener">Inspect rescue logic</a></div>
-</section>
-</div></div>
-<section class="card resources" id="validation"><div class="section-kicker">CHECK THE CALCULATION</div><h2>Evidence you can inspect</h2><p>A separate Python implementation checks the browser's power formula using three-dimensional vectors, verifies original raw JPL records against the displayed fine samples, and checks the sensitivity decisions. This is implementation verification, not an independent ephemeris solution or scientific certification.</p><a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/NUMERICAL_VERIFICATION.md">Read the reproducible calculation report</a> · <a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/JUDGES_BRIEF.md">Read the judges’ evidence brief</a></section>
-<section class="card resources" id="sources"><div class="section-kicker">05 · EVIDENCE & LIMITATIONS</div><h2>NASA inputs. Transparent model assumptions.</h2>
-<div class="source-grid"><article><b><a href="https://ssd.jpl.nasa.gov/horizons/app.html" target="_blank" rel="noopener">NASA/JPL Horizons</a></b><p>Actually used: 745 hourly Sun/Earth source epochs per site, plus 1,441 original 5-minute epochs per site around the demonstration dates.</p></article>
-<article><b><a href="https://pgda.gsfc.nasa.gov/products/78" target="_blank" rel="noopener">NASA LRO / LOLA</a></b><p>Actually used: local 5 m DEMs, a wider 80 m south-pole DEM sampled to ~300 km, and local total-height RMS error maps. The complete horizon and frame alignment remain unverified.</p></article>
-<article><b><a href="https://quickmap.lroc.asu.edu/" target="_blank" rel="noopener">LROC QuickMap</a></b><p>Official challenge reference for exploring terrain and image context. Not a numerical feed in this version.</p></article>
-<article><b><a href="https://trek.nasa.gov/moon/" target="_blank" rel="noopener">NASA Moon Trek</a></b><p>Official challenge visualization reference. Not a numerical feed in this version.</p></article>
-</div>
-<p class="small-note">Source archive: <a href="https://github.com/fayzeh-Elzghier/lunar-window/tree/main/data" target="_blank" rel="noopener">NASA source tables</a> · <a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/STEP_03_TERRAIN_SCREEN.md">Calculation methodology</a> · <a href="https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/" target="_blank" rel="noopener">Official 2026 challenge</a> · <a href="https://www.asc-csa.gc.ca/eng/astronomy/moon-exploration/" target="_blank" rel="noopener">CSA research context</a></p>
-</section></div>
-</main>
-<footer><div class="wrap footer-inner"><div><strong>◑ LUNAR WINDOW</strong><p>Independent student research prototype, NASA Space Apps 2026. Decorative artwork is illustrative, not a NASA observation or site reconstruction. Not NASA-endorsed, flight-qualified, or landing-safe-site certified.</p></div><a href="https://github.com/fayzeh-Elzghier/lunar-window" target="_blank" rel="noopener">View open-source methodology ↗</a></div></footer>
-</body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08172D">
+  <meta name="description" content="Compare lunar operation times and sites using NASA geometry, sampled terrain and explicit panel assumptions.">
+  <title>ZENITH · Lunar Landing Site Navigator</title>
+  <link rel="icon" href="assets/zenith-favicon.svg">
+  <link rel="stylesheet" href="mission-console.css">
+  <link rel="stylesheet" href="lunar-scene.css">
+  <script defer src="data/mission_dataset_far.js"></script>
+  <script defer src="data/mission_dataset_fine.js"></script>
+  <script defer src="data/lola_uncertainty.js"></script>
+  <script defer src="data/horizon_profiles.js"></script>
+  <script defer src="mission-console.js"></script>
+  <script defer src="decision-brief.js"></script>
+  <script defer src="mission-explorer.js"></script>
+  <script defer src="zenith-ui.js"></script>
+  <script defer src="lunar-three.js"></script>
+  <script defer src="lunar-scene.js"></script>
+</head>
+<body>
+  <a class="skip" href="#mission">Skip to operation planner</a>
+  <header class="app-header">
+    <div class="identity"><span class="zenith-symbol" role="img" aria-label="Approved ZENITH lunar horizon logo"></span><div><strong>ZENITH</strong><span>Lunar Landing Site Navigator</span></div></div>
+    <a id="sourcesLink" href="#evidencePanel">Model &amp; sources <span aria-hidden="true">↗</span></a>
+  </header>
+  <main id="mission" class="app-shell">
+    <p class="model-notice">Sample-based planning model. Continuous operation and RF contact are not verified.</p>
+    <div class="planner-layout">
+      <aside class="configuration surface" aria-labelledby="planTitle">
+        <h1 id="planTitle">Configure operation</h1>
+        <form id="planForm" novalidate>
+          <fieldset class="form-group"><legend>Location &amp; time</legend>
+          <div class="field">
+            <label for="siteSelect">Lunar site</label>
+            <select id="siteSelect" required aria-describedby="siteCoordinates"><option value="" selected>Select a lunar site</option><option value="Site01">Connecting Ridge · Site01</option><option value="Site04">Shackleton Rim · Site04</option></select>
+            <p id="siteCoordinates" class="field-help" hidden></p>
+          </div>
+          <div class="field">
+            <label for="startUtc">Start date &amp; time <span class="unit">UTC</span></label>
+            <input id="startUtc" type="datetime-local" min="2026-12-01T00:00" max="2027-01-01T00:00" step="60" required aria-describedby="startError coverageHint">
+            <p id="startError" class="field-error"></p>
+          </div>
+          <div class="field-pair">
+            <div class="field"><label for="durationH">Duration <span class="unit">h</span></label><input id="durationH" type="number" placeholder="Enter duration" min="0.001" max="744" step="any" required aria-describedby="durationError"><p id="durationError" class="field-error"></p></div>
+            <div class="field"><label for="delayH">Maximum delay <span class="unit">h</span></label><input id="delayH" type="number" placeholder="Enter maximum delay" min="0" max="744" step="any" required aria-describedby="latestStart"></div>
+          </div>
+          <p id="latestStart" class="field-help" hidden></p></fieldset>
+          <fieldset class="form-group"><legend>Mission requirements</legend>
+          <div class="field"><label for="requiredPowerW">Power demand <span class="unit">W</span></label><input id="requiredPowerW" type="number" placeholder="Enter power demand" min="0.01" step="any" required></div>
+          <div class="field"><label for="earthRequired">Geometric Earth visibility</label><select id="earthRequired" required><option value="" selected>Select a requirement</option><option value="required">Required</option><option value="optional">Not required</option></select></div>
+          </fieldset>
+          <details id="panelAssumptions" class="panel-disclosure">
+            <summary>Solar panel setup <span id="panelSummary">Incomplete - 0 of 4 panel settings entered</span></summary>
+            <div class="field-pair">
+              <div class="field"><label for="panelArea">Area <span class="unit">m²</span></label><input id="panelArea" type="number" placeholder="Enter area" min="0.01" step="any" required></div>
+              <div class="field"><label for="panelEfficiency">Efficiency <span class="unit">%</span></label><input id="panelEfficiency" type="number" placeholder="Enter efficiency" min="0.01" max="100" step="any" required></div>
+              <div class="field"><label for="panelTilt">Tilt <span class="unit">°</span></label><input id="panelTilt" type="number" placeholder="Enter tilt" min="0" max="90" step="any" required></div>
+              <div class="field"><label for="panelAzimuth">Azimuth <span class="unit">°</span></label><input id="panelAzimuth" type="number" placeholder="Enter azimuth" min="0" max="359.999999" step="any" required></div>
+            </div>
+            <p class="field-help">User assumptions. Tilt: 0° horizontal, 90° vertical. Azimuth: clockwise from north. The model uses a local radial vertical and 2 m height above terrain.</p>
+          </details>
+          <details class="coverage-note"><summary>Supported UTC dates &amp; cadence</summary><p id="sourceCoverage">Hourly: 1 Dec 2026–1 Jan 2027.<br>Every 5 minutes: 20–25 Dec 2026. All UTC.</p><p>Starts and finishes must match source timestamps. Both sites use the same requirements and comparison cadence.</p></details>
+          <p id="coverageHint" class="field-help" role="status"></p>
+          <div class="form-actions"><button id="evaluate" class="primary" type="submit" disabled>Compare plans</button><button id="loadExample" class="secondary" type="button">Load example</button><button id="clearInputs" class="secondary" type="button">Clear inputs</button></div>
+          <p id="inputStatus" class="form-status" role="status"></p>
+        </form>
+      </aside>
+      <div class="decision-workspace">
+        <section id="results" class="surface decision" aria-labelledby="decisionTitle" aria-busy="false">
+          <div class="decision-hero">
+            <div class="hero-topline"><div class="section-label">Mission decision</div><p id="resultStatus" class="verdict" role="status">No comparison yet</p></div>
+            <h2 id="decisionTitle" tabindex="-1">Configure your operation.</h2>
+            <p id="decisionLead" class="decision-lead">Compare plans to understand the original plan and available options.</p>
+            <div id="requestChips" class="request-chips"></div>
+            <button id="decisionAction" class="primary" type="button" hidden>Explore options</button>
+          </div>
+          <div class="scope-strip"><p id="scopeStatus" class="field-help"></p><button id="returnMain" class="secondary" type="button" hidden>Return to full-range comparison</button></div>
+          <div id="optionsSection" hidden><div class="section-heading"><h3 id="optionsTitle" tabindex="-1">Compare your options</h3><span>Same requirements · independent inspection</span></div><div id="recommendation" class="recommendation"></div><div id="decisionBrief" class="case-grid"></div></div>
+          <section id="tradeoffPanel" class="tradeoff-panel" aria-labelledby="tradeoffTitle" hidden><h3 id="tradeoffTitle">What changes between the options?</h3><p class="field-help">Solid: nominal minimum · dashed: sensitivity minimum · white marker: demand</p><div id="tradeoffContent" class="tradeoff-grid"></div><p id="tradeoffNote" class="field-help"></p></section>
+          <section id="timingPanel" class="timing-panel" aria-labelledby="timingTitle" hidden><div class="section-heading"><h3 id="timingTitle">Timing &amp; margins</h3><span id="timingCaseLabel"></span></div><dl id="timingMetrics" class="timing-metrics"></dl><details class="inline-details"><summary>What do these values mean?</summary><div id="timingDefinitions"></div><p><a href="TIME_MARGIN_METHOD.md">Full timing method</a></p></details></section>
+          <p id="decisionLimits" class="field-help decision-limits" hidden>Sampled screening only · continuous operation is not established.</p>
+        </section>
+        <section id="visualization" class="surface visualization" aria-labelledby="inspectTitle" hidden>
+          <div class="inspection-heading"><div><div class="section-label">Inspect a case</div><h2 id="inspectTitle" tabindex="-1">Original plan</h2><p id="selectedInterval" class="field-help"></p></div><button id="applyCase" class="secondary" type="button" hidden>Use as new plan</button></div>
+          <label class="case-picker" for="caseSelector">Inspect case <select id="caseSelector" disabled></select></label>
+          <p id="caseStatus" class="field-help"></p>
+          <div id="sceneArea" hidden><div class="scene-dashboard"><div><p id="sceneEpoch" class="field-help"></p>
+            <div class="scene-view-controls" role="group" aria-label="3D presentation"><button id="overviewView" class="secondary" type="button" aria-pressed="true" disabled>Mission overview</button><button id="surfaceView" class="secondary" type="button" aria-pressed="false" disabled>Surface detail</button></div>
+            <div id="lunarScene" class="three-viewport"></div>
+            <div class="scene-flow-key" aria-label="Scene guide legend"><span class="sun-flow">Sunlight → panel</span><span class="site-flow">Selected lunar site</span><span class="earth-flow">Earth → selected site · geometric guide only</span></div>
+            <p class="scene-brief-note">Illustrative geometry · Not to scale · Earth visibility is not verified RF contact.</p>
+            <div class="source-time"><label for="timeSlider">Selected source time <output id="currentDate" for="timeSlider"></output></label><input id="timeSlider" type="range" min="0" max="0" step="1" aria-describedby="viewCadence"><div class="time-range-labels"><span id="rangeStart"></span><span id="rangeEnd"></span></div><div class="playback-buttons"><button id="previousSource" class="secondary" type="button" disabled>Previous sample</button><button id="playSource" class="secondary" type="button" aria-pressed="false" disabled>Play</button><button id="nextSource" class="secondary" type="button" disabled>Next sample</button><span id="viewCadence" class="field-help"></span></div></div>
+            <p id="objectDetail" class="object-detail" hidden></p>
+            <details class="camera-tools"><summary>Camera &amp; geometry controls</summary>
+            <div class="scene-camera-controls" role="group" aria-label="3D camera views">
+              <button id="focusLander" class="secondary" type="button" disabled>Focus lander</button><button id="focusPanel" class="secondary" type="button" disabled>Focus panel</button><button id="lookSun" class="secondary" type="button" disabled>Look toward Sun</button><button id="lookEarth" class="secondary" type="button" disabled>Look toward Earth</button><button id="resetThreeView" class="secondary" type="button" disabled>Reset view</button>
+            </div>
+            <label class="scene-geometry-toggle"><input id="showSceneGeometry" type="checkbox" aria-controls="sceneGeometryReadout" disabled> Show geometry</label>
+            <label class="scene-geometry-toggle"><input id="detailLighting" type="checkbox" checked disabled aria-describedby="threeStatus"> Detail lighting <span class="field-help">(display only)</span></label>
+            </details>
+            <p id="sceneGeometryReadout" class="object-detail" hidden></p>
+            <details id="sceneLimitations" class="inline-details"><summary>Scene limitations</summary><div class="disclosure-body">
+            <p id="scenePresentationNote" class="field-help"></p><p id="sceneValues" class="scene-values"></p><p id="sunlightGuideNote" class="field-help"></p>
+            <p id="threeStatus" class="field-help">3D loads when you inspect a case. If WebGL is unavailable, numerical results and charts remain accessible.</p>
+            <p class="field-help">Schematic view — not to scale. Illustrative terrain — not a reconstruction of this site. Celestial disc sizes are exaggerated and illustrative. Earth orientation illustrative. Sky line and reference ring: local horizontal; N: north, E: east. Outlined markers show directions; × means blocked, ? means uncertain. Geometric visibility is not a verified radio connection.</p><p id="sceneStates" class="field-help"></p><p id="operationTimingNote" class="field-help"></p><p id="sampleCoverage" class="field-help"></p></div></details>
+            </div><div><h3>At the selected time</h3><dl id="instantStats" class="scene-stats"></dl></div></div><h3>Across the full requested operation</h3><dl id="operationStats" class="scene-stats operation-stats"></dl></div>
+          <div class="view-tabs" role="tablist" aria-label="Case visualization">
+            <button id="powerTab" role="tab" aria-selected="true" aria-controls="powerView" tabindex="0" type="button">Power over time</button>
+            <button id="horizonTab" role="tab" aria-selected="false" aria-controls="horizonView" tabindex="-1" type="button">Sun, Earth &amp; horizon</button>
+          </div>
+          <div id="powerView" role="tabpanel" aria-labelledby="powerTab" tabindex="0">
+            <div class="chart-legend"><span><i class="line-key solar"></i>Nominal power</span><span><i class="line-key solar dashed"></i>Sensitivity lower envelope</span><span id="demandLegend"><i class="line-key demand"></i>Demand</span></div>
+            <svg id="powerGraph" role="img" aria-label="Selected operation power over source times"></svg>
+            <p id="powerCaption" class="chart-caption"></p>
+            <details class="inline-details"><summary>How to read the sensitivity curve</summary><p class="field-help">The dashed curve takes the lowest output across nine orientations at each source time. It is not one physical panel trajectory.</p></details>
+          </div>
+          <div id="horizonView" role="tabpanel" aria-labelledby="horizonTab" tabindex="0" hidden>
+            <div class="chart-legend"><span><i class="dot-key solar"></i>Sun center</span><span><i class="dot-key earth"></i>Earth center</span><span><i class="line-key terrain"></i>Sampled terrain</span></div>
+            <svg id="horizonGraph" role="img" aria-label="Sun and Earth above the sampled terrain horizon"></svg>
+            <div id="geometryReadout" class="geometry-readout"></div>
+            <p class="field-help">Azimuth is clockwise from north; elevation is above the local horizontal. Clearance subtracts terrain elevation. This is a schematic view.</p>
+            <details class="site-comparison inline-details"><summary>Both sites at the selected time</summary><table><caption class="sr-only">Same source time and panel settings at both sites</caption><thead><tr><th scope="col">Site</th><th scope="col">Power</th><th scope="col">Sun / terrain</th><th scope="col">Earth / terrain</th></tr></thead><tbody id="instantComparison"></tbody></table><p class="field-help">Earth-center visibility is geometric. It does not establish an RF link to a ground station.</p></details>
+          </div>
+
+        </section>
+        <details id="evidencePanel" class="surface evidence">
+          <summary>Evidence &amp; assumptions</summary>
+          <div class="evidence-body">
+            <details class="inline-details"><summary>Both-site search coverage &amp; sensitivity counts</summary><div id="siteOverview"></div><p id="sensitivitySummary" class="sensitivity-summary" hidden></p></details>
+            <div class="evidence-columns"><div><h3>Model boundaries</h3><p>Ideal fixed-panel direct power with binary Sun-center terrain blocking. No complete battery, eclipse, partial solar-disk, thermal or electrical-loss model.</p><p>Sampled passing points do not establish continuity or a physical time margin. Frame/datum alignment and the complete terrain horizon remain unvalidated.</p></div><div><h3>NASA inputs</h3><p><a href="https://ssd.jpl.nasa.gov/horizons/manual.html" target="_blank" rel="noopener">JPL Horizons</a> supplies calculated Sun/Earth geometry and Sun distance. <a href="https://pgda.gsfc.nasa.gov/products/78" target="_blank" rel="noopener">LOLA local terrain</a> and <a href="https://pgda.gsfc.nasa.gov/products/90" target="_blank" rel="noopener">regional terrain</a> provide a sampled skyline to approximately 300 km.</p><p><a href="https://trek.nasa.gov/moon/jpl/config/textAbout.html" target="_blank" rel="noopener">Moon Trek</a> also supports terrain, lighting and mission planning. ZENITH focuses on an inspectable constrained decision.</p></div></div>
+            <p><strong>Sensitivity:</strong> 10% lower output with nine combinations of −1°, 0°, +1° tilt and azimuth offsets; tilt is clipped to 0–90°. The wider test uses ±5°. These are illustrative assumptions, not validated uncertainty bounds.</p>
+            <p id="evidenceStatus">Compare plans to attach current source coverage and evidence to a decision.</p>
+            <p id="reviewSummary"></p><p id="sceneAssumptions"></p><button id="fineSubset" class="secondary" type="button" disabled>Inspect five-minute subset</button><p id="fineExplanation" class="field-help"></p>
+            <p>Verification documentation covers source provenance and a second arithmetic implementation using the same source data, not independent physical validation. This dashboard revision was reviewed statically only; tests and browser verification were not run. <a href="NUMERICAL_VERIFICATION.md">Numerical review</a> · <a href="SCIENCE_REVIEW.md">Scientific status</a></p>
+            <div class="export-actions"><button id="exportBtn" class="secondary" type="button" disabled>Decision JSON</button><button id="exportCsv" class="secondary" type="button" disabled>Selected-case CSV</button><button id="printBrief" class="secondary" type="button" disabled>Print brief</button></div>
+            <p class="field-help">Exports retain source identifiers and hashes. AI assisted development and documentation; no AI-generated ephemerides are used. <a href="judges-slides.html">Open presentation</a></p>
+          </div>
+        </details>
+      </div>
+    </div>
+    <noscript>This planner requires JavaScript. Original source records and documentation remain available in the local project.</noscript>
+  </main>
+  <section id="printSummary" aria-label="Printable decision brief"></section>
+</body>
+</html>

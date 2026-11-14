@@ -1,4 +1,4 @@
-# Lunar Window — 3-minute walkthrough for Fayzeh and Ala 🌙
+# ZENITH — 3-minute walkthrough  🌙
 
 **Updated November 14, 2026.** This is the CURRENT project handoff for both scientific and frontend contributions. Older descriptions saying Site01 data were missing are obsolete.
 
@@ -41,11 +41,11 @@ The candidate has **42 h remaining inside the USER'S maximum 72 h scheduling-del
 
 You can switch to power-only and other dates to see additional, authentic site-time cases. No programmatic fake astronomical data are included.
 
-## What's done in each role?
+## Implemented components
 
-**Fayzeh's technical/scientific work completed as executable code and source files:** Original NASA extraction, UTC/time/hash checks, 745×2 Horizons ephemerides with Sun AU distances, LOLA 5 m local 360-bin horizon, NASA 80 m up-to-300-km sampled skyline, NASA local height RMS screening, unshadowed panel orientation/reference, multi-case selection, provenance and CI validation.
+**Scientific implementation:** Original NASA extraction, UTC/time/hash checks, 745×2 Horizons ephemerides with Sun AU distances, LOLA 5 m local 360-bin horizon, NASA 80 m up-to-300-km sampled skyline, NASA local height RMS screening, unshadowed panel orientation/reference, multi-case selection, provenance and CI validation.
 
-**Ala's interface work completed as executable code:** Responsive, keyboard-accessible Mission Rescue Console; two sites; UTC time slider; color-coded real Sun/Earth geometry and terrain-clearance graphs; mission settings; changed-setting invalidation; multi-case alternatives with explanations; user-delay budget versus unknown physical margin; JSON source-traceable export; real NASA resource links; original explorer retained.
+**Interface implementation:** Responsive, keyboard-accessible Mission Rescue Console; two sites; UTC time slider; color-coded real Sun/Earth geometry and terrain-clearance graphs; mission settings; changed-setting invalidation; multi-case alternatives with explanations; user-delay budget versus unknown physical margin; JSON source-traceable export; real NASA resource links; original explorer retained.
 
 ## Honest science limitations — be prepared if judges ask
 

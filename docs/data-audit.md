@@ -1,6 +1,6 @@
 > Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
 
-# Site04 NASA data audit / أول تسليم لفايزة
+# Site04 NASA data audit
 
 ## Status / الحالة
 Data acquisition and structural checks completed. Terrain-horizon calculation, independent physical validation, power calculation and mission recommendations are NOT completed.
@@ -92,7 +92,7 @@ Run: python scripts/audit_site04.py
 The script downloads the DEM if absent; it is not stored as a large binary in GitHub. Output raw text and metadata are checked into data/site04_audit/.
 Script network requests require access to NASA endpoints.
 
-## 8. What Fayzeh should open / شو تفتحي أنتِ
+## 8. What  should open / شو تفتحي أنتِ
 1. NASA Data Book page 58: find R04 / Site04 to see the coordinate.
 2. LOLA listing: scroll to Site04, inspect LDEM and total Z uncertainty links.
 3. Horizons app: choose observer table, Sun or Earth, and a user-defined lunar observer.

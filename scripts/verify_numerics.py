@@ -3,7 +3,7 @@
 Not an independent ephemeris or terrain validation. No scientific libraries or
 application calculation functions are imported into the Python calculation.
 """
-import csv, hashlib, io, json, math, subprocess
+import argparse, csv, hashlib, io, json, math, subprocess
 from pathlib import Path
 from datetime import datetime, timezone
 ROOT=Path(__file__).resolve().parents[1]
@@ -19,6 +19,9 @@ def raw_rows(path):
     text=path.read_text().split('$$SOE')[1].split('$$EOE')[0]
     return list(csv.reader(io.StringIO(text.strip())))
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--output', type=Path, default=ROOT/'artifacts/audit/numerical-verification.md')
+    args=parser.parse_args()
     js=json.loads(subprocess.check_output(['node','scripts/verification_driver.cjs'],cwd=ROOT,text=True))
     max_error=0.;checks=0;epoch_count=0;max_terrain_error=0.;hashes={}
     for site in ('Site01','Site04'):
@@ -101,6 +104,7 @@ Sources: [NASA JPL Horizons manual](https://ssd.jpl.nasa.gov/horizons/manual.htm
 
 '''
     report+='\n'.join(f'- `{k}`: `{v}`' for k,v in hashes.items())+'\n'
-    (ROOT/'docs/NUMERICAL_VERIFICATION.md').write_text(report.replace('requested6h/100W/','requested 6h/100W/'))
+    args.output.parent.mkdir(parents=True,exist_ok=True)
+    args.output.write_text(report.replace('requested6h/100W/','requested 6h/100W/'),encoding='utf-8')
     print(f'PASS {epoch_count} raw NASA records; {checks} vector comparisons; two sensitivity profiles; max error {max_error:.3e} W')
 if __name__=='__main__':main()

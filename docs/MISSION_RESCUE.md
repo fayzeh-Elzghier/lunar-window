@@ -1,6 +1,6 @@
 > Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
 
-# Mission Rescue — Lunar Window innovation
+# Mission Rescue — ZENITH innovation
 
 Our distinctive contribution is **explainable rescue of a lunar operating plan**: compare the original site/start against permitted delays and alternate sites; show exactly *why* a plan fails; and quantify **time margin** without implying that a lunar landing, radio contact, or power system is certified.
 
@@ -50,8 +50,8 @@ The 26 IDs in `docs/STEP_01.md` and `docs/SCENARIO_MATRIX.md` define expected be
 
 ## Roles
 
-**Fayzeh:** NASA data, science calculations, horizon analysis, evidence contract, alternatives, time margins, validity.
+**:** NASA data, science calculations, horizon analysis, evidence contract, alternatives, time margins, validity.
 
-**Ala:** interface, timeline, side-by-side comparison, cases, explanations, source drawer and accessibility.
+**** interface, timeline, side-by-side comparison, cases, explanations, source drawer and accessibility.
 
 **Joint:** scientific review, user tests, integration, submission and demo story. Choose a real successful scenario from results, not vice versa.

@@ -1,0 +1,17 @@
+> Current workflow: empty initial inputs; optional **Load example**, then **Compare plans**; **Clear inputs** clears results. See [current review](CURRENT_REVIEW.md). Earlier defaults/reset descriptions below are historical.
+
+# Editable defaults and timing
+
+Defaults are defined once in `DEFAULT_CONFIGURATION` in `mission-console.js`: Site01, 21 Dec 2026 00:00 UTC, 1 hour, 50 W, 24 hours maximum start delay, Earth visibility required, 1.5 m² panel, 25% efficiency, 60° tilt, 90° azimuth. These are editable illustrative assumptions, not a mission recommendation. Inspected fine-data metadata for both sites covers 20–25 Dec 2026 at 300-second cadence, including the default search horizon through 22 Dec 01:00 UTC. Runtime source validation still rejects incompatible evidence. The documented six-hour/100 W/72-hour scenario remains a separate regression reference, not the initial form configuration.
+
+Defaults populate the form once on page load. Reset defaults explicitly clears the comparison and restores that same object; the duplicate Load example action is removed. Neither action calculates results. There is no settings persistence. Editing, selecting sites, inspecting candidates and camera/playback interaction do not initialize defaults again. Current validated form values create a distinct request stored in the comparison; charts, the existing 3D scene, statistics and exports use that stored request. Editing clears the result and stops playback through the existing result-change events.
+
+Start delay is case start minus evaluated request start. Latest permitted start is evaluated request start plus maximum start delay. Remaining allowed delay is latest permitted start minus case start. This deadline governs the start, not the finish. Applying a case checks its allowed interval before changing the form and preserves the absolute latest permitted start. Reset deliberately starts a fresh configuration.
+
+Code-inspection corrections: removed the zero clamp that concealed negative remaining delay; out-of-range case starts now explicitly return an unavailable/invalid assessment. Interval validation now checks every included timestamp and requires the actual finish record, rather than relying only on row count and first timestamp. Operation minima continue to use [start, finish), excluding the finish sample even if it fails. No power formulas, sensitivity settings, ranking priorities or source records were changed. Timing definitions and the absolute start deadline accompany exported JSON. Readable durations include seconds when needed without modifying the underlying request.
+
+Sample-based time slack remains secondary. Its nominal positive-clearance/power criteria are weaker than the candidate's terrain-edge review criteria; this distinction is explicit. It is not a continuous margin. Missing coverage or no observed later failure remains unavailable, not zero. Continuous operating margin not established.
+
+The existing search ranks the complete candidate set before selecting the sensitivity-passing case and truncating the displayed nominal alternatives. Both sites retain common cadence and unchanged requirements. No fixed candidate output was introduced.
+
+Implementation and diff were reviewed statically only. Runtime behavior is untested. Tests, numerical verification and browser automation were not run at the user's request. Existing regression scripts may still reference the removed Load example control and have not been updated or executed in this task.

@@ -1,5 +1,7 @@
 # Official and related NASA sources — provenance first
 
+Official descriptions rechecked for the local ZENITH update on 2026-11-14: [Horizons manual](https://ssd.jpl.nasa.gov/horizons/manual.html), [LOLA terrain products](https://pgda.gsfc.nasa.gov/products/78), [Moon Trek tools](https://trek.nasa.gov/moon/jpl/config/textAbout.html). Moon Trek explicitly includes mission planning, elevation plots, lighting and slope analysis. ZENITH's contribution is its inspectable constrained-decision workflow, not a claim that those capabilities are missing elsewhere. [Frame and validation limits](SCIENCE_REVIEW.md).
+
 ## Challenge and challenge-referenced interactive resources
 
 - [NASA Space Apps 2026: Lunar Landing Site Navigator](https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/): authoritative mission prompt. Interactive site/date comparison, Sun/Earth position relative to lunar horizon, dynamic timelines, sunlight/power and direct-to-Earth visibility opportunities.

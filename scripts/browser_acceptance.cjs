@@ -1,104 +1,59 @@
 #!/usr/bin/env node
-/* Real-browser quality gate and optional real-UI screencast.
- * No artificial ephemerides or mock astronomy. Decorative artwork is not evidence.
- * Browser loads the exact published files served locally from docs/.
- */
-"use strict";
-const { chromium } = require("playwright");
-const fs=require("node:fs");
-const path=require("node:path");
-const assert=require("node:assert/strict");
-const target="http://127.0.0.1:8765";
-const artifact=path.resolve(process.cwd(),"artifacts/browser");
-fs.mkdirSync(artifact,{recursive:true});
-const quiet=ms=>new Promise(r=>setTimeout(r,ms));
-async function main(){
- const browser=await chromium.launch({headless:true});
- let pageErrors=[];
- // A reproducible visual regression of the real public-app build.
- const context=await browser.newContext({viewport:{width:1366,height:800},deviceScaleFactor:1,recordVideo:{dir:artifact,size:{width:1280,height:720}}});
- const page=await context.newPage();
- page.on("pageerror",e=>pageErrors.push(e.message));
- await page.goto(target+"/mission-console.html",{waitUntil:"load"});
- await page.locator("#currentDate").waitFor({state:"visible"});
- await page.waitForFunction(()=>document.querySelector("#currentDate").textContent.includes("UTC"));
- assert.match(await page.locator("#datasetStatus").innerText(),/745 actual JPL UTC epochs/);
- await page.screenshot({path:path.join(artifact,"01-landing.png"),fullPage:true});
- await quiet(1100);
- // The real NASA 5-minute demo: Site01, Dec 21, 6h, 100W, 72h permitted delay.
- assert.equal(await page.locator("#startUtc").inputValue(),"2026-12-21T00:00");
- assert.equal(await page.locator("#earthRequired").isChecked(),true);
- const invalid=await page.locator("#planForm").evaluate(form=>[...form.elements].filter(x=>x.willValidate&&!x.checkValidity()).map(x=>({id:x.id,validity:x.validity.stepMismatch?"stepMismatch":"invalid"})));
- assert.deepEqual(invalid,[],"Valid source demo settings must be accepted by native HTML validation");
- await page.locator("#evaluate").click();
- await page.waitForFunction(()=>document.querySelector("#caseCount").textContent.includes("1730 cases screened at 5-minute"),{timeout:20000});
- assert.match(await page.locator("#report").innerText(),/UNKNOWN/);
- assert.match(await page.locator("#caseCount").innerText(),/0 certified alternatives/);
- assert.equal(await page.locator("#exportBtn").isEnabled(),true);
- assert.match(await page.locator("#caseCount").innerText(),/153 preliminary candidates/);
- assert.match(await page.locator("#decisionBrief").innerText(),/92 of 153/);
- assert.match(await page.locator("#decisionBrief").innerText(),/17:45/);
- assert.equal(await page.locator("#inspectStress").isVisible(),true);
- fs.mkdirSync("docs/demo",{recursive:true});
- await page.locator("#decisionBrief").screenshot({path:"docs/demo/decision-summary.png"});
- assert.ok(await page.locator("#horizonGraph path, #horizonGraph polyline").count()>0);
- assert.ok(await page.locator("#powerGraph path, #powerGraph polyline").count()>0);
- await page.getByText("Inspect unresolved near-edge cases",{exact:true}).click();
- assert.match(await page.locator("#reviewCases").innerText(),/560 near-edge/);
- await page.locator("[data-apply-start]").first().click();
- assert.equal(await page.locator("#startUtc").inputValue(),"2026-12-21T12:40");
- assert.match(await page.locator("#report").innerText(),/Research candidate/);
- assert.ok(Math.abs(Number(await page.locator("#delayH").inputValue())-59.3333333333333)<1e-8);
- const downloadPromise=page.waitForEvent("download");await page.locator("#exportBtn").click();
- const report=JSON.parse(fs.readFileSync(await (await downloadPromise).path(),"utf8"));
- assert.ok(report);
- await page.locator("#results").scrollIntoViewIfNeeded();
- await quiet(1600);
- await page.screenshot({path:path.join(artifact,"02-actual-nasa-rescue.png"),fullPage:true});
- // The scientific uncertainty must never disappear after changing panels.
- await page.locator("#requiredPowerW").fill("110");
- assert.match(await page.locator("#report").innerText(),/inputs changed|Previous findings are no longer current/);
- assert.match(await page.locator("#decisionBrief").innerText(),/Settings changed/);
- assert.equal(await page.locator("#exportBtn").isDisabled(),true);
- await quiet(900);
- // Switch to a different real NASA location and re-run. Same hardware.
- await page.locator("#site04Btn").click();
- await page.locator("#evaluate").click();
- assert.match(await page.locator("#report").innerText(),/Site04/);
- assert.match(await page.locator("#report").innerText(),/UNKNOWN/);
- await quiet(1000);
- await page.screenshot({path:path.join(artifact,"03-second-site.png"),fullPage:true});
- // Accessible 7-slide source-credited, no generated simulated sky images.
- const slidePage=await context.newPage();
- slidePage.on("pageerror",e=>pageErrors.push(e.message));
- await slidePage.goto(target+"/judges-slides.html",{waitUntil:"load"});
- assert.equal(await slidePage.locator(".slide").count(),7);
- assert.equal(await slidePage.locator(".slide.active").count(),1);
- await slidePage.locator("#next").click();
- assert.match(await slidePage.locator("#count").innerText(),/2 \/ 7/);
- await slidePage.keyboard.press("ArrowLeft");
- assert.match(await slidePage.locator("#count").innerText(),/1 \/ 7/);
- await slidePage.screenshot({path:path.join(artifact,"04-judges-slides.png"),fullPage:false});
- await slidePage.close();
- await quiet(300);
- const video=await page.video().path();
- await context.close();
- // Playwright finalizes the real browser video on context.close().
- fs.copyFileSync(video,path.join(artifact,"mission-rescue-real-browser.webm"));
- const mobile=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:1});
- const phone=await mobile.newPage();phone.on("pageerror",e=>pageErrors.push(e.message));
- await phone.goto(target+"/mission-console.html",{waitUntil:"load"});
- await phone.waitForFunction(()=>document.querySelector("#datasetStatus").textContent.includes("745 actual"));
- await phone.screenshot({path:path.join(artifact,"05-mobile.png"),fullPage:true});
- assert.equal(await phone.locator("#evaluate").isVisible(),true);
- await phone.locator("#evaluate").click();
- assert.match(await phone.locator("#caseCount").innerText(),/5-minute/);
- await phone.locator("#inspectStress").click();
- assert.equal(await phone.locator("#startUtc").inputValue(),"2026-12-21T17:45");
- assert.ok(Math.abs(Number(await phone.locator("#delayH").inputValue())-54.25)<1e-8);
- assert.match(await phone.locator("#report").innerText(),/Research candidate/);
- await mobile.close();await browser.close();
- assert.deepEqual(pageErrors,[],"JavaScript browser exceptions");
- console.log("PASS Chromium desktop/mobile real NASA, 1730 5-minute cases, stale-setting protection, 7-slide navigation, true UI video");
-}
-main().catch(e=>{console.error(e);process.exit(1)});
+/* Actual source-built browser walkthrough. No fabricated astronomy or UI results. */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+let pw;try{pw=require('playwright')}catch(e){pw=require('../artifacts/qa/node_modules/playwright')}
+const out='artifacts/browser';fs.mkdirSync(out,{recursive:true});
+const executable=process.env.BROWSER_EXECUTABLE||(process.platform==='win32'&&fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe')?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined);
+const wait=page=>page.waitForFunction(()=>window.ZenithUI&&window.ZenithUI.state.phase!=='busy');
+(async()=>{
+ const browser=await pw.chromium.launch({headless:true,...(executable?{executablePath:executable}:{})}),errors=[];
+ const context=await browser.newContext({viewport:{width:1440,height:1000},...(process.env.RECORD_VIDEO?{recordVideo:{dir:out,size:{width:1280,height:720}}}:{})});
+ const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:8765/mission-console.html');
+ assert.equal(await page.locator('#visualization').isVisible(),false);
+ await page.screenshot({path:out+'/01-initial.png',fullPage:true});
+ await page.locator('#loadDemo').click();await wait(page);
+ const result=await page.evaluate(()=>window.ZenithUI.state.report);
+ assert.equal(result.scannedCaseCount,1730);assert.equal(result.candidateCount,153);assert.equal(result.reviewCount,560);
+ assert.equal(result.original.minEstimatedPowerW,50.156);assert.equal(result.candidates[0].minEstimatedPowerW,100.283);
+ assert.equal(result.candidates[0].sensitivity.minimumPowerW,82.531);assert.equal(result.sensitivityCandidate.minEstimatedPowerW,120.094);
+ assert.equal(result.sensitivityCandidate.sensitivity.minimumPowerW,100.250);assert.equal(result.sensitivityPassCount,92);assert.equal(result.severeSensitivityPassCount,0);
+ assert.equal(result.certifiedAlternativeCount,0);assert.equal(result.windowMarginSeconds,null);
+ assert.equal(await page.locator('.case-card').count(),3);
+ const originalInputs=await page.locator('#planForm').evaluate(form=>[...form.elements].filter(e=>e.id).map(e=>[e.id,e.type==='checkbox'?e.checked:e.value]));
+ await page.locator('[data-inspect-case=nominal]').click();
+ assert.match(await page.locator('#currentDate').innerText(),/12:40/);
+ await page.locator('[data-inspect-case=sensitivity]').click();
+ assert.match(await page.locator('#currentDate').innerText(),/17:45/);
+ assert.deepEqual(await page.locator('#planForm').evaluate(form=>[...form.elements].filter(e=>e.id).map(e=>[e.id,e.type==='checkbox'?e.checked:e.value])),originalInputs);
+ await page.screenshot({path:out+'/02-comparison.png',fullPage:true});
+ await page.locator('#sourcesLink').click();
+ let download=page.waitForEvent('download');await page.locator('#exportBtn').click();
+ const payload=JSON.parse(fs.readFileSync(await (await download).path(),'utf8'));
+ assert.equal(payload.request.startUtc,'2026-12-21T00:00:00.000Z');assert.equal(payload.inspectedCaseResult.startUtc,'2026-12-21T17:45:00.000Z');
+ assert.equal(payload.inspectedSourceUtc,'2026-12-21T17:45:00Z');assert.match(payload.inspectedCaseResult.evidence.sourceHashes.sun,/^[a-f0-9]{64}$/);
+ await page.locator('#applyCase').click();await wait(page);
+ assert.equal(await page.locator('#startUtc').inputValue(),'2026-12-21T17:45');assert.equal(Number(await page.locator('#delayH').inputValue()),54.25);
+ assert.equal(await page.evaluate(()=>window.ZenithUI.state.report.request.startMs+window.ZenithUI.state.report.request.delayMs),result.request.startMs+result.request.delayMs);
+ await page.locator('#requiredPowerW').fill('110');assert.equal(await page.locator('#exportBtn').isDisabled(),true);
+ assert.match(await page.locator('#resultStatus').innerText(),/Recalculation/);
+ await page.locator('#siteSelect').selectOption('Site04');await page.locator('#evaluate').click();await wait(page);
+ assert.equal(await page.evaluate(()=>window.ZenithUI.state.report.original.site),'Site04');
+ await page.setViewportSize({width:390,height:844});await page.locator('#loadDemo').click();await wait(page);
+ await page.locator('[data-inspect-case=sensitivity]').click();await page.locator('#horizonTab').click();
+ assert.match(await page.locator('#currentDate').innerText(),/17:45/);
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile overflow');
+ await page.screenshot({path:out+'/03-mobile-horizon.png',fullPage:true});
+ const slides=await context.newPage();slides.on('pageerror',e=>errors.push(e.message));
+ await slides.goto('http://127.0.0.1:8765/judges-slides.html');await slides.waitForFunction(()=>!!window.ZenithPresentation);
+ assert.equal(await slides.locator('.slide').count(),7);assert.equal(await slides.locator('.slide.active').count(),1);
+ await slides.locator('#next').click();assert.equal(await slides.locator('#count').innerText(),'2 / 7');
+ await slides.keyboard.press('ArrowLeft');assert.equal(await slides.locator('#count').innerText(),'1 / 7');
+ assert.equal(await slides.locator('#slidesLanguage').count(),0);
+ await slides.screenshot({path:out+'/04-presentation.png'});
+ const video=page.video()?await page.video().path():null;
+ await context.close();if(video)fs.copyFileSync(video,path.join(out,'mission-rescue-real-browser.webm'));
+ await browser.close();assert.deepEqual(errors,[]);
+ console.log('PASS real NASA browser walkthrough: original regression, 153/92/0 candidates, inspect without mutation, explicit apply/deadline preservation, current JSON, stale protection, mobile horizon and seven-slide navigation. Video: '+!!video);
+})().catch(e=>{console.error(e);process.exit(1)});
