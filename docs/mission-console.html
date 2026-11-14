@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071120"><meta name="description" content="Lunar Window: explainable NASA-powered lunar site and time comparison with evidence-based Mission Rescue screening.">
+<title>Mission Rescue Console | Lunar Window — NASA Space Apps</title>
+<link rel="stylesheet" href="./mission-console.css">
+<script defer src="./data/mission_dataset.js"></script>
+<script defer src="./mission-console.js"></script>
+</head><body>
+<a class="skip" href="#mission">Skip to main content</a>
+<header class="top"><a class="brand" href="./index.html"><span class="brand-moon">◑</span><span>LUNAR<span class="gold">WINDOW</span><small>NASA SPACE APPS · 2026</small></span></a>
+<nav aria-label="Primary navigation"><a href="#mission">Decision desk</a><a href="#compare">Compare sites</a><a href="#sources">Evidence</a><a href="./index.html">Original explorer</a></nav></header>
+<main id="mission">
+<section class="hero wrap"><div class="hero-copy"><div class="eyebrow"><span class="live-dot"></span> REAL NASA DATA · EVIDENCE-FIRST MISSION PLANNING</div>
+<h1>Know the window.<br><em>Rescue the mission.</em></h1>
+<p>Pick a lunar south-pole site, time, and operating constraints. Explore original Sun and Earth geometry, diagnose <strong>potential</strong> conflicts, and compare site/time changes — without inventing a successful lunar mission.</p>
+<div class="chip-row"><span class="chip">2 NASA south-pole sites</span><span class="chip">338 real site-time records</span><span class="chip">UTC · Dec 1–8, 2026</span></div></div>
+<div class="moon-graphic" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="moon-disc"></div><div class="moon-caption">SOUTH POLE / MISSION RESCUE</div></div></section>
+<div class="wrap"><div id="statusBar" class="warning" role="status"><span>⚠</span><div><strong>Research prototype — science validation pending.</strong> NASA positions and local LOLA elevation screens are authentic, but distant terrain, DEM/ephemeris frame alignment, continuous windows and actual available power are not independently validated. No operational certification or verified Time Margin is claimed.</div></div>
+<div class="workspace">
+<aside class="controls card" aria-labelledby="planTitle"><div class="section-kicker">01 · MISSION CONTROL</div><h2 id="planTitle">Plan your operation</h2>
+<p class="muted intro">All hardware values below are <strong>user-selected assumptions</strong>, not NASA spacecraft specifications.</p>
+<form id="planForm">
+<fieldset class="fieldset"><legend>Choose lunar site</legend><div class="site-switch">
+<button class="site-btn selected" type="button" id="site01Btn" data-site="Site01" aria-pressed="true"><b>Connecting Ridge</b><small>Site01 · −89.4632°, 222.51°E</small></button>
+<button class="site-btn" type="button" id="site04Btn" data-site="Site04" aria-pressed="false"><b>Shackleton Rim</b><small>Site04 · −89.7668°, 188.13°E</small></button>
+</div></fieldset>
+<div class="field-grid">
+<label>Start date &amp; time <span>UTC</span><input id="startUtc" type="datetime-local" value="2026-12-04T12:00" min="2026-12-01T00:00" max="2026-12-08T00:00" required></label>
+<label>Operation duration <span>hours</span><input id="durationH" type="number" step=".25" value="6" min=".25" max="168" required></label>
+<label>Required power <span>watts</span><input id="requiredPowerW" type="number" min=".01" step="1" value="100" required></label>
+<label>Maximum allowed delay <span>hours</span><input id="delayH" type="number" min="0" max="168" step="1" value="72" required></label>
+<label>Solar panel area <span>m²</span><input id="panelArea" type="number" min=".01" step=".1" value="1.5" required></label>
+<label>Panel efficiency <span>%</span><input id="panelEfficiency" type="number" min=".01" max="100" step=".1" value="25" required></label>
+<label>Panel tilt <span>degrees</span><input id="panelTilt" type="number" min="0" max="90" step="1" value="30" required></label>
+<label>Panel azimuth <span>degrees from N</span><input id="panelAzimuth" type="number" min="0" max="359.999" step="1" value="90" required></label>
+</div>
+<label class="checkbox-line"><input id="earthRequired" type="checkbox">Require geometric Earth visibility throughout operation</label>
+<label class="full-label">Rank research candidates by<select id="priority"><option value="earliest">Earliest screened start</option><option value="keep">Prefer original site</option><option value="clearance">Largest sampled clearance (not time margin)</option></select></label>
+<div class="quick-row"><button type="button" id="powerOnly" class="pill-button selected">Power-only scenario</button><button type="button" id="earthMode" class="pill-button">Power + Earth scenario</button></div>
+<button class="primary" id="evaluate" type="submit"><span>◎</span> Run multi-case screening</button>
+<p class="small-note" id="inputStatus" aria-live="polite">Results will never be marked verified unless the scientific validation gates pass.</p>
+</form></aside>
+<div class="main-panels">
+<section class="card" id="compare"><div class="panel-top"><div><div class="section-kicker">02 · ORIGINAL EPHEMERIDES</div><h2>Sun &amp; Earth over time</h2><p class="muted">Choose one of the 169 actual JPL Horizons hourly timestamps. The curves connect real sample points visually.</p></div><div class="source-pill">JPL Horizons + NASA LOLA</div></div>
+<div class="date-row"><strong id="currentDate">Loading NASA source…</strong><span id="datasetStatus">Source verification pending</span></div>
+<input id="timeSlider" class="time-range" type="range" min="0" max="168" value="0" step="1" aria-label="Select exact JPL Horizons UTC time">
+<div class="range-ends"><span>Dec 1 00:00 UTC</span><span>Dec 8 00:00 UTC</span></div>
+<div class="metrics">
+<div class="metric solar"><small>Sun azimuth / elevation</small><strong id="sunAngles">—</strong></div>
+<div class="metric terra"><small>Earth azimuth / elevation</small><strong id="earthAngles">—</strong></div>
+<div class="metric solar"><small>Sun above LOCAL skyline by</small><strong id="sunClearance">—</strong><span id="sunStatus">Unverified local terrain</span></div>
+<div class="metric terra"><small>Earth above LOCAL skyline by</small><strong id="earthClearance">—</strong><span id="earthStatus">Unverified local terrain</span></div>
+</div>
+<div class="chart-head"><h3>Angular clearance from sampled LOLA skyline</h3><div class="legend"><span><i class="point sun-color"></i>Sun</span><span><i class="point earth-color"></i>Earth</span></div></div>
+<svg id="terrainGraph" viewBox="0 0 860 280" role="img" aria-label="Provisional Sun and Earth angular clearance in degrees over real sampled times"></svg>
+<p class="graph-foot">0° = local LOLA skyline. 0° is <b>not</b> the global verified horizon. A ±0.25° review band is an interface flag, not a quantified measurement error.</p>
+<div class="source-line">Source: <a id="sourceCsv" href="./data/mission_dataset.json">time-aligned NASA evidence</a> · <span id="sourceHash">Provenance checked</span></div>
+</section>
+<section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Two sites. Same scientific limitations.</h2><p class="muted">Comparisons count actual hourly samples, not continuous illumination duration or validated radio links.</p>
+<div id="siteCards" class="compare-grid" aria-live="polite"></div>
+<div class="explain"><b>Why this matters:</b> A sample above the <em>local</em> skyline can still be blocked by unmodelled distant mountains; a sample near the local edge requires finer timing and uncertainty evaluation. Neither is an operational pass.</div>
+</section>
+<section class="card" id="results"><div class="panel-top"><div><div class="section-kicker">04 · OUR INNOVATION</div><h2>Mission Rescue — Explainable screening</h2><p class="muted">We analyze the original plan, permissible delays, and switching sites under unchanged requirements. Every suggested case is only a <strong>research candidate</strong> until science validation is complete.</p></div><span class="source-pill">NO SYNTHETIC NASA DATA</span></div>
+<div id="report" class="report" aria-live="polite"><div class="empty-state">Choose your mission constraints, then select <b>Run multi-case screening</b>.</div></div>
+<div class="case-top"><h3>Alternative cases</h3><span id="caseCount" class="small-note"></span></div>
+<div id="alternatives" class="alternatives"><div class="small-note">No scenarios evaluated yet.</div></div>
+<div class="margin-warning"><strong>Time Margin ≠ sampled time until dataset cutoff</strong><p>Verified Time Margin is <b>UNKNOWN</b> until a genuine, scientifically bounded continuous operating window is established. This app never treats the final dataset timestamp as sunset or Earthset.</p></div>
+<div class="report-actions"><button id="exportBtn" type="button" class="secondary" disabled>Export traceable report (JSON)</button><a class="small-link" href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/src/mission_rescue.py" target="_blank" rel="noopener">Inspect rescue logic</a></div>
+</section>
+</div></div>
+<section class="card resources" id="sources"><div class="section-kicker">05 · EVIDENCE & LIMITATIONS</div><h2>Every number has a NASA source.</h2>
+<div class="source-grid"><article><b><a href="https://ssd.jpl.nasa.gov/horizons/app.html" target="_blank" rel="noopener">NASA/JPL Horizons</a></b><p>Actually used: 169 true UTC Sun/Earth azimuth/elevation records for each curated lunar site.</p></article>
+<article><b><a href="https://pgda.gsfc.nasa.gov/products/78" target="_blank" rel="noopener">NASA LRO / LOLA</a></b><p>Actually used: 5 m site DEMs to compute preliminary local terrain sky profiles. Distant coverage and frame alignment remain unresolved.</p></article>
+<article><b><a href="https://quickmap.lroc.asu.edu/" target="_blank" rel="noopener">LROC QuickMap</a></b><p>Official challenge reference for exploring terrain and image context. Not a numerical feed in this version.</p></article>
+<article><b><a href="https://trek.nasa.gov/moon/" target="_blank" rel="noopener">NASA Moon Trek</a></b><p>Official challenge visualization reference. Not a numerical feed in this version.</p></article>
+</div>
+<p class="small-note">Source archive: <a href="https://github.com/fayzeh-Elzghier/lunar-window/tree/main/data" target="_blank" rel="noopener">NASA source tables</a> · <a href="./STEP_03_TERRAIN_SCREEN.md">Calculation methodology</a> · <a href="https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/" target="_blank" rel="noopener">Official 2026 challenge</a> · <a href="https://www.asc-csa.gc.ca/eng/astronomy/moon-exploration/" target="_blank" rel="noopener">CSA research context</a></p>
+</section></div>
+</main>
+<footer><div class="wrap footer-inner"><div><strong>◑ LUNAR WINDOW</strong><p>Independent student research prototype, NASA Space Apps 2026. Not NASA-endorsed, flight-qualified, or landing-safe-site certified.</p></div><a href="https://github.com/fayzeh-Elzghier/lunar-window" target="_blank" rel="noopener">View open-source methodology ↗</a></div></footer>
+</body></html>
