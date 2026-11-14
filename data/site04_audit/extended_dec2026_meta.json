@@ -1,0 +1,66 @@
+{
+  "site_id": "Site04",
+  "utc_start": "2026-12-01T00:00:00+00:00",
+  "utc_end": "2027-01-01T00:00:00+00:00",
+  "cadence_seconds": 3600,
+  "epochs": 745,
+  "ephemeris_provenance": {
+    "sun": {
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27188.13%2C-89.7668%2C0.773043212891%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-01%27&STOP_TIME=%272027-01-01%27&STEP_SIZE=%271h%27&QUANTITIES=%274%2C20%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&RANGE_UNITS=%27AU%27&SUPPRESS_RANGE_RATE=%27YES%27&TIME_TYPE=%27UT%27",
+      "params": {
+        "format": "text",
+        "COMMAND": "'10'",
+        "CENTER": "'coord@301'",
+        "COORD_TYPE": "'GEODETIC'",
+        "SITE_COORD": "'188.13,-89.7668,0.773043212891'",
+        "MAKE_EPHEM": "'YES'",
+        "EPHEM_TYPE": "'OBSERVER'",
+        "START_TIME": "'2026-12-01'",
+        "STOP_TIME": "'2027-01-01'",
+        "STEP_SIZE": "'1h'",
+        "QUANTITIES": "'4,20'",
+        "CSV_FORMAT": "'YES'",
+        "OBJ_DATA": "'NO'",
+        "APPARENT": "'AIRLESS'",
+        "RANGE_UNITS": "'AU'",
+        "SUPPRESS_RANGE_RATE": "'YES'",
+        "TIME_TYPE": "'UT'"
+      },
+      "sha256": "c59bbd6b495a5c51a2b47febe2b0a66261370e78fe37234771b5044135ed1de6",
+      "rows": 745,
+      "science_status": "PROVISIONAL_LOLA_HORIZON__NO_OPERATION_CERTIFICATION"
+    },
+    "earth": {
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&COMMAND=%27399%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27188.13%2C-89.7668%2C0.773043212891%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&START_TIME=%272026-12-01%27&STOP_TIME=%272027-01-01%27&STEP_SIZE=%271h%27&QUANTITIES=%274%27&CSV_FORMAT=%27YES%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&RANGE_UNITS=%27AU%27&SUPPRESS_RANGE_RATE=%27YES%27&TIME_TYPE=%27UT%27",
+      "params": {
+        "format": "text",
+        "COMMAND": "'399'",
+        "CENTER": "'coord@301'",
+        "COORD_TYPE": "'GEODETIC'",
+        "SITE_COORD": "'188.13,-89.7668,0.773043212891'",
+        "MAKE_EPHEM": "'YES'",
+        "EPHEM_TYPE": "'OBSERVER'",
+        "START_TIME": "'2026-12-01'",
+        "STOP_TIME": "'2027-01-01'",
+        "STEP_SIZE": "'1h'",
+        "QUANTITIES": "'4'",
+        "CSV_FORMAT": "'YES'",
+        "OBJ_DATA": "'NO'",
+        "APPARENT": "'AIRLESS'",
+        "RANGE_UNITS": "'AU'",
+        "SUPPRESS_RANGE_RATE": "'YES'",
+        "TIME_TYPE": "'UT'"
+      },
+      "sha256": "2eb627ca1f5e33b90c2fa1e55b24439013b07693943e72960d511ed287ab60eb",
+      "rows": 745,
+      "science_status": "PROVISIONAL_LOLA_HORIZON__NO_OPERATION_CERTIFICATION"
+    }
+  },
+  "local_lola_horizon_sha256": "257cfc5a78dd5116e117240581f020541f5cdc023c71da13949a10d7ccaa56ee",
+  "local_lola_raster_sha256": "38ff70dbdf2f066c2cfa94a646c3a59d653ce7f6b4528b15fc1b43ee397ce758",
+  "distance_adjusted_reference": "1361 W/m2 / sun_distance_au^2, unshadowed",
+  "scientific_status": "PROVISIONAL_LOLA_HORIZON__NO_OPERATION_CERTIFICATION",
+  "margin_status": "UNKNOWN",
+  "uncertainty": "Sun distance actual JPL; local terrain far field/DE frame/eclipse/crossing not validated",
+  "independent_validation": "PENDING"
+}
