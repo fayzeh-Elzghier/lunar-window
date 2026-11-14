@@ -32,7 +32,7 @@ jobs:
           python-version: '3.11'
       - name: Install Playwright and headless Chromium
         run: |
-          npm install --no-save playwright@1.55.0
+          npm install --no-save playwright@1.61.0
           npx playwright install --with-deps chromium
       - name: Serve actual source-built GitHub Pages files
         run: |
