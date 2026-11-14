@@ -36,7 +36,7 @@ def main():
             raise ValueError("Unexpected source start for Site"+site)
         if ephem[-1]["t"]!="2026-12-08T00:00:00Z":
             raise ValueError("Unexpected source end for Site"+site)
-    if "INSUFFICIENT DATA" not in html or "Not a full terrain horizon" not in html:
+    if "INSUFFICIENT DATA" not in html or "terrain beyond the 16 km LOLA tile is unknown" not in html:
         raise ValueError("Science warnings disappeared; do not deploy")
     ids=set(re.findall(r'\bid="([^"]+)"',html))
     static_lookups=set(re.findall(r'\$\("([A-Za-z0-9_-]+)"\)',js))
