@@ -6,7 +6,18 @@ An evidence-first web application to explore real lunar south-pole Sun and Earth
 
 **Our creativity and innovation:** an *explainable multi-case Mission Rescue* decision workflow: identify all causes of failed power and geometric Earth-visibility requirements, test permitted site/start changes, rank valid alternatives by user priority, and display the **time margin** before a verified window ends. Not just a pretty lunar map.
 
-> **Scientific status:** Real JPL Horizons ephemerides for **both Site01 and Site04** (169 true UTC epochs each) are present. Local LOLA horizon screening is available for both sites, but distant terrain, independent frame validation, actual available power, continuous operation windows and verified rescue alternatives remain **incomplete**. The live dashboard correctly reports **INSUFFICIENT DATA**, not an invented win.
+> **Scientific status (2026-11-14):** The **new [Mission Rescue Console](docs/mission-console.html)** uses **745 genuine JPL Horizons UTC epochs per site (1,490 total)** including Sun range, NASA LOLA local 5 m and wider 80 m topography screened to approximately 300 km, and original LOLA local-height RMS error maps. Our **multi-case Rescue screening works**, but source alignment, far-field errors, eclipses, continuous operating windows, available power and physical Time Margin remain **unverified**. Zero certified mission passes are claimed.
+
+## Start here — integrated demo (Fayzeh + Ala)
+
+- **[Open the live Mission Rescue Console](https://fayzeh-elzghier.github.io/lunar-window/mission-console.html)** — main interactive submission prototype.
+- [Submission explanation and real-source demo story](docs/SUBMISSION_DEMO.md).
+- [NASA 745-row source: Site01](data/site01_audit/extended_dec2026.csv) and [Site04](data/site04_audit/extended_dec2026.csv).
+- [NASA near+far LOLA source comparison Site01](data/site01_audit/far_screen_dec2026.csv) and [Site04](data/site04_audit/far_screen_dec2026.csv); [far terrain original-source record](data/site01_audit/far_lola_meta.json).
+- [NASA local elevation-error assessment Site01](data/site01_audit/lola_z_rms_meta.json) and [Site04](data/site04_audit/lola_z_rms_meta.json).
+- [Automated real NASA mission console tests](scripts/verify_console.cjs).
+
+**What is not finished:** A flight-quality, independently validated lunar terrain/time-window/power solution is outside what the current evidence certifies. The console explicitly marks all returned alternatives as research candidates, physical Time Margin as unknown, and no lander safety or ground-station RF guarantees.
 
 ## Quick start
 
