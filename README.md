@@ -8,6 +8,16 @@ An evidence-first web application to explore real lunar south-pole Sun and Earth
 
 > **Scientific status (2026-11-14):** The **new [Mission Rescue Console](docs/mission-console.html)** uses **745 genuine JPL Horizons UTC epochs per site (1,490 total)** including Sun range, NASA LOLA local 5 m and wider 80 m topography screened to approximately 300 km, and original LOLA local-height RMS error maps. Our **multi-case Rescue screening works**, but source alignment, far-field errors, eclipses, continuous operating windows, available power and physical Time Margin remain **unverified**. Zero certified mission passes are claimed.
 
+## Submission links — NASA Space Apps 2026
+
+- **[PUBLIC: Seven-slide judges demo](https://fayzeh-elzghier.github.io/lunar-window/judges-slides.html)** — a seven-slide English presentation sourced to actual NASA JPL/LOLA data, with clear scientific disclaimers and AI disclosure.
+- **[PUBLIC: Interactive final project](https://fayzeh-elzghier.github.io/lunar-window/mission-console.html)** — evidence-based multi-case research screening.
+- **[Ready-to-paste submission text, source references, AI disclosure, and final checklist](docs/SUBMISSION_READY_2026.md)** — for the official team Project tab.
+- **[Original NASA 5-minute JPL source](data/site01_audit/fine_5m_dec2026.csv)** (Site01) and [Site04](data/site04_audit/fine_5m_dec2026.csv) — real source observations; no artificial lunar values.
+- **[Seven-slide PDF/PPTX copies](docs/judges-slides.html)** — downloadable copies were generated for the team separately; the public HTML slide presentation is the submission link.
+
+**Not yet claimed:** official Space Apps submission, independent mission-science validation, continuous operating-window certification, or physical Time Margin. The 26-scenario acceptance register is a development checklist, not 26 certified scientific passes.
+
 ## Start here — integrated demo (Fayzeh + Ala)
 
 - **[Open the live Mission Rescue Console](https://fayzeh-elzghier.github.io/lunar-window/mission-console.html)** — main interactive submission prototype.
