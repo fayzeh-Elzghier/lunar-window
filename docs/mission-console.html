@@ -67,7 +67,7 @@
 <div id="report" class="report" aria-live="polite"><div class="empty-state">Choose your mission constraints, then select <b>Run multi-case screening</b>.</div></div>
 <div class="case-top"><h3>Alternative cases</h3><span id="caseCount" class="small-note"></span></div>
 <div id="alternatives" class="alternatives"><div class="small-note">No scenarios evaluated yet.</div></div>
-<div class="margin-warning"><strong>Time Margin ≠ sampled time until dataset cutoff</strong><p>Verified Time Margin is <b>UNKNOWN</b> until a genuine, scientifically bounded continuous operating window is established. This app never treats the final dataset timestamp as sunset or Earthset.</p></div>
+<div class="margin-warning"><strong>Two different time margins — never confuse them</strong><p><b>Sampled reference slack</b> is computed from original NASA 5-minute records when a real later sample witnesses the end of a model-passing run (Site01 demo: <b>24h 20m</b>). It is not uninterrupted verified sunlight or actual spacecraft power. <b>Physical Time Margin remains UNKNOWN</b> pending complete terrain, eclipse, electrical and communication validation. The source dataset cutoff is never used as a natural window end.</p><p><a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/TIME_MARGIN_METHOD.md" target="_blank" rel="noopener">Read calculation, original NASA timestamps and safety limits</a></p></div>
 <div class="report-actions"><button id="exportBtn" type="button" class="secondary" disabled>Export traceable report (JSON)</button><a class="small-link" href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/src/mission_rescue.py" target="_blank" rel="noopener">Inspect rescue logic</a></div>
 </section>
 </div></div>
