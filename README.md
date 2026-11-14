@@ -40,6 +40,31 @@ The dashboard builder uses **only** `data/site04_audit/sample.csv`; it rejects t
 | [docs/OBJECTIVES_AND_RELEASE_GATES.md](docs/OBJECTIVES_AND_RELEASE_GATES.md) | Link between official 2026 objectives and verified functionality |
 | [docs/STEP_01.md](docs/STEP_01.md) | Initial frozen MVP specification and engineering ownership |
 
+## Implementation update — November 14, 2026
+
+**Real code pushed; see [scientific status and reproducibility audit](docs/SCIENTIFIC_STATUS.md).**
+
+- **NASA Site01 acquisition**: [script](scripts/acquire_site01.py) requests original site-specific JPL Horizons Sun/Earth angles and NASA LOLA Site01 LDEM. The [GitHub Actions pipeline](.github/workflows/nasa-science.yml) is configured to run that acquisition and commit only structurally verified source files. **Check the workflow and generated files before claiming Site01 was acquired.**
+- **Terrain horizon**: [lunar-curvature-corrected local skyline script](scripts/compute_local_horizon.py) samples original NASA LOLA pixels in all azimuths and reports unknown distant terrain explicitly. Local-tile results are **provisional**, NOT independently verified full horizons.
+- **Solar orientation**: [panel incidence model](src/solar_geometry.py) and the Site04 dashboard show a **1 AU unshadowed irradiance reference** from real JPL angular data and user-defined panel geometry, using [NASA Goddard's ~1361 W/m² reference](https://earth.gsfc.nasa.gov/climate/projects/solar-irradiance/science). Not actual solar power or a reason for a mission pass.
+- **Site01 browser integration**: [source hash verifier/embedder](scripts/embed_site01_data.py) adds actual Site01 readings to offline HTML only when all 169 original NASA epochs and raw files are available and checked.
+- **No synthetic astronomy**. The 26-case register remains a requirements checklist, not 26 passed scientific tests.
+
+### Automated NASA source workflow
+
+[Check or run the NASA data workflow](https://github.com/fayzeh-Elzghier/lunar-window/actions/workflows/nasa-science.yml). If your GitHub Actions installation has network and write permissions, it downloads and audits NASA records, emits an artifact and commits the real time series and **labeled provisional** horizon outputs. If it does not run, follow the exact documented commands below in a networked Python environment:
+
+```bash
+python -m pip install numpy rasterio
+python scripts/acquire_site01.py
+python scripts/compute_local_horizon.py --site Site01
+python scripts/compute_local_horizon.py --site Site04
+python scripts/embed_site01_data.py
+python -m unittest discover -s tests -v
+```
+
+Only the NASA source request and local-horizon *code* are confirmed committed at this stage; generated Site01 files must be inspected after a successful execution. This process does not certify continuous operating windows, radio link, or physical Time Margin.
+
 ## Core calculation, once upstream science is verified
 
 The upstream pipeline must determine time-varying Sun/Earth geometry versus a physically validated lunar terrain horizon, fixed panel incidence, estimated direct solar power, and continuous condition intervals. The decision engine checks
