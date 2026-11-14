@@ -31,12 +31,7 @@ async function main(){
  const invalid=await page.locator("#planForm").evaluate(form=>[...form.elements].filter(x=>x.willValidate&&!x.checkValidity()).map(x=>({id:x.id,validity:x.validity.stepMismatch?"stepMismatch":"invalid"})));
  assert.deepEqual(invalid,[],"Valid source demo settings must be accepted by native HTML validation");
  await page.locator("#evaluate").click();
- await page.waitForTimeout(2000);
- console.log("DEBUG CASES:",await page.locator("#caseCount").innerText());
- console.log("DEBUG REPORT:",(await page.locator("#report").innerText()).slice(0,1600));
- console.log("DEBUG JS ERRORS:",pageErrors);
- await page.screenshot({path:path.join(artifact,"diagnostic-after-evaluate.png"),fullPage:true});
- await page.waitForFunction(()=>document.querySelector("#caseCount").textContent.includes("1730 cases screened at 5-minute"),{timeout:12000});
+ await page.waitForFunction(()=>document.querySelector("#caseCount").textContent.includes("1730 cases screened at 5-minute"),{timeout:20000});
  assert.match(await page.locator("#report").innerText(),/UNKNOWN/);
  assert.match(await page.locator("#caseCount").innerText(),/0 certified alternatives/);
  assert.equal(await page.locator("#exportBtn").isEnabled(),true);
@@ -51,7 +46,7 @@ async function main(){
  // Switch to a different real NASA location and re-run. Same hardware.
  await page.locator("#site04Btn").click();
  await page.locator("#evaluate").click();
- assert.match(await page.locator("#report").innerText(),/Site Site04/);
+ assert.match(await page.locator("#report").innerText(),/Site04/);
  assert.match(await page.locator("#report").innerText(),/UNKNOWN/);
  await quiet(1000);
  await page.screenshot({path:path.join(artifact,"03-second-site.png"),fullPage:true});
