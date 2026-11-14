@@ -1,0 +1,56 @@
+name: Rebuild real NASA 300km terrain-aware research evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build_far_evidence.py"
+      - ".github/workflows/build-far-evidence.yml"
+permissions:
+  contents: write
+concurrency:
+  group: nasa-far-evidence-bundle
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Rebuild authenticated NASA Horizons plus local and far LOLA source model
+        run: python scripts/build_far_evidence.py
+      - name: Check no generated Earth or Sun epochs
+        run: |
+          python -m compileall -q scripts src tests
+          python -m unittest discover -s tests -v
+      - name: Preserve independent analysis evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasa-far-field-monthly-reproducible-evidence
+          path: |
+            data/site01_audit/far_screen_dec2026.csv
+            data/site04_audit/far_screen_dec2026.csv
+            docs/data/mission_dataset_far.json
+            docs/data/mission_dataset_far.js
+          retention-days: 30
+      - name: Publish checked source comparison and browser data safely
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/site01_audit/far_screen_dec2026.csv data/site04_audit/far_screen_dec2026.csv \
+            docs/data/mission_dataset_far.json docs/data/mission_dataset_far.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data: authenticated NASA near and far terrain month-long screening"
+          for i in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then git rebase --abort || true; exit 1; fi
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((2*i))
+          done
+          exit 1
