@@ -53,7 +53,7 @@
     }
   },
   "far_lola_original_sha256": "82030dcbdd7c4bb0c7d858e9b4b293b9f2cda5a543ba31ec0f42784bd6beee5a",
-  "far_lola_bearing_table_sha256": "f2a8f270353176fbcdf5cb3977de5f9b9929ef1681aa100503f1a65ea41f0d70",
+  "far_lola_bearing_table_sha256": "7db4671c6a1de75fa0ceef69f89e440a3cdff83344c011797460076e565877a2",
   "site_altitude_provisional_km": 0.773043212890625,
   "model_status": "NASA_5MIN__PROVISIONAL_5M_PLUS_80M_LOLA__NOT_A_VERIFIED_WINDOW",
   "physical_time_margin": "UNKNOWN",

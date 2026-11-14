@@ -1,3 +1,5 @@
+> Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
+
 # Mission Rescue — Lunar Window innovation
 
 Our distinctive contribution is **explainable rescue of a lunar operating plan**: compare the original site/start against permitted delays and alternate sites; show exactly *why* a plan fails; and quantify **time margin** without implying that a lunar landing, radio contact, or power system is certified.

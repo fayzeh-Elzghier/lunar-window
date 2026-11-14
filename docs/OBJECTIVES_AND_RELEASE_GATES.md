@@ -1,27 +1,39 @@
-# NASA 2026 objectives → Lunar Window delivery map
+# Objectives, judging evidence and release gates
 
-Based on the team's attached **2026 Lunar Landing Site Navigator** PDF, pages 3–5. The prompt says these features **may** be included; it does not require every suggested 3D/mobile/custom-coordinate extension. The team's **2025 local rubric** is context (Impact, Creativity, Validity, Relevance, Presentation), not evidence of exact 2026 weights.
+Current implementation audit · 2026-11-14. This file supersedes earlier development snapshots. Functional coverage is distinct from scientific certification.
 
-| Challenge objective | Currently present | Essential truthfulness gate |
+| Challenge objective | Implementation | Verification / boundary |
 |---|---|---|
-| Interactive curated lunar site selection and comparison | Site04 and Site01 site selector; NASA representative coordinates | Site01 actual Horizons ephemeris acquired; full terrain/physical comparison still unvalidated |
-| Date/time selection and exploration | 169 true hourly Horizons epochs for EACH site, Dec 1–8 2026 | User-requested arbitrary date must not be extrapolated |
-| Sun/Earth position relative to horizon | NASA azimuth/elevation relative to local horizontal | LOLA local terrain horizon not verified yet; zero line is not terrain |
-| Power / Earth-communication opportunity | Requested constraints displayed, evidence gating active | Physical panel incidence and terrain visibility not yet independently checked; don't claim link or watts |
-| Multiple visualizations | Two elevation curves, geometry metrics, time slider, scenario cards | Curves join real samples visually; no claimed between-sample measurements |
-| Temporal dynamics | UTC hourly time slider | No unsupported exact crossing times |
-| Accessibility across skill levels | Plain-language failure and warning messages | Maintain scientific assumptions and terms in source drawer |
-| Creative decision aid | Explainable multi-case Mission Rescue engine and time-margin definition | Only enable recommendations on fully verified continuous data |
+| Quickly compare locations and dates | Two curated south-pole sites, UTC timeline, same-time comparison | Actual NASA samples, common settings |
+| Understand Sun/Earth relative to horizon | Azimuth/elevation, 360° terrain silhouette, clearance timeline | Sampled LOLA horizon, not independent full-horizon validation |
+| Assess power potential | Fixed-panel incidence, actual Sun distance, binary terrain blocking, demand line | Ideal direct-power estimate; no battery or eclipse model |
+| Assess direct-to-Earth opportunities | Earth-center terrain clearance, required-visibility constraint | No RF/link-budget or ground-station guarantee |
+| Understand changes and next setting events | Sample brackets and elapsed-time ranges for next above-to-below transitions | No invented event at coverage end; intermediate crossings may be missed |
+| Support changed mission dates/sites | Search allowed starts and both sites under unchanged constraints | One common cadence per search; original unaligned start is explicitly insufficient |
+| Accessible educational exploration | Source labels, demo story, explanatory controls, keyboard focus, responsive layout | Two curated sites; custom coordinates and 3D are future extensions |
+
+## Judging rubric evidence
+
+| Criterion | Concrete evidence |
+|---|---|
+| Impact | Helps an operator identify why a fixed operation conflicts with power/visibility, then inspect alternatives |
+| Creativity | Mission Rescue preserves requirements and explains each conflict; unresolved edge cases are not promoted to recommendations |
+| Validity | Original NASA responses, hashes, cadence checks, terrain overlap guard, source-linked exports and analytical regression tests |
+| Relevance | Site/date, illumination, terrain horizon, Earth geometry and operating-window workflow directly address the challenge |
+| Presentation | Guided Sara example, live graphs, inspectable alternatives, source exports and seven-slide story |
+
+No invented numeric rubric weights or winning score is assigned.
 
 ## Release gates
 
-1. **Traceability:** all numerical source data has exact originating NASA URL, request parameters, model/coordinates, time basis and retrieval record.
-2. **Science:** independently validate LOLA vertical/terrain horizon and one epoch; provide comprehensive hazard and far-terrain limitations.
-3. **Windows:** validate continuous intervals and threshold transitions; distinguish dataset cutoffs and physical endpoints.
-4. **Power:** distance-adjusted solar irradiance convention, fixed panel normal/dot product, shadow and eclipse treatment documented.
-5. **Comparisons:** both sites have comparable data and assumptions; unknown is never false, absent data never zero.
-6. **Rescue:** alternatives only inside time and hardware limits; multiple causes; margin only for physically bounded windows.
-7. **UI:** loading, no-coverage, stale-request, no-alternative, verified/pass/fail labels; source provenance and UTC.
-8. **Submission:** a demo story using an actually computed and independently validated case, no invented winner or NASA endorsement.
+- Offline Python and JavaScript checks must pass.
+- Fine and hourly data must retain original raw provenance and regular cadence.
+- Both sites must be compared at a common cadence and fixed requirements.
+- Near/far terrain scans must overlap for every bearing; exported skyline hashes must match tables.
+- Missing data, invalid dates and cutoff events must not produce a mission pass.
+- Input edits must invalidate previous findings.
+- Browser acceptance checks desktop/mobile operation, exports, charts, stale results and slide navigation.
 
-Current scientific release: **BLOCKED**. Both sites' real NASA ephemerides and provisional LOLA local horizon comparisons are present; actual mission-feasibility claims remain unsupported.
+## Remaining science work
+
+Independent validation of frame/vertical consistency and the full terrain horizon, far-field error propagation, sub-sample event refinement, solar-disk/eclipses, realistic power storage/losses and ground-station RF analysis remain necessary for mission use. The project implements a transparent preliminary planning model, not a certified lander design.

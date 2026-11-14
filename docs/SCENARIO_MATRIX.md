@@ -1,3 +1,5 @@
+> Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
+
 # Mission Rescue scenario acceptance matrix
 
 All cases are **NOT TESTED against validated NASA-derived continuous intervals** as of 2026-11-14. Do not report a passed science case based only on Python smoke tests, on hourly point samples, or on user-entered assumed hardware requirements.

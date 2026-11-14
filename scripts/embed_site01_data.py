@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 SITE=ROOT/"data/site01_audit"
-HTML=ROOT/"docs/index.html"
+HTML=ROOT/"docs/legacy-explorer.html"
 COLS=["utc","sun_azimuth_deg","sun_elevation_deg","earth_azimuth_deg","earth_elevation_deg"]
 
 def rows_and_checks():

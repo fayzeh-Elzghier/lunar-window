@@ -13,6 +13,7 @@ venv/
 
 # NASA LOLA raster downloads (~41 MB Site04); keep source URL and SHA256 in metadata.
 data/**/*.tif
+data/**/*.TIF
 data/**/*.tiff
 data/**/*.img
 data/**/*.cub
@@ -23,3 +24,5 @@ data/**/*.gz
 # Generated exports (source CSV and documented NASA text outputs ARE tracked).
 site04_horizons.html
 reports/generated/
+node_modules/
+artifacts/

@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 class ReleaseGuardTests(unittest.TestCase):
     def test_site04_ephemerides_preserved_in_ui(self):
-        html=(ROOT/"docs/index.html").read_text(encoding="utf-8")
+        html=(ROOT/"docs/legacy-explorer.html").read_text(encoding="utf-8")
         with (ROOT/"data/site04_audit/sample.csv").open(newline="") as f:
             source=list(csv.DictReader(f))
         self.assertEqual(len(source),169)

@@ -15,7 +15,7 @@ import re
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 SOURCE=ROOT/"data/site04_audit/sample.csv"
-TARGET=ROOT/"docs/index.html"
+TARGET=ROOT/"docs/legacy-explorer.html"
 FIELDS=["utc","sun_azimuth_deg","sun_elevation_deg","earth_azimuth_deg","earth_elevation_deg"]
 
 def source_rows(path=SOURCE):

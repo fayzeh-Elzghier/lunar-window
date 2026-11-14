@@ -85,13 +85,13 @@ const near=e.siteStats(evidence,"Site01");
 assert.equal(near.sunNear,173);assert.equal(near.sunAbove,427);assert.equal(near.sunBelow,145);
 assert.equal(near.earthBelow,474);
 const blocked=e.siteStats(evidence,"Site04");
-assert.equal(blocked.sunBelow,528);assert.equal(blocked.sunNear,44);assert.equal(blocked.sunAbove,173);assert.equal(blocked.earthBelow,745);
+assert.equal(blocked.sunBelow,542);assert.equal(blocked.sunNear,43);assert.equal(blocked.sunAbove,160);assert.equal(blocked.earthBelow,745);
 assert.equal(e.evaluateCase(evidence,r,"Site01",Date.parse("2026-11-30T22:00:00Z")).status,"insufficient_data");
 for(const req of [{efficiency:"150"},{durationH:"-6"},{area:"0"},{azimuth:"360"},{requiredW:"0"},{start:"not-a-date"}]){
  assert.throws(()=>request(req));
 }
 const html=read("docs/mission-console.html"),css=read("docs/mission-console.css"),js=read("docs/mission-console.js");
-assert.match(html,/NASA Space Apps/);assert.match(html,/Time Margin/);assert.match(css,/@media/);
+assert.match(html,/NASA Space Apps/);assert.match(html,/time margin/i);assert.match(css,/@media/);
 assert.ok(html.includes("data/mission_dataset_far.js")&&html.includes("mission-console.js")&&html.includes("data/mission_dataset_fine.js"));
 assert.ok(js.includes('scientificConclusion:"NO_VALIDATED_MISSION_PASS_AVAILABLE"'));
 const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));

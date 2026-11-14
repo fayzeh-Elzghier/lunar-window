@@ -74,3 +74,11 @@ body{
  .hero .chip-row{margin-top:22px}
 }
 @media(prefers-reduced-motion:reduce){.hero,.top,.card{scroll-behavior:auto}}
+/* Objective-complete explorer additions */
+.demo-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0}
+.demo-tools span{color:#b7cde2;font-size:.85rem}
+#horizonGraph,#powerGraph{display:block;width:100%;height:auto;min-height:160px}
+#setEvents article{padding:16px;background:#0b1b2c;border:1px solid #294158;border-radius:12px}
+#reviewCases:empty{display:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #f6c667;outline-offset:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

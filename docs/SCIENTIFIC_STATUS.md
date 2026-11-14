@@ -1,3 +1,5 @@
+> Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
+
 # Scientific implementation status (2026-11-14)
 
 **This document distinguishes committed executable code from completed observations/calculations. No synthetic astronomical data have been added.**

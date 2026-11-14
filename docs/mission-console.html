@@ -7,18 +7,21 @@
 <script defer src="./data/mission_dataset_far.js"></script>
 <script defer src="./data/mission_dataset_fine.js"></script>
 <script defer src="./data/lola_uncertainty.js"></script>
+<script defer src="./data/horizon_profiles.js"></script>
 <script defer src="./mission-console.js"></script>
+<script defer src="./mission-explorer.js"></script>
 </head><body>
 <a class="skip" href="#mission">Skip to main content</a>
 <header class="top"><a class="brand" href="./index.html"><span class="brand-moon">◑</span><span>LUNAR<span class="gold">WINDOW</span><small>NASA SPACE APPS · 2026</small></span></a>
-<nav aria-label="Primary navigation"><a href="#mission">Decision desk</a><a href="#compare">Compare sites</a><a href="#sources">Evidence</a><a href="./index.html">Original explorer</a></nav></header>
+<nav aria-label="Primary navigation"><a href="#mission">Decision desk</a><a href="#compare">Compare sites</a><a href="#sources">Evidence</a><a href="./index.html">Project home</a></nav></header>
 <main id="mission">
 <section class="hero wrap"><div class="hero-copy"><div class="eyebrow"><span class="live-dot"></span> REAL NASA DATA · EVIDENCE-FIRST MISSION PLANNING</div>
 <h1>Know the window.<br><em>Rescue the mission.</em></h1>
-<p>Pick a lunar south-pole site, time, and operating constraints. Explore original Sun and Earth geometry, diagnose <strong>potential</strong> conflicts, and compare site/time changes — without inventing a successful lunar mission.</p>
+<p>Pick a lunar south-pole site, time, and operating constraints. Explore original Sun and Earth geometry, diagnose <strong>potential</strong> conflicts, and compare site/time changes — with an explanation and source record for every result.</p>
 <div class="chip-row"><span class="chip">2 NASA south-pole sites</span><span class="chip">1,490 monthly + 2,882 fine-cadence NASA site-time records</span><span class="chip">UTC · Dec 2026 / 5-minute demo window</span></div></div>
 <div class="moon-graphic" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="moon-disc"></div><div class="moon-caption">SOUTH POLE / MISSION RESCUE</div></div></section>
-<div class="wrap"><div id="statusBar" class="warning" role="status"><span>⚠</span><div><strong>Research prototype — science validation pending.</strong> NASA positions and Sun distance are authentic; sampled 5m local and 80m far-field LOLA terrain are included out to ~300km, but complete terrain coverage, frame alignment, continuous windows and available power are not independently validated. No operational certification or verified Time Margin is claimed.</div></div>
+<div class="wrap"><div id="statusBar" class="warning" role="status"><span>ⓘ</span><div><strong>Planning model, not mission certification.</strong> Uses NASA ephemerides and sampled lunar terrain. Estimated power assumes an ideal fixed panel, binary Sun-center visibility, no batteries, eclipses or electrical losses. Earth-center visibility is not a ground-station contact. <a href="#sources">Model limits and sources</a>.</div></div>
+<div class="demo-tools"><button id="loadDemo" type="button" class="secondary">Load Sara’s delayed-operation example</button><button id="delay30" type="button" class="secondary">What if we start 30 minutes later?</button><span id="demoFeedback" role="status"></span></div>
 <div class="workspace">
 <aside class="controls card" aria-labelledby="planTitle"><div class="section-kicker">01 · MISSION CONTROL</div><h2 id="planTitle">Plan your operation</h2>
 <p class="muted intro">All hardware values below are <strong>user-selected assumptions</strong>, not NASA spacecraft specifications.</p>
@@ -31,20 +34,20 @@
 <label>Start date &amp; time <span>UTC</span><input id="startUtc" type="datetime-local" value="2026-12-21T00:00" min="2026-12-01T00:00" max="2027-01-01T00:00" required></label>
 <label>Operation duration <span>hours</span><input id="durationH" type="number" step=".25" value="6" min=".25" max="744" required></label>
 <label>Required power <span>watts</span><input id="requiredPowerW" type="number" min=".01" step="any" value="100" required></label>
-<label>Maximum allowed delay <span>hours</span><input id="delayH" type="number" min="0" max="744" step="1" value="72" required></label>
+<label>Maximum allowed delay <span>hours</span><input id="delayH" type="number" min="0" max="744" step="any" value="72" required></label>
 <label>Solar panel area <span>m²</span><input id="panelArea" type="number" min=".01" step="any" value="1.5" required></label>
 <label>Panel efficiency <span>%</span><input id="panelEfficiency" type="number" min=".01" max="100" step="any" value="25" required></label>
-<label>Panel tilt <span>degrees</span><input id="panelTilt" type="number" min="0" max="90" step="1" value="30" required></label>
+<label>Panel tilt <span>degrees</span><input id="panelTilt" type="number" min="0" max="90" step="1" value="60" required></label>
 <label>Panel azimuth <span>degrees from N</span><input id="panelAzimuth" type="number" min="0" max="359.999" step="1" value="90" required></label>
 </div>
 <label class="checkbox-line"><input id="earthRequired" type="checkbox" checked>Require geometric Earth visibility throughout operation</label>
 <label class="full-label">Rank research candidates by<select id="priority"><option value="earliest">Earliest screened start</option><option value="keep">Prefer original site</option><option value="clearance">Largest sampled clearance (not time margin)</option></select></label>
 <div class="quick-row"><button type="button" id="powerOnly" class="pill-button">Power-only scenario</button><button type="button" id="earthMode" class="pill-button selected">Power + Earth scenario</button></div>
 <button class="primary" id="evaluate" type="submit"><span>◎</span> Run multi-case screening</button>
-<p class="small-note" id="inputStatus" aria-live="polite">Results will never be marked verified unless the scientific validation gates pass.</p>
+<p class="small-note" id="inputStatus" aria-live="polite">Choose requirements, compare model results, and inspect any unresolved edge cases.</p>
 </form></aside>
 <div class="main-panels">
-<section class="card" id="compare"><div class="panel-top"><div><div class="section-kicker">02 · ORIGINAL EPHEMERIDES</div><h2>Sun &amp; Earth over time</h2><p class="muted">Choose one of the 745 actual JPL Horizons hourly timestamps. The curves connect real sample points visually.</p></div><div class="source-pill">JPL Horizons + NASA LOLA</div></div>
+<section class="card" id="compare"><div class="panel-top"><div><div class="section-kicker">02 · ORIGINAL EPHEMERIDES</div><h2>Sun &amp; Earth over time</h2><p class="muted">Choose one of the 745 actual JPL Horizons hourly timestamps. After screening, this explorer shows the nearest hourly sample; the report retains the exact requested start and its own cadence. Lines connect samples visually.</p></div><div class="source-pill">JPL Horizons + NASA LOLA</div></div>
 <div class="date-row"><strong id="currentDate">Loading NASA source…</strong><span id="datasetStatus">Source verification pending</span></div>
 <input id="timeSlider" class="time-range" type="range" min="0" max="744" value="0" step="1" aria-label="Select exact JPL Horizons UTC time">
 <div class="range-ends"><span>Dec 1 00:00 UTC</span><span>Jan 1 00:00 UTC</span></div>
@@ -59,19 +62,22 @@
 <p class="graph-foot">0° = sampled 5m near + 80m far LOLA skyline (approximately 300km coverage). The entire lunar horizon is NOT proven clear. Review thresholds use a preliminary local NASA height-error RMS and are NOT formal confidence bounds for far-field terrain.</p>
 <div class="source-line">Source: <a id="sourceCsv" href="./data/mission_dataset_far.json">time-aligned NASA evidence</a> · <span id="sourceHash">Provenance checked</span></div>
 </section>
-<section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Two sites. Same scientific limitations.</h2><p class="muted">Site-wide comparisons count original NASA hourly samples; the Dec 20–25 mission screen uses 5-minute JPL samples when the whole request is covered. Neither establishes continuous illumination or a certified RF link.</p>
+<section class="card" id="skyView"><div class="section-kicker">LOCAL SKY</div><h2>What stands between the lander and the sky?</h2><p>Azimuth runs clockwise from north. The line is the sampled terrain horizon; the markers show Sun and Earth centers at the selected UTC time.</p><svg id="horizonGraph" viewBox="0 0 860 280" role="img" aria-label="Terrain horizon by compass direction with Sun and Earth positions"></svg><p id="skyText" class="small-note"></p></section>
+<section class="card" id="powerView"><div class="section-kicker">POWER &amp; COMMUNICATION</div><h2>Estimated power and next visibility changes</h2><p>Solid gold: estimated direct panel power after binary terrain blocking. Dashed gray: unshadowed reference. Red: your power requirement. All values use the fixed panel settings at left.</p><svg id="powerGraph" viewBox="0 0 860 280" role="img" aria-label="Estimated panel power and requested watts over time"></svg><div id="powerDetails" class="metrics" aria-live="polite"></div><div id="setEvents" class="compare-grid" aria-live="polite"></div><p class="small-note">Event times are brackets between actual samples, not exact sunset or Earthset. Near-horizon partial solar illumination and eclipses are excluded. Panel and observer heights are fixed at 2 m; reference directions use local radial vertical.</p><button id="exportCsv" type="button" class="secondary">Download selected-site model CSV</button></section>
+<section class="card" id="insights"><div class="section-kicker">03 · COMPARISON VIEW</div><h2>Compare both sites at the selected time</h2><div id="instantComparison" class="compare-grid"></div><p class="muted">Site-wide comparisons count original NASA hourly samples; the Dec 20–25 mission screen uses 5-minute JPL samples when the whole request is covered. Neither establishes continuous illumination or a certified RF link.</p>
 <div id="siteCards" class="compare-grid" aria-live="polite"></div>
-<div class="explain"><b>Why this matters:</b> A sample above the <em>local</em> skyline can still be blocked by unmodelled distant mountains; a sample near the local edge requires finer timing and uncertainty evaluation. Neither is an operational pass.</div>
+<div class="explain"><b>Why this matters:</b> A change in location or start time changes illumination and Earth visibility. A model result near the terrain edge needs additional review; unresolved cases are kept separate from candidates.</div>
 </section>
 <section class="card" id="results"><div class="panel-top"><div><div class="section-kicker">04 · OUR INNOVATION · 5-MINUTE NASA DEMO SCREENING</div><h2>Mission Rescue — Explainable screening</h2><p class="muted">We analyze the original plan, permissible delays, and switching sites under unchanged requirements. Every suggested case is only a <strong>research candidate</strong> until science validation is complete.</p></div><span class="source-pill">NO SYNTHETIC NASA DATA</span></div>
 <div id="report" class="report" aria-live="polite"><div class="empty-state">Choose your mission constraints, then select <b>Run multi-case screening</b>.</div></div>
 <div class="case-top"><h3>Alternative cases</h3><span id="caseCount" class="small-note"></span></div>
 <div id="alternatives" class="alternatives"><div class="small-note">No scenarios evaluated yet.</div></div>
-<div class="margin-warning"><strong>Two different time margins — never confuse them</strong><p><b>Sampled reference slack</b> is computed from original NASA 5-minute records when a real later sample witnesses the end of a model-passing run (Site01 demo: <b>24h 20m</b>). It is not uninterrupted verified sunlight or actual spacecraft power. <b>Physical Time Margin remains UNKNOWN</b> pending complete terrain, eclipse, electrical and communication validation. The source dataset cutoff is never used as a natural window end.</p><p><a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/TIME_MARGIN_METHOD.md" target="_blank" rel="noopener">Read calculation, original NASA timestamps and safety limits</a></p></div>
-<div class="report-actions"><button id="exportBtn" type="button" class="secondary" disabled>Export traceable report (JSON)</button><a class="small-link" href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/src/mission_rescue.py" target="_blank" rel="noopener">Inspect rescue logic</a></div>
+<div id="reviewCases" class="explain" aria-live="polite"></div>
+<details class="margin-warning"><summary>How to interpret time margin</summary><p>Sampled reference slack measures how far a sampled passing run extends beyond the requested finish, when a later failing sample brackets its end. Dataset cutoffs return unknown. This does not establish a continuously validated physical window.</p><a href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/TIME_MARGIN_METHOD.md">Method and limitations</a></details>
+<div class="report-actions"><button id="exportBtn" type="button" class="secondary" disabled>Export traceable report (JSON)</button><a class="small-link" href="https://github.com/fayzeh-Elzghier/lunar-window/blob/main/docs/mission-console.js" target="_blank" rel="noopener">Inspect rescue logic</a></div>
 </section>
 </div></div>
-<section class="card resources" id="sources"><div class="section-kicker">05 · EVIDENCE & LIMITATIONS</div><h2>Every number has a NASA source.</h2>
+<section class="card resources" id="sources"><div class="section-kicker">05 · EVIDENCE & LIMITATIONS</div><h2>NASA inputs. Transparent model assumptions.</h2>
 <div class="source-grid"><article><b><a href="https://ssd.jpl.nasa.gov/horizons/app.html" target="_blank" rel="noopener">NASA/JPL Horizons</a></b><p>Actually used: 745 hourly Sun/Earth source epochs per site, plus 1,441 original 5-minute epochs per site around the demonstration dates.</p></article>
 <article><b><a href="https://pgda.gsfc.nasa.gov/products/78" target="_blank" rel="noopener">NASA LRO / LOLA</a></b><p>Actually used: local 5 m DEMs, a wider 80 m south-pole DEM sampled to ~300 km, and local total-height RMS error maps. The complete horizon and frame alignment remain unverified.</p></article>
 <article><b><a href="https://quickmap.lroc.asu.edu/" target="_blank" rel="noopener">LROC QuickMap</a></b><p>Official challenge reference for exploring terrain and image context. Not a numerical feed in this version.</p></article>
@@ -80,5 +86,5 @@
 <p class="small-note">Source archive: <a href="https://github.com/fayzeh-Elzghier/lunar-window/tree/main/data" target="_blank" rel="noopener">NASA source tables</a> · <a href="./STEP_03_TERRAIN_SCREEN.md">Calculation methodology</a> · <a href="https://www.spaceappschallenge.org/2026/challenges/lunar-landing-site-navigator/" target="_blank" rel="noopener">Official 2026 challenge</a> · <a href="https://www.asc-csa.gc.ca/eng/astronomy/moon-exploration/" target="_blank" rel="noopener">CSA research context</a></p>
 </section></div>
 </main>
-<footer><div class="wrap footer-inner"><div><strong>◑ LUNAR WINDOW</strong><p>Independent student research prototype, NASA Space Apps 2026. Not NASA-endorsed, flight-qualified, or landing-safe-site certified.</p></div><a href="https://github.com/fayzeh-Elzghier/lunar-window" target="_blank" rel="noopener">View open-source methodology ↗</a></div></footer>
+<footer><div class="wrap footer-inner"><div><strong>◑ LUNAR WINDOW</strong><p>Independent student research prototype, NASA Space Apps 2026. Decorative artwork is illustrative, not a NASA observation or site reconstruction. Not NASA-endorsed, flight-qualified, or landing-safe-site certified.</p></div><a href="https://github.com/fayzeh-Elzghier/lunar-window" target="_blank" rel="noopener">View open-source methodology ↗</a></div></footer>
 </body></html>

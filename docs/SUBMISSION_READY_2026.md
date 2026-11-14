@@ -1,3 +1,5 @@
+> Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
+
 # NASA Space Apps 2026 — Ready-to-Paste Submission Fields
 
 **Project title:** Lunar Window — Mission Rescue

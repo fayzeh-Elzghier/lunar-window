@@ -1,3 +1,5 @@
+> Historical development snapshot. For the current corrected terrain model, demo settings and release status, read [current objectives](OBJECTIVES_AND_RELEASE_GATES.md) and [current demo](SUBMISSION_DEMO.md). Earlier numerical results may differ.
+
 # Time Margin — original NASA sampled-reference calculation
 
 **Release:** 2026-11-14. **Status:** implemented for Mission Rescue research screening; NOT a validated continuous spacecraft operating margin.

@@ -33,9 +33,9 @@ PRODUCT="https://pgda.gsfc.nasa.gov/products/90"
 FILENAME="LDEM_80S_80MPP_ADJ.TIF"
 R=1737400.0
 SITES={"Site01":(-89.4632,-137.49),"Site04":(-89.7668,-171.87)}
-START_M=12000
+START_M=5000
 END_M=300000
-STEP_M=240
+STEP_M=40
 
 class Links(HTMLParser):
     def __init__(self):super().__init__();self.hrefs=[]
@@ -92,6 +92,8 @@ def audit(ds,site,arr,hashval,source):
     lat,lon=SITES[site];folder=ROOT/"data"/(site.lower()+"_audit")
     local=list(csv.DictReader((folder/"local_horizon.csv").open(newline="")))
     if len(local)!=360:raise ValueError("Local source not 360 azimuths")
+    if any(float(r["tile_covered_range_m"]) < START_M for r in local):
+        raise ValueError("Gap between local and regional terrain coverage")
     meta=json.loads((folder/"local_horizon_meta.json").read_text())
     if meta["site_id"]!=site or meta["visibility_status"]!="NOT VALIDATED":
         raise ValueError("Existing LOLA local-source provenance invalid")
@@ -135,6 +137,7 @@ def audit(ds,site,arr,hashval,source):
     result={"site":site,"official_product":PRODUCT,"source_url":source,"cog_sha256":hashval,
       "site_local_source_sha256":meta["raster_sha256"],
       "far_step_m":STEP_M,"far_start_m":START_M,"far_target_end_m":END_M,
+      "near_far_overlap_verified":True,
       "far_checked_bins":sum(bool(r[2]) for r in out),
       "model":"radial spherical Moon terrain skylines (5m site local + 80m NASA South Pole DEM)",
       "uncertainty":"far-field error raster, datum matching, lunar shape and sun/earth disc not yet independently checked",

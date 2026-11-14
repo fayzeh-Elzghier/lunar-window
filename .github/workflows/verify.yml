@@ -30,3 +30,7 @@ jobs:
           node --check docs/data/mission_dataset.js
           node --check scripts/verify_console.cjs
           node scripts/verify_console.cjs
+      - name: Extended model and source regression checks
+        run: |
+          node --check docs/mission-explorer.js
+          node scripts/verify_extended.cjs

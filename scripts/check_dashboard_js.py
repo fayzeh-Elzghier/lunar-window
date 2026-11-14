@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-HTML=ROOT/"docs/index.html"
+HTML=ROOT/"docs/legacy-explorer.html"
 
 def main():
     html=HTML.read_text(encoding="utf-8")

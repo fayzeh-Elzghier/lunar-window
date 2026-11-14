@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Real-browser quality gate and optional real-UI screencast.
- * No artificial ephemerides, mock data, or AI-rendered lunar imagery.
+ * No artificial ephemerides or mock astronomy. Decorative artwork is not evidence.
  * Browser loads the exact published files served locally from docs/.
  */
 "use strict";
@@ -35,6 +35,17 @@ async function main(){
  assert.match(await page.locator("#report").innerText(),/UNKNOWN/);
  assert.match(await page.locator("#caseCount").innerText(),/0 certified alternatives/);
  assert.equal(await page.locator("#exportBtn").isEnabled(),true);
+ assert.match(await page.locator("#caseCount").innerText(),/153 preliminary candidates/);
+ assert.ok(await page.locator("#horizonGraph path, #horizonGraph polyline").count()>0);
+ assert.ok(await page.locator("#powerGraph path, #powerGraph polyline").count()>0);
+ assert.match(await page.locator("#reviewCases").innerText(),/560 near-edge/);
+ await page.locator("[data-apply-start]").first().click();
+ assert.equal(await page.locator("#startUtc").inputValue(),"2026-12-21T12:40");
+ assert.match(await page.locator("#report").innerText(),/Research candidate/);
+ assert.ok(Math.abs(Number(await page.locator("#delayH").inputValue())-59.3333333333333)<1e-8);
+ const downloadPromise=page.waitForEvent("download");await page.locator("#exportBtn").click();
+ const report=JSON.parse(fs.readFileSync(await (await downloadPromise).path(),"utf8"));
+ assert.ok(report);
  await page.locator("#results").scrollIntoViewIfNeeded();
  await quiet(1600);
  await page.screenshot({path:path.join(artifact,"02-actual-nasa-rescue.png"),fullPage:true});

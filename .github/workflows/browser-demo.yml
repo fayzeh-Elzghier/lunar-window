@@ -8,6 +8,8 @@ on:
       - 'docs/mission-console.html'
       - 'docs/mission-console.js'
       - 'docs/mission-console.css'
+      - 'docs/mission-explorer.js'
+      - 'docs/data/**'
       - 'docs/judges-slides.html'
       - '.github/workflows/browser-demo.yml'
 permissions:

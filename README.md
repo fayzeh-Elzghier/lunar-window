@@ -1,109 +1,69 @@
-# Lunar Window — Mission Rescue 🌙
+# Lunar Window — Mission Rescue
 
-**NASA Space Apps Challenge 2026 — Lunar Landing Site Navigator**
+NASA Space Apps · Lunar Landing Site Navigator · Fayzeh and Ala
 
-An evidence-first web application to explore real lunar south-pole Sun and Earth geometry, compare candidate locations and dates, and ultimately **rescue a constrained operating plan** when the original site/start does not meet its requirements.
+Explore lunar south-pole Sun/Earth geometry, estimate direct panel power, and find alternative site/start combinations when a planned operation encounters a conflict. Requirements stay unchanged during the search.
 
-**Our creativity and innovation:** an *explainable multi-case Mission Rescue* decision workflow: identify all causes of failed power and geometric Earth-visibility requirements, test permitted site/start changes, rank valid alternatives by user priority, and display the **time margin** before a verified window ends. Not just a pretty lunar map.
+- [Open the project](https://fayzeh-elzghier.github.io/lunar-window/)
+- [Launch the mission console](https://fayzeh-elzghier.github.io/lunar-window/mission-console.html)
+- [Seven-slide presentation](https://fayzeh-elzghier.github.io/lunar-window/judges-slides.html)
+- [Current objectives, evidence and limits](docs/OBJECTIVES_AND_RELEASE_GATES.md)
+- [Current demonstration and handoff](docs/SUBMISSION_DEMO.md)
 
-> **Scientific status (2026-11-14):** The **new [Mission Rescue Console](docs/mission-console.html)** uses **745 genuine JPL Horizons UTC epochs per site (1,490 total)** including Sun range, NASA LOLA local 5 m and wider 80 m topography screened to approximately 300 km, and original LOLA local-height RMS error maps. Our **multi-case Rescue screening works**, but source alignment, far-field errors, eclipses, continuous operating windows, available power and physical Time Margin remain **unverified**. Zero certified mission passes are claimed.
+## What works
 
-## Submission links — NASA Space Apps 2026
+Two NASA-listed sites, a UTC timeline, Sun/Earth azimuth and elevation, local terrain silhouette, terrain-clearance and power plots, next sampled sunset/Earthset brackets, same-time site comparison, constrained alternative search, and CSV/JSON evidence exports. Near-edge review cases are separated from research candidates. Changed inputs invalidate old results.
 
-- **[PUBLIC: Seven-slide judges demo](https://fayzeh-elzghier.github.io/lunar-window/judges-slides.html)** — a seven-slide English presentation sourced to actual NASA JPL/LOLA data, with clear scientific disclaimers and AI disclosure.
-- **[PUBLIC: Interactive final project](https://fayzeh-elzghier.github.io/lunar-window/mission-console.html)** — evidence-based multi-case research screening.
-- **[Ready-to-paste submission text, source references, AI disclosure, and final checklist](docs/SUBMISSION_READY_2026.md)** — for the official team Project tab.
-- **[Original NASA 5-minute JPL source](data/site01_audit/fine_5m_dec2026.csv)** (Site01) and [Site04](data/site04_audit/fine_5m_dec2026.csv) — real source observations; no artificial lunar values.
-- **[Seven-slide PDF/PPTX copies](docs/judges-slides.html)** — downloadable copies were generated for the team separately; the public HTML slide presentation is the submission link.
+Original JPL Horizons data: **745 hourly epochs per site** from December 1, 2026 through January 1, 2027, plus **1,441 five-minute epochs per site** from December 20–25. These are calculated ephemerides for scenario dates, not measurements from a landed mission. Raw responses, parameters and SHA256 fingerprints are retained.
 
-**NEW — Real NASA sampled-reference slack:** The Site01 / 22 Dec 2026 06:00 UTC demo now computes **24h 20m of point-sampled reference margin**, bounded by the actual later passing/failing JPL samples. [Read exact calculation and uncertainty limits](docs/TIME_MARGIN_METHOD.md). This is NOT verified physical Time Margin.\n\n**Not yet claimed:** official Space Apps submission, independent mission-science validation, continuous operating-window certification, or physical Time Margin. The 26-scenario acceptance register is a development checklist, not 26 certified scientific passes.
+Terrain: NASA LOLA 5 m local DEMs combined with an 80 m regional DEM. The corrected regional scan starts at 5 km and uses 40 m radial steps to approximately 300 km; a guard verifies overlap with every local ray. This removes an earlier coverage gap, but does not prove a complete, independently validated horizon.
 
-## Start here — integrated demo (Fayzeh + Ala)
+## Reproduce the demonstration
 
-- **[Open the live Mission Rescue Console](https://fayzeh-elzghier.github.io/lunar-window/mission-console.html)** — main interactive submission prototype.
-- [Submission explanation and real-source demo story](docs/SUBMISSION_DEMO.md).
-- [NASA 745-row source: Site01](data/site01_audit/extended_dec2026.csv) and [Site04](data/site04_audit/extended_dec2026.csv).
-- [NASA near+far LOLA source comparison Site01](data/site01_audit/far_screen_dec2026.csv) and [Site04](data/site04_audit/far_screen_dec2026.csv); [far terrain original-source record](data/site01_audit/far_lola_meta.json).
-- [NASA local elevation-error assessment Site01](data/site01_audit/lola_z_rms_meta.json) and [Site04](data/site04_audit/lola_z_rms_meta.json).
-- [Automated real NASA mission console tests](scripts/verify_console.cjs).
+Click **Load Sara’s delayed-operation example**. Assumptions: Site01, December 21 00:00 UTC, 6 hours, 100 W, maximum delay 72 hours, 1.5 m² panel, 25% efficiency, tilt **60°**, azimuth 90°, Earth visibility required. All hardware values are illustrative user inputs.
 
-**What is not finished:** A flight-quality, independently validated lunar terrain/time-window/power solution is outside what the current evidence certifies. The console explicitly marks all returned alternatives as research candidates, physical Time Margin as unknown, and no lander safety or ground-station RF guarantees.
+The original model has a power shortfall. The five-minute search evaluates 1,730 site/start combinations, finds 153 preliminary candidates and separates 560 near-edge review cases. The earliest candidate is Site01 on **December 21 at 12:40 UTC**. These reproducible counts depend on the exact settings and current sampled model; they are not mission-certification results. The old 30°/24h20m example is a historical uncertainty regression, not the current demonstration.
 
-## Quick start
+## Run checks
 
-Open [the interactive HTML dashboard](docs/index.html) in a browser. It contains **169 actual JPL Horizons timestamps per site (338 site-time records total)**, 2026-12-01 00:00 to 2026-12-08 00:00 UTC, for the two NASA-listed south-pole locations. Use the slider to inspect the actual azimuth/elevation of the Sun and Earth; the reference zero line is **local horizontal, not the verified LOLA terrain horizon**.
-
-GitHub Pages may optionally be enabled by the repository owner with **Settings → Pages → Deploy from branch → main → /docs**. A public live deployment is not claimed until enabled and verified.
-
-To check NASA source integrity and safety guards:
+Python 3.11+ and Node 22; the offline checks need no third-party Python packages:
 
 ```bash
+python -m compileall -q src scripts tests
+python scripts/check_dashboard_js.py
 python -m unittest discover -s tests -v
-python scripts/rebuild_site04_dashboard.py
+node scripts/verify_console.cjs
+node scripts/verify_extended.cjs
 ```
 
-The dashboard builder uses **only** `data/site04_audit/sample.csv`; it rejects timestamp gaps, nonfinite angles, unexpected coverage or changed schema. It never fills in missing astronomy data.
+GitHub Actions also runs desktop/mobile browser acceptance. Open `docs/index.html` directly for offline viewing, or serve `docs/` with a static file server.
 
-## Repository structure
+To rebuild bundles from committed cached evidence:
 
-| Path | Description |
+```bash
+python scripts/build_far_evidence.py
+python scripts/rebuild_cached_fine.py
+python scripts/build_5minute_evidence.py
+python scripts/build_horizon_profiles.py
+```
+
+Recomputing terrain requires `numpy`, `rasterio`, NASA source DEMs and the acquisition scripts; large TIFFs are deliberately excluded from git. `scripts/audit_far_lola.py` records retrieval provenance and scan settings. Legacy 169-row builders now target `docs/legacy-explorer.html`, never the current home page.
+
+## Model boundaries
+
+Estimated power is `1361 / distance_AU² × panel_area × efficiency × max(0, panel_normal·sun_direction)`, set to zero when the Sun center is blocked by the sampled terrain. It excludes batteries, eclipses, partial solar-disk illumination, thermal/electrical losses and terrain slope correction. Local RMS review bands are not full uncertainty bounds. Earth-center visibility is a geometric proxy, not a ground-station RF link budget. Set times are sample brackets; continuous visibility and physical Time Margin are not certified. Landing safety is outside this prototype.
+
+## Code map
+
+| Location | Purpose |
 |---|---|
-| [docs/index.html](docs/index.html) | Interactive real-Horizons exploration and Mission Rescue UI with strict science gate |
-| [src/mission_rescue.py](src/mission_rescue.py) | Multiple case analysis, simultaneous failures, allowed time shifts, site changes, explicit missing-data status, physically bounded margins |
-| [tests/test_real_data_and_guards.py](tests/test_real_data_and_guards.py) | NASA source integrity and no-fabrication safety checks, **not science acceptance** |
-| [scripts/rebuild_site04_dashboard.py](scripts/rebuild_site04_dashboard.py) | Rebuilds embedded HTML source data from the already-audited real CSV |
-| [scripts/audit_site04.py](scripts/audit_site04.py) | Original NASA retrieval/audit script; requires `numpy`, `rasterio` and network access |
-| [data/site04_audit/](data/site04_audit/) | Original JPL Horizons raw Sun/Earth outputs, query parameters, metadata and hourly CSV |
-| [docs/data-audit.md](docs/data-audit.md) | What has actually been scientifically inspected and remains unresolved |
-| [docs/MISSION_RESCUE.md](docs/MISSION_RESCUE.md) | Our innovation, cases, time margin and scientific limitations |
-| [docs/SCENARIO_MATRIX.md](docs/SCENARIO_MATRIX.md) | All 26 acceptance cases; science state not tested |
-| [docs/NASA_RESOURCES.md](docs/NASA_RESOURCES.md) | Challenge resource references, actual-versus-planned use of NASA tools |
-| [docs/OBJECTIVES_AND_RELEASE_GATES.md](docs/OBJECTIVES_AND_RELEASE_GATES.md) | Link between official 2026 objectives and verified functionality |
-| [docs/STEP_01.md](docs/STEP_01.md) | Initial frozen MVP specification and engineering ownership |
+| `docs/mission-console.js` | Active browser decision engine and request validation |
+| `docs/mission-explorer.js` | Horizon, power, event and comparison views |
+| `docs/data/` | Reproducible source-derived browser bundles |
+| `data/site01_audit/`, `data/site04_audit/` | Raw NASA records and derived evidence |
+| `scripts/verify_extended.cjs` | Corruption guards, fairness, model and scenario regressions |
+| `src/mission_rescue.py` | Separate strict continuous-window reference engine; not the console engine |
 
-## Implementation update — November 14, 2026
+## Credits and transparency
 
-**Real code pushed; see [scientific status and reproducibility audit](docs/SCIENTIFIC_STATUS.md).**
-
-- **NASA Site01 acquisition**: [script](scripts/acquire_site01.py) requests original site-specific JPL Horizons Sun/Earth angles and NASA LOLA Site01 LDEM. The [GitHub Actions pipeline](.github/workflows/nasa-science.yml) is configured to run that acquisition and commit only structurally verified source files. **Acquisition succeeded and its original 169-row Site01 CSV, raw Sun/Earth outputs and query provenance are now in the repository.**
-- **Terrain horizon**: [lunar-curvature-corrected local skyline script](scripts/compute_local_horizon.py) samples original NASA LOLA pixels in all azimuths and reports unknown distant terrain explicitly. Local-tile results are **provisional**, NOT independently verified full horizons.
-- **Solar orientation**: [panel incidence model](src/solar_geometry.py) and the Site04 dashboard show a **1 AU unshadowed irradiance reference** from real JPL angular data and user-defined panel geometry, using [NASA Goddard's ~1361 W/m² reference](https://earth.gsfc.nasa.gov/climate/projects/solar-irradiance/science). The [169-row NASA-derived reference CSV](data/site04_audit/panel_1au_reference.csv) and [calculation audit](docs/SITE04_POWER_GEOMETRY.md) are committed. Not actual solar power or a reason for a mission pass.
-- **Site01 browser integration**: [source hash verifier/embedder](scripts/embed_site01_data.py) has imported 169 actual Site01 NASA records. The interface now visualizes both sites and their **provisional** local terrain-screening angles without presenting these as validated visibility or power.
-- **No synthetic astronomy**. The 26-case register remains a requirements checklist, not 26 passed scientific tests.
-
-### Automated NASA source workflow
-
-[Check or run the NASA data workflow](https://github.com/fayzeh-Elzghier/lunar-window/actions/workflows/nasa-science.yml). If your GitHub Actions installation has network and write permissions, it downloads and audits NASA records, emits an artifact and commits the real time series and **labeled provisional** horizon outputs. If it does not run, follow the exact documented commands below in a networked Python environment:
-
-```bash
-python -m pip install numpy rasterio
-python scripts/acquire_site01.py
-python scripts/compute_local_horizon.py --site Site01
-python scripts/compute_local_horizon.py --site Site04
-python scripts/embed_site01_data.py
-python -m unittest discover -s tests -v
-```
-
-Site01 source data and both provisional local LOLA horizon tables are committed. The [NASA Horizons vs LOLA comparison](docs/STEP_03_TERRAIN_SCREEN.md) and [Site01](data/site01_audit/terrain_screen_hourly.csv) / [Site04](data/site04_audit/terrain_screen_hourly.csv) hourly diagnostic files are also committed. This does **not** certify continuous operation windows, ground-station radio contact, or physical Time Margin.
-
-## Core calculation, once upstream science is verified
-
-The upstream pipeline must determine time-varying Sun/Earth geometry versus a physically validated lunar terrain horizon, fixed panel incidence, estimated direct solar power, and continuous condition intervals. The decision engine checks
-
-```text
-estimated_panel_power(t) >= required_power
-AND (Earth-center visible(t) OR visibility_not_required)
-for every instant in the requested contiguous duration
-```
-
-For a validated physically bounded window `[a,b)`, required duration `D`, and start `s`, the **time margin** is `b-D-s`. At a data cutoff the true remaining margin is **unknown**, not zero and not a fabricated Earthset.
-
-No batteries, lander trajectory/landing safety certification, specific Earth ground-station radio link guarantee, or arbitrary-coordinate coverage is claimed.
-
-## NASA resources and credits
-
-This work uses source material and data from **NASA/JPL Horizons**, **NASA LRO/LOLA PGDA**, and the **NASA Lunar Surface Data Book**. The official challenge also references **LROC QuickMap**, **NASA Moon Trek**, and lunar exploration agency context; see [the detailed source register](docs/NASA_RESOURCES.md). **Reference links are not a claim of numerical integration.**
-
-This is an independent student project and not NASA-endorsed, flight-certified or a substitute for mission engineering review.
-
-**Roles:** Fayzeh — scientific data and mission logic; Ala — interface and user experience; joint scientific review and integration.
+NASA/JPL Horizons; NASA LRO/LOLA PGDA; NASA Lunar Surface Data Book. [NASA resources](docs/NASA_RESOURCES.md). AI assisted code, documentation and testing. No AI-generated ephemerides are used. Synthetic analytical fixtures exist only in tests. Independent student project; no NASA endorsement or guaranteed competition outcome.
