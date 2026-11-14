@@ -29,7 +29,12 @@ async function main(){
  assert.equal(await page.locator("#startUtc").inputValue(),"2026-12-21T00:00");
  assert.equal(await page.locator("#earthRequired").isChecked(),true);
  await page.locator("#evaluate").click();
- await page.waitForFunction(()=>document.querySelector("#caseCount").textContent.includes("1730 cases screened at 5-minute"));
+ await page.waitForTimeout(2000);
+ console.log("DEBUG CASES:",await page.locator("#caseCount").innerText());
+ console.log("DEBUG REPORT:",(await page.locator("#report").innerText()).slice(0,1600));
+ console.log("DEBUG JS ERRORS:",pageErrors);
+ await page.screenshot({path:path.join(artifact,"diagnostic-after-evaluate.png"),fullPage:true});
+ await page.waitForFunction(()=>document.querySelector("#caseCount").textContent.includes("1730 cases screened at 5-minute"),{timeout:12000});
  assert.match(await page.locator("#report").innerText(),/UNKNOWN/);
  assert.match(await page.locator("#caseCount").innerText(),/0 certified alternatives/);
  assert.equal(await page.locator("#exportBtn").isEnabled(),true);
